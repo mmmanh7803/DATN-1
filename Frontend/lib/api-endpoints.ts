@@ -85,6 +85,11 @@ export const API_ENDPOINTS = {
       return `/api/vocabularytopics/review/due?${params.toString()}`;
     },
     UPDATE_REVIEW: "/api/vocabularytopics/review",
+    IMAGE_QUIZ: (topicId: number, count?: number) => {
+      const params = new URLSearchParams();
+      if (count !== undefined) params.append("count", count.toString());
+      return `/api/vocabularytopics/${topicId}/image-quiz?${params.toString()}`;
+    },
   },
 
   // AI

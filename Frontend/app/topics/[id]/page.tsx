@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { topicService } from "@/lib/services/topicService";
 import { exerciseService } from "@/lib/services/exerciseService";
-import { getCompletedActivities } from "@/lib/services/activityService";
+import { useCompletedActivities } from "@/hooks/useCompletedActivities";
 import { LessonTopicDto, LessonExerciseListDto } from "@/types";
 import VocabularyWordItem from "@/components/vocabulary/VocabularyWordItem";
 import LearningActivities, {
@@ -25,17 +25,34 @@ export default function TopicDetailPage() {
   const [exercises, setExercises] = useState<LessonExerciseListDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [completedActivityIds, setCompletedActivityIds] = useState<string[]>([]);
   const [vocabularyProgress, setVocabularyProgress] = useState<any>(null);
+  
+  // Sử dụng hook để quản lý completed activities (đồng bộ giữa các trang)
+  const {
+    completedActivityIds,
+    loadCompletedActivities,
+  } = useCompletedActivities({ topicId });
 
   const stats = topic
     ? {
-        total: topic.words?.length || 0,
+        total: topic.words?.length || 0, // Đảm bảo dùng topic.words.length
         mastered: topic.words?.filter((w: any) => w.progress?.status === "Mastered").length || 0,
         learning: topic.words?.filter((w: any) => w.progress?.status === "Learning").length || 0,
         new: topic.words?.filter((w: any) => !w.progress || w.progress.status === "New").length || 0,
       }
     : { total: 0, mastered: 0, learning: 0, new: 0 };
+  
+  // DEBUG: Log để kiểm tra giá trị total
+  if (topic && topic.words) {
+    console.log(`🔍 DEBUG Topic Page - Topic ${topicId}:`);
+    console.log(`  - topic.words.length: ${topic.words.length}`);
+    console.log(`  - stats.total: ${stats.total}`);
+    console.log(`  - Số từ theo status:`, {
+      mastered: stats.mastered,
+      learning: stats.learning,
+      new: stats.new,
+    });
+  }
 
   const progressPercentage = stats.total > 0
     ? Math.round(((stats.mastered + stats.learning) / stats.total) * 100)
@@ -43,18 +60,21 @@ export default function TopicDetailPage() {
 
   const completedCount = stats.mastered + stats.learning;
 
-  const activities = topic
-    ? createDefaultActivities({
-        quickMemorizeLink: topic.hskLevel
-          ? `/topics/${topicId}/quick-memorize`
-          : undefined,
-        imageQuizLink: undefined, // Chưa implement
-        pronunciationLink: `/topics/${topicId}/pronunciation`,
-        progressLink: `/topics/${topicId}/progress`,
-        activeId: "vocabulary",
-        completedIds: completedActivityIds,
-      })
-    : [];
+  const activities = useMemo(() => {
+    if (!topic) return [];
+    return createDefaultActivities({
+      vocabularyLink: `/topics/${topicId}`,
+      quickMemorizeLink: topic.hskLevel
+        ? `/topics/${topicId}/quick-memorize`
+        : undefined,
+      imageQuizLink: `/topics/${topicId}/image-quiz`,
+      pronunciationLink: `/topics/${topicId}/pronunciation`,
+      grammarLink: `/topics/${topicId}/grammar`,
+      progressLink: `/topics/${topicId}/progress`,
+      activeId: "vocabulary",
+      completedIds: completedActivityIds,
+    });
+  }, [topic, topicId, completedActivityIds]);
 
   useEffect(() => {
     if (topicId) {
@@ -62,17 +82,7 @@ export default function TopicDetailPage() {
     }
   }, [topicId]);
 
-  const loadCompletedActivities = async () => {
-    try {
-      const completedActivities = await getCompletedActivities(undefined, undefined, topicId);
-      const completedIds = completedActivities.map(a => a.activityId);
-      setCompletedActivityIds(completedIds);
-      console.log("Loaded completed activities:", completedIds);
-    } catch (activityError) {
-      console.error("Error loading completed activities:", activityError);
-      // Không cần show error, chỉ log
-    }
-  };
+  // Hook useCompletedActivities tự động load completed activities
 
   const handleVocabularyCompleted = async () => {
     console.log("[Topics Page] Vocabulary progress updated! Refreshing...");
@@ -120,8 +130,7 @@ export default function TopicDetailPage() {
         setVocabularyProgress(progress);
       }
 
-      // Load completed activities
-      await loadCompletedActivities();
+      // Completed activities được load tự động bởi hook useCompletedActivities
     } catch (error: any) {
       console.error("Error loading topic:", error);
       console.error("Error details:", {
@@ -396,15 +405,6 @@ export default function TopicDetailPage() {
                   title={topic?.title || "Hán Ngữ"}
                   completedCount={completedCount}
                   totalCount={stats.total}
-                  showFirstWord={
-                    topic?.words && topic.words.length > 0
-                      ? {
-                          character: topic.words[0].character,
-                          meaning: topic.words[0].meaning,
-                          isCompleted: false,
-                        }
-                      : undefined
-                  }
                   maxHeight="calc(100vh-200px)"
                 />
               </div>

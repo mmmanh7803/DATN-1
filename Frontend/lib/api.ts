@@ -1,6 +1,8 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import Cookies from "js-cookie";
 
+// Backend mặc định chạy trên port 5075
+// Có thể override bằng NEXT_PUBLIC_API_URL trong .env.local
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5075";
 
 // Create axios instance

@@ -9,6 +9,7 @@ export interface ActivityItem {
   icon: React.ReactNode;
   isActive?: boolean;
   isCompleted?: boolean;
+  progressPercentage?: number; // Phần trăm hoàn thành (0-100)
   link?: string | null;
   onClick?: () => void;
 }
@@ -18,11 +19,6 @@ interface LearningActivitiesProps {
   title?: string;
   completedCount?: number;
   totalCount?: number;
-  showFirstWord?: {
-    character: string;
-    meaning: string;
-    isCompleted?: boolean;
-  };
   className?: string;
   maxHeight?: string;
   defaultExpanded?: boolean;
@@ -33,7 +29,6 @@ export default function LearningActivities({
   title = "Hán Ngữ",
   completedCount,
   totalCount,
-  showFirstWord,
   className = "",
   maxHeight = "calc(100vh-400px)",
   defaultExpanded = true,
@@ -59,8 +54,22 @@ export default function LearningActivities({
               <h3 className="text-lg font-bold text-gray-900">{title}</h3>
             )}
             {(completedCount !== undefined && totalCount !== undefined) && (
-              <div className="text-xs text-gray-600 mt-1">
-                {completedCount}/{totalCount} bài hoàn thành
+              <div className="text-xs text-gray-600 mt-1 flex items-center gap-2">
+                <span>{completedCount}/{totalCount} bài hoàn thành</span>
+                {/* Hiển thị dấu tích xanh khi đạt 100% */}
+                {totalCount > 0 && completedCount >= totalCount && (
+                  <svg
+                    className="w-4 h-4 text-green-500 flex-shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                )}
               </div>
             )}
           </div>
@@ -93,43 +102,14 @@ export default function LearningActivities({
         }`}
       >
         <div className="p-6">
-          {/* First Word Item */}
-          {showFirstWord && (
-            <div className="mb-6 pb-6 border-b border-gray-200">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex-1">
-                  <div className="text-lg font-semibold text-gray-900">
-                    {showFirstWord.character}
-                  </div>
-                  <div className="text-sm text-gray-600">{showFirstWord.meaning}</div>
-                </div>
-                {showFirstWord.isCompleted && (
-                  <div className="flex items-center">
-                    <div className="w-12 h-6 bg-green-500 rounded-full relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <svg
-                          className="w-4 h-4 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
           {/* Learning Activities List */}
           <div
-            className="space-y-2 overflow-y-auto"
-            style={{ maxHeight }}
+            className="space-y-2 overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar"
+            style={{ 
+              maxHeight,
+              scrollbarWidth: 'thin',
+              scrollbarColor: '#cbd5e1 #f1f5f9'
+            }}
           >
         {activities.map((activity) => {
           const isClickable = activity.link || activity.onClick;
@@ -163,18 +143,23 @@ export default function LearningActivities({
               >
                 {activity.name}
               </span>
-              {activity.isCompleted && (
-                <svg
-                  className="w-5 h-5 text-green-500 flex-shrink-0"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+              {/* Hiển thị dấu tích xanh khi đạt 100% hoặc isCompleted = true */}
+              {(activity.isCompleted || (activity.progressPercentage !== undefined && activity.progressPercentage >= 100)) && (
+                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth={3}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
               )}
               {activity.link && (
                 <svg
@@ -348,24 +333,52 @@ export const createActivityIcons = () => ({
 // Helper function to create default activities list
 export const createDefaultActivities = (
   options?: {
+    vocabularyLink?: string;
     quickMemorizeLink?: string;
     imageQuizLink?: string;
     pronunciationLink?: string;
+    grammarLink?: string;
     progressLink?: string;
     activeId?: string;
     completedIds?: string[];
+    activityProgressMap?: Map<string, number>; // Map activityId -> progressPercentage
   }
 ): ActivityItem[] => {
   const icons = createActivityIcons();
-  const { quickMemorizeLink, imageQuizLink, pronunciationLink, progressLink, activeId, completedIds = [] } = options || {};
+  const {
+    vocabularyLink,
+    quickMemorizeLink,
+    imageQuizLink,
+    pronunciationLink,
+    grammarLink,
+    progressLink,
+    activeId,
+    completedIds = [],
+    activityProgressMap,
+  } = options || {};
+
+  // Helper function to get progress percentage
+  const getProgressPercentage = (activityId: string): number | undefined => {
+    // Nếu có trong completedIds thì 100%
+    if (completedIds.includes(activityId)) {
+      return 100;
+    }
+    // Nếu có trong activityProgressMap thì dùng giá trị đó
+    if (activityProgressMap?.has(activityId)) {
+      return activityProgressMap.get(activityId);
+    }
+    return undefined;
+  };
 
   return [
     {
       id: "vocabulary",
       name: "Từ vựng",
       icon: icons.vocabulary,
+      link: vocabularyLink || null,
       isCompleted: completedIds.includes("vocabulary"),
       isActive: activeId === "vocabulary",
+      progressPercentage: getProgressPercentage("vocabulary"),
     },
     {
       id: "quick-memorize",
@@ -374,6 +387,7 @@ export const createDefaultActivities = (
       link: quickMemorizeLink || null,
       isCompleted: completedIds.includes("quick-memorize"),
       isActive: activeId === "quick-memorize",
+      progressPercentage: getProgressPercentage("quick-memorize"),
     },
     {
       id: "image-quiz",
@@ -382,6 +396,7 @@ export const createDefaultActivities = (
       link: imageQuizLink || null,
       isCompleted: completedIds.includes("image-quiz"),
       isActive: activeId === "image-quiz",
+      progressPercentage: getProgressPercentage("image-quiz"),
     },
     {
       id: "pronunciation",
@@ -390,6 +405,7 @@ export const createDefaultActivities = (
       link: pronunciationLink || null,
       isCompleted: completedIds.includes("pronunciation"),
       isActive: activeId === "pronunciation",
+      progressPercentage: getProgressPercentage("pronunciation"),
     },
     {
       id: "true-false",
@@ -397,6 +413,7 @@ export const createDefaultActivities = (
       icon: icons.trueFalse,
       isCompleted: completedIds.includes("true-false"),
       isActive: activeId === "true-false",
+      progressPercentage: getProgressPercentage("true-false"),
     },
     {
       id: "true-false-sentence",
@@ -404,6 +421,7 @@ export const createDefaultActivities = (
       icon: icons.trueFalseSentence,
       isCompleted: completedIds.includes("true-false-sentence"),
       isActive: activeId === "true-false-sentence",
+      progressPercentage: getProgressPercentage("true-false-sentence"),
     },
     {
       id: "listen-image",
@@ -411,6 +429,7 @@ export const createDefaultActivities = (
       icon: icons.listenImage,
       isCompleted: completedIds.includes("listen-image"),
       isActive: activeId === "listen-image",
+      progressPercentage: getProgressPercentage("listen-image"),
     },
     {
       id: "match-sentence",
@@ -418,6 +437,7 @@ export const createDefaultActivities = (
       icon: icons.matchSentence,
       isCompleted: completedIds.includes("match-sentence"),
       isActive: activeId === "match-sentence",
+      progressPercentage: getProgressPercentage("match-sentence"),
     },
     {
       id: "fill-blank",
@@ -425,6 +445,7 @@ export const createDefaultActivities = (
       icon: icons.fillBlank,
       isCompleted: completedIds.includes("fill-blank"),
       isActive: activeId === "fill-blank",
+      progressPercentage: getProgressPercentage("fill-blank"),
     },
     {
       id: "flashcard",
@@ -432,6 +453,7 @@ export const createDefaultActivities = (
       icon: icons.flashcard,
       isCompleted: completedIds.includes("flashcard"),
       isActive: activeId === "flashcard",
+      progressPercentage: getProgressPercentage("flashcard"),
     },
     {
       id: "conversation",
@@ -439,6 +461,7 @@ export const createDefaultActivities = (
       icon: icons.conversation,
       isCompleted: completedIds.includes("conversation"),
       isActive: activeId === "conversation",
+      progressPercentage: getProgressPercentage("conversation"),
     },
     {
       id: "reading",
@@ -446,13 +469,16 @@ export const createDefaultActivities = (
       icon: icons.reading,
       isCompleted: completedIds.includes("reading"),
       isActive: activeId === "reading",
+      progressPercentage: getProgressPercentage("reading"),
     },
     {
       id: "grammar",
       name: "Ngữ pháp",
       icon: icons.grammar,
+      link: grammarLink || null,
       isCompleted: completedIds.includes("grammar"),
       isActive: activeId === "grammar",
+      progressPercentage: getProgressPercentage("grammar"),
     },
     {
       id: "statistics",
@@ -461,6 +487,7 @@ export const createDefaultActivities = (
       link: progressLink || null,
       isCompleted: false,
       isActive: activeId === "statistics",
+      progressPercentage: undefined, // Statistics không có progress
     },
   ];
 };

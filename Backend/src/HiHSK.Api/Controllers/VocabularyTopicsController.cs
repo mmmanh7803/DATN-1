@@ -33,6 +33,23 @@ public class VocabularyTopicsController : ControllerBase
         return Ok(topics);
     }
 
+    [HttpGet("{topicId}/image-quiz")]
+    public async Task<ActionResult<List<QuestionDto>>> GetImageQuizQuestions(
+        int topicId,
+        [FromQuery] int? count = null)
+    {
+        try
+        {
+            var questions = await _vocabularyService.GenerateImageQuizQuestionsAsync(topicId, count);
+            return Ok(questions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi tạo câu hỏi kiểm tra từ vựng bằng hình ảnh");
+            return StatusCode(500, new { message = "Lỗi khi tạo câu hỏi", error = ex.Message });
+        }
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<VocabularyTopicDetailDto>> GetTopicById(int id)
     {

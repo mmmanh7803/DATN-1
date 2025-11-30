@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authService } from "@/lib/auth";
 import { RegisterRequest } from "@/types";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
+import ErrorAlert from "@/components/common/ErrorAlert";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -191,24 +193,57 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center px-4 py-12">
+      <div className="max-w-md w-full">
+        {/* Logo/Brand */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Đăng ký
-          </h1>
-          <p className="text-gray-600">
-            Tạo tài khoản mới để bắt đầu học tiếng Trung
-          </p>
+          <Link href="/" className="inline-flex items-center gap-2 mb-4">
+            <div className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              汉语
+            </div>
+            <span className="text-3xl font-bold text-gray-800">HiHSK</span>
+          </Link>
         </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 text-sm">{error}</p>
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Đăng ký
+            </h1>
+            <p className="text-gray-600">
+              Tạo tài khoản mới để bắt đầu học tiếng Trung
+            </p>
           </div>
-        )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <ErrorAlert
+              message={error}
+              onClose={() => setError("")}
+            />
+          )}
+
+          {/* Google Sign Up Button */}
+          <div className="mb-6">
+            <GoogleLoginButton
+              text="Đăng ký với Google"
+              onSuccess={() => {
+                // Success handled in component
+              }}
+              onError={(err) => setError(err)}
+            />
+          </div>
+
+          {/* Divider */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white text-gray-500">Hoặc đăng ký bằng email</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
               htmlFor="email"
@@ -295,7 +330,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
           >
             {loading ? "Đang đăng ký..." : "Đăng ký"}
           </button>
@@ -316,10 +351,14 @@ export default function RegisterPage() {
         <div className="mt-4 text-center">
           <Link
             href="/"
-            className="text-sm text-gray-500 hover:text-gray-700"
+            className="text-sm text-gray-500 hover:text-gray-700 inline-flex items-center gap-1"
           >
-            ← Quay về trang chủ
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Quay về trang chủ
           </Link>
+        </div>
         </div>
       </div>
     </div>

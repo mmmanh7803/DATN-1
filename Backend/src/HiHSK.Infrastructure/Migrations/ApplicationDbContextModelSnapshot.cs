@@ -1911,6 +1911,9 @@ namespace HiHSK.Infrastructure.Migrations
                     b.Property<int?>("HSKLevel")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("LessonId")
                         .HasColumnType("int");
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
@@ -15,6 +15,10 @@ import {
   getFlashcardReview,
 } from "@/lib/services/activityProgressService";
 import { LessonTopicDto } from "@/types";
+import { useCompletedActivities } from "@/hooks/useCompletedActivities";
+import LearningActivities, {
+  createDefaultActivities,
+} from "@/components/vocabulary/LearningActivities";
 
 export default function TopicProgressPage() {
   const params = useParams();
@@ -25,6 +29,39 @@ export default function TopicProgressPage() {
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState<any[]>([]);
   const [summary, setSummary] = useState<any>(null);
+  
+  // Sử dụng hook để quản lý completed activities (đồng bộ giữa các trang)
+  const {
+    completedActivityIds,
+  } = useCompletedActivities({ topicId });
+  
+  // Tính stats giống các trang khác
+  const vocabStats = topic
+    ? {
+        total: topic.words?.length || 0,
+        mastered: topic.words?.filter((w: any) => w.progress?.status === "Mastered").length || 0,
+        learning: topic.words?.filter((w: any) => w.progress?.status === "Learning").length || 0,
+        new: topic.words?.filter((w: any) => !w.progress || w.progress.status === "New").length || 0,
+      }
+    : { total: 0, mastered: 0, learning: 0, new: 0 };
+
+  const completedCount = vocabStats.mastered + vocabStats.learning;
+
+  const learningActivities = useMemo(() => {
+    if (!topic) return [];
+    return createDefaultActivities({
+      vocabularyLink: `/topics/${topicId}`,
+      quickMemorizeLink: topic.hskLevel
+        ? `/topics/${topicId}/quick-memorize`
+        : undefined,
+      imageQuizLink: `/topics/${topicId}/image-quiz`,
+      pronunciationLink: `/topics/${topicId}/pronunciation`,
+      grammarLink: `/topics/${topicId}/grammar`,
+      progressLink: `/topics/${topicId}/progress`,
+      activeId: "progress",
+      completedIds: completedActivityIds,
+    });
+  }, [topic, topicId, completedActivityIds]);
 
   useEffect(() => {
     if (topicId) {
@@ -100,26 +137,29 @@ export default function TopicProgressPage() {
 
       <main className="flex-grow py-8">
         <div className="container mx-auto px-4">
-          {/* Header */}
-          <div className="mb-8">
-            <Link
-              href={`/topics/${topicId}`}
-              className="inline-flex items-center text-primary hover:text-primary-dark mb-4 transition"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Quay lại chủ đề
-            </Link>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              Thống kê tiến độ: {topic.title}
-            </h1>
-            <p className="text-gray-600">
-              Xem chi tiết tiến độ học tập của bạn trong chủ đề này
-            </p>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Header */}
+              <div>
+                <Link
+                  href={`/topics/${topicId}`}
+                  className="inline-flex items-center text-primary hover:text-primary-dark mb-4 transition"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Quay lại chủ đề
+                </Link>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                  Thống kê tiến độ: {topic.title}
+                </h1>
+                <p className="text-gray-600">
+                  Xem chi tiết tiến độ học tập của bạn trong chủ đề này
+                </p>
+              </div>
 
-          {/* Summary Cards */}
+              {/* Summary Cards */}
           {summary && (
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
               <div className="bg-white rounded-lg shadow-sm p-6">
@@ -188,25 +228,25 @@ export default function TopicProgressPage() {
             </div>
           )}
 
-          {/* Activities Progress */}
-          {activities.length > 0 && (
-            <AllActivitiesProgress activities={activities} />
-          )}
+              {/* Activities Progress */}
+              {activities.length > 0 && (
+                <AllActivitiesProgress activities={activities} />
+              )}
 
-          {activities.length === 0 && (
-            <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-              <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-              <p className="text-xl text-gray-600 mb-2">Chưa có dữ liệu thống kê</p>
-              <p className="text-gray-500">
-                Hãy bắt đầu học để xem thống kê tiến độ của bạn
-              </p>
-            </div>
-          )}
+              {activities.length === 0 && (
+                <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+                  <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                  <p className="text-xl text-gray-600 mb-2">Chưa có dữ liệu thống kê</p>
+                  <p className="text-gray-500">
+                    Hãy bắt đầu học để xem thống kê tiến độ của bạn
+                  </p>
+                </div>
+              )}
 
-          {/* Quick Actions */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Quick Actions */}
+              <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
               href={`/topics/${topicId}`}
               className="flex items-center justify-between bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow"
@@ -266,6 +306,21 @@ export default function TopicProgressPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </Link>
+              </div>
+            </div>
+
+            {/* Sidebar - Activities */}
+            <aside className="lg:col-span-1">
+              <div className="sticky top-4">
+                <LearningActivities
+                  activities={learningActivities}
+                  title={topic?.title || "Hán Ngữ"}
+                  completedCount={completedCount}
+                  totalCount={vocabStats.total}
+                  maxHeight="calc(100vh-200px)"
+                />
+              </div>
+            </aside>
           </div>
         </div>
       </main>

@@ -54,6 +54,12 @@ public class VocabularyService : IVocabularyService
             return null;
 
         var words = topic.WordVocabularyTopics.Select(wvt => wvt.Word).ToList();
+        
+        // DEBUG: Log số từ vựng
+        Console.WriteLine($"🔍 [VocabularyService] Topic ID {topicId}: {topic.Name}");
+        Console.WriteLine($"  - WordVocabularyTopics count: {topic.WordVocabularyTopics.Count}");
+        Console.WriteLine($"  - Words count (after Select): {words.Count}");
+        
         var wordsWithProgress = new List<WordWithProgressDto>();
 
         foreach (var word in words)
@@ -65,9 +71,15 @@ public class VocabularyService : IVocabularyService
                 Pinyin = word.Pinyin,
                 Meaning = word.Meaning,
                 AudioUrl = word.AudioUrl,
+                ImageUrl = word.ImageUrl,
                 ExampleSentence = word.ExampleSentence,
                 HSKLevel = word.HSKLevel,
-                StrokeCount = word.StrokeCount
+                StrokeCount = word.StrokeCount,
+                PartOfSpeech = word.PartOfSpeech,
+                PartOfSpeechVi = word.PartOfSpeechVi,
+                PartOfSpeechEn = word.PartOfSpeechEn,
+                GrammarNote = word.GrammarNote,
+                Structure = word.Structure
             };
 
             if (userId != null)
@@ -225,9 +237,15 @@ public class VocabularyService : IVocabularyService
                 Pinyin = word.Pinyin,
                 Meaning = word.Meaning,
                 AudioUrl = word.AudioUrl,
+                ImageUrl = word.ImageUrl,
                 ExampleSentence = word.ExampleSentence,
                 HSKLevel = word.HSKLevel,
                 StrokeCount = word.StrokeCount,
+                PartOfSpeech = word.PartOfSpeech,
+                PartOfSpeechVi = word.PartOfSpeechVi,
+                PartOfSpeechEn = word.PartOfSpeechEn,
+                GrammarNote = word.GrammarNote,
+                Structure = word.Structure,
                 Examples = (word.WordExamples ?? new List<Domain.Entities.WordExample>())
                     .Select(e => new WordExampleDto
                     {
@@ -285,6 +303,7 @@ public class VocabularyService : IVocabularyService
                 Pinyin = existingWord.Pinyin,
                 Meaning = existingWord.Meaning,
                 AudioUrl = existingWord.AudioUrl,
+                ImageUrl = existingWord.ImageUrl,
                 ExampleSentence = existingWord.ExampleSentence,
                 HSKLevel = existingWord.HSKLevel,
                 StrokeCount = existingWord.StrokeCount,
@@ -446,6 +465,7 @@ public class VocabularyService : IVocabularyService
                 Pinyin = savedWord.Pinyin ?? wordInfo.Pinyin,
                 Meaning = savedWord.Meaning ?? wordInfo.Meaning,
                 AudioUrl = savedWord.AudioUrl,
+                ImageUrl = savedWord.ImageUrl,
                 ExampleSentence = savedWord.ExampleSentence,
                 HSKLevel = savedWord.HSKLevel,
                 StrokeCount = savedWord.StrokeCount,
@@ -770,9 +790,15 @@ public class VocabularyService : IVocabularyService
             Pinyin = word.Pinyin,
             Meaning = word.Meaning,
             AudioUrl = word.AudioUrl,
+            ImageUrl = word.ImageUrl,
             ExampleSentence = word.ExampleSentence,
             HSKLevel = word.HSKLevel,
             StrokeCount = word.StrokeCount,
+            PartOfSpeech = word.PartOfSpeech,
+            PartOfSpeechVi = word.PartOfSpeechVi,
+            PartOfSpeechEn = word.PartOfSpeechEn,
+            GrammarNote = word.GrammarNote,
+            Structure = word.Structure,
             Examples = (word.WordExamples ?? new List<WordExample>())
                 .Select(e => new WordExampleDto
                 {
@@ -807,6 +833,95 @@ public class VocabularyService : IVocabularyService
         }
 
         return wordDto;
+    }
+
+    public async Task<List<QuestionDto>> GenerateImageQuizQuestionsAsync(int topicId, int? count = null)
+    {
+        // Lấy danh sách từ vựng trong topic
+        var words = await _vocabularyRepository.GetWordsByTopicIdAsync(topicId);
+        
+        if (words == null || words.Count < 4)
+        {
+            return new List<QuestionDto>();
+        }
+
+        // Lấy topic để có ImageUrl
+        var topic = await _vocabularyRepository.GetTopicByIdAsync(topicId);
+        
+        // Xáo trộn danh sách từ vựng
+        var shuffledWords = words.OrderBy(x => Guid.NewGuid()).ToList();
+        
+        // Số lượng câu hỏi (mặc định là số từ vựng, tối đa 20)
+        var questionCount = count ?? Math.Min(words.Count, 20);
+        questionCount = Math.Min(questionCount, shuffledWords.Count);
+        
+        var questions = new List<QuestionDto>();
+        var random = new Random();
+        
+        for (int i = 0; i < questionCount; i++)
+        {
+            var correctWord = shuffledWords[i];
+            
+            // Lấy 3 từ nhiễu ngẫu nhiên (khác với từ đúng)
+            var wrongWords = words
+                .Where(w => w.Id != correctWord.Id)
+                .OrderBy(x => Guid.NewGuid())
+                .Take(3)
+                .ToList();
+            
+            // Tạo 4 lựa chọn: 1 đúng + 3 nhiễu
+            var options = new List<QuestionOptionDto>();
+            
+            // Thêm đáp án đúng
+            options.Add(new QuestionOptionDto
+            {
+                Id = 1,
+                OptionText = $"{correctWord.Character} ({correctWord.Pinyin}) - {correctWord.Meaning}",
+                OptionLabel = "A",
+                IsCorrect = true
+            });
+            
+            // Thêm 3 đáp án nhiễu
+            var labels = new[] { "B", "C", "D" };
+            for (int j = 0; j < wrongWords.Count && j < 3; j++)
+            {
+                options.Add(new QuestionOptionDto
+                {
+                    Id = j + 2,
+                    OptionText = $"{wrongWords[j].Character} ({wrongWords[j].Pinyin}) - {wrongWords[j].Meaning}",
+                    OptionLabel = labels[j],
+                    IsCorrect = false
+                });
+            }
+            
+            // Xáo trộn thứ tự các đáp án
+            options = options.OrderBy(x => Guid.NewGuid()).ToList();
+            
+            // Cập nhật lại label sau khi xáo trộn
+            var newLabels = new[] { "A", "B", "C", "D" };
+            for (int j = 0; j < options.Count; j++)
+            {
+                options[j].OptionLabel = newLabels[j];
+            }
+            
+            // Tạo câu hỏi
+            var question = new QuestionDto
+            {
+                Id = i + 1, // Temporary ID
+                QuestionText = $"Chọn từ vựng đúng cho hình ảnh:",
+                QuestionType = "IMAGE_QUIZ",
+                Points = 1,
+                Explanation = $"Đáp án đúng: {correctWord.Character} ({correctWord.Pinyin}) - {correctWord.Meaning}",
+                Options = options,
+                CorrectWordId = correctWord.Id,
+                // Sử dụng ImageUrl của từ vựng, nếu không có thì dùng topic.ImageUrl
+                ImageUrl = correctWord.ImageUrl ?? topic?.ImageUrl
+            };
+            
+            questions.Add(question);
+        }
+        
+        return questions;
     }
 }
 

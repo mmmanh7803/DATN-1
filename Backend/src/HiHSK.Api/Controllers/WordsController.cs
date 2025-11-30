@@ -54,9 +54,15 @@ public class WordsController : ControllerBase
                 Pinyin = word.Pinyin,
                 Meaning = word.Meaning,
                 AudioUrl = word.AudioUrl,
+                ImageUrl = word.ImageUrl,
                 ExampleSentence = word.ExampleSentence,
                 HSKLevel = word.HSKLevel,
                 StrokeCount = word.StrokeCount,
+                PartOfSpeech = word.PartOfSpeech,
+                PartOfSpeechVi = word.PartOfSpeechVi,
+                PartOfSpeechEn = word.PartOfSpeechEn,
+                GrammarNote = word.GrammarNote,
+                Structure = word.Structure,
                 Examples = word.WordExamples?.Select(e => new WordExampleDto
                 {
                     Id = e.Id,

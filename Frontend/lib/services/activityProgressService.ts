@@ -57,20 +57,30 @@ export function calculatePronunciationProgress(
 }
 
 // Calculate progress for quick memorize activity
+// words: danh sách từ vựng thuộc chủ đề (topic)
+// completedWords: set các word IDs đã hoàn thành
 export function calculateQuickMemorizeProgress(
   words: WordDto[],
   completedWords: Set<number>
 ): ActivityProgress {
-  const completed = words.filter(w => completedWords.has(w.id)).length;
-  const notStarted = words.length - completed;
+  // Chỉ tính các từ thuộc chủ đề (words đã được filter từ backend)
+  // Đảm bảo words không null/undefined
+  const wordsInTopic = words || [];
+  
+  // Filter completedWords để chỉ lấy các từ có trong danh sách words (thuộc chủ đề)
+  const topicWordIds = new Set(wordsInTopic.map(w => w.id));
+  const completedInTopic = wordsInTopic.filter(w => 
+    completedWords.has(w.id) && topicWordIds.has(w.id)
+  ).length;
+  const notStarted = wordsInTopic.length - completedInTopic;
 
   return {
     activityId: "quick-memorize",
     activityName: "Nhớ nhanh từ",
-    completed,
+    completed: completedInTopic,
     inProgress: 0,
     notStarted,
-    total: words.length,
+    total: wordsInTopic.length, // Tổng số từ vựng thuộc chủ đề (chỉ tính các từ trong danh sách)
   };
 }
 
@@ -177,8 +187,21 @@ export function storeQuickMemorizeCompletion(topicId: number, wordIds: number[])
 export function getQuickMemorizeCompletion(topicId: number): Set<number> {
   const key = `quick_memorize_topic_${topicId}`;
   const stored = localStorage.getItem(key);
-  const wordIds = stored ? JSON.parse(stored) : [];
-  return new Set(wordIds);
+  if (!stored) {
+    return new Set<number>();
+  }
+  
+  try {
+    const wordIds = JSON.parse(stored);
+    // Đảm bảo wordIds là array và chỉ chứa numbers
+    if (Array.isArray(wordIds)) {
+      return new Set(wordIds.filter(id => typeof id === 'number'));
+    }
+    return new Set<number>();
+  } catch (error) {
+    console.error(`Lỗi khi parse quick memorize completion cho topic ${topicId}:`, error);
+    return new Set<number>();
+  }
 }
 
 // Store flashcard review

@@ -2,6 +2,10 @@ import Cookies from "js-cookie";
 import { AuthResponse, LoginRequest, RegisterRequest } from "@/types";
 import apiClient from "./api";
 
+export interface GoogleLoginRequest {
+  idToken: string;
+}
+
 const AUTH_TOKEN_KEY = "authToken";
 const AUTH_EXPIRATION_KEY = "authExpiration";
 
@@ -165,6 +169,50 @@ export const authService = {
     }
     
     return true;
+  },
+
+  // Google Login
+  async googleLogin(idToken: string): Promise<AuthResponse> {
+    try {
+      const response = await apiClient.post<AuthResponse>("/api/auth/google-login", {
+        idToken,
+      });
+      
+      if (response.data.token) {
+        Cookies.set(AUTH_TOKEN_KEY, response.data.token, {
+          expires: new Date(response.data.expiration),
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        });
+        
+        Cookies.set(AUTH_EXPIRATION_KEY, response.data.expiration, {
+          expires: new Date(response.data.expiration),
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        });
+      }
+      
+      return response.data;
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      throw new Error(error.response?.data?.message || "Đăng nhập Google thất bại");
+    }
+  },
+
+  // Get current user info from cookie/token
+  getCurrentUser(): { email: string } | null {
+    const token = Cookies.get(AUTH_TOKEN_KEY);
+    if (!token) return null;
+
+    try {
+      // Decode JWT token (simple base64 decode, not validating)
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return {
+        email: payload.email || payload.sub || "",
+      };
+    } catch {
+      return null;
+    }
   },
 };
 

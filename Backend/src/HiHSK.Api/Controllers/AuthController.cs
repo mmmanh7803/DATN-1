@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Google.Apis.Auth;
 using HiHSK.Api.Models;
 using HiHSK.Api.Services;
 using HiHSK.Domain.Entities;
@@ -178,6 +179,83 @@ public class AuthController : ControllerBase
                 UserName = user.UserName
             }
         });
+    }
+
+    /// <summary>
+    /// Đăng nhập bằng Google
+    /// </summary>
+    [HttpPost("google-login")]
+    public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new { message = "Dữ liệu không hợp lệ", errors = ModelState });
+        }
+
+        try
+        {
+            // Xác thực Google ID Token
+            var settings = new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = new[] { _configuration["GoogleAuth:ClientId"] }
+            };
+
+            var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken, settings);
+
+            if (payload == null)
+            {
+                return Unauthorized(new { message = "Token Google không hợp lệ" });
+            }
+
+            // Tìm hoặc tạo user với email từ Google
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+
+            if (user == null)
+            {
+                // Tạo user mới nếu chưa tồn tại
+                user = new ApplicationUser
+                {
+                    UserName = payload.Email,
+                    Email = payload.Email,
+                    EmailConfirmed = true // Google đã xác thực email
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    var errors = createResult.Errors.Select(e => e.Description).ToList();
+                    return BadRequest(new { message = "Không thể tạo tài khoản", errors });
+                }
+
+                Console.WriteLine($"Created new user from Google: {user.Email}");
+            }
+
+            // Tạo JWT token
+            var token = _jwtTokenService.GenerateToken(user);
+            var expirationMinutes = int.Parse(_configuration["JwtSettings:ExpirationInMinutes"] ?? "60");
+            var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes).ToString("o");
+
+            return Ok(new AuthResponse
+            {
+                Token = token,
+                Expiration = expiration,
+                User = new UserDto
+                {
+                    Id = user.Id,
+                    Email = user.Email ?? string.Empty,
+                    UserName = user.UserName
+                }
+            });
+        }
+        catch (InvalidJwtException)
+        {
+            return Unauthorized(new { message = "Token Google không hợp lệ hoặc đã hết hạn" });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Google login error: {ex.Message}");
+            return StatusCode(500, new { message = "Lỗi khi đăng nhập bằng Google", error = ex.Message });
+        }
     }
 }
 

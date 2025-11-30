@@ -6,9 +6,11 @@ public class QuestionDto
     public string QuestionText { get; set; } = string.Empty;
     public string QuestionType { get; set; } = string.Empty;
     public string? AudioUrl { get; set; }
+    public string? ImageUrl { get; set; }
     public int Points { get; set; }
     public string? Explanation { get; set; }
     public List<QuestionOptionDto> Options { get; set; } = new();
+    public int? CorrectWordId { get; set; } // ID của từ vựng đúng (cho IMAGE_QUIZ)
 }
 
 public class QuestionOptionDto

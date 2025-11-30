@@ -126,9 +126,15 @@ public class LessonTopicsController : ControllerBase
                     Pinyin = w.Pinyin,
                     Meaning = w.Meaning,
                     AudioUrl = w.AudioUrl,
+                    ImageUrl = w.ImageUrl,
                     ExampleSentence = w.ExampleSentence,
                     HSKLevel = w.HSKLevel,
                     StrokeCount = w.StrokeCount,
+                    PartOfSpeech = w.PartOfSpeech,
+                    PartOfSpeechVi = w.PartOfSpeechVi,
+                    PartOfSpeechEn = w.PartOfSpeechEn,
+                    GrammarNote = w.GrammarNote,
+                    Structure = w.Structure,
                     Examples = wordExamplesDict.GetValueOrDefault(w.Id, new List<WordExampleDto>())
                 })
                 .ToListAsync();
@@ -148,9 +154,15 @@ public class LessonTopicsController : ControllerBase
                     Pinyin = word.Pinyin,
                     Meaning = word.Meaning,
                     AudioUrl = word.AudioUrl,
+                    ImageUrl = word.ImageUrl,
                     ExampleSentence = word.ExampleSentence,
                     HSKLevel = word.HSKLevel,
                     StrokeCount = word.StrokeCount,
+                    PartOfSpeech = word.PartOfSpeech,
+                    PartOfSpeechVi = word.PartOfSpeechVi,
+                    PartOfSpeechEn = word.PartOfSpeechEn,
+                    GrammarNote = word.GrammarNote,
+                    Structure = word.Structure,
                     Examples = word.Examples
                 };
 

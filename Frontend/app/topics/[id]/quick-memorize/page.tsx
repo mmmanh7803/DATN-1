@@ -1,23 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { vocabularyService } from "@/lib/services/vocabularyService";
-import { getCompletedActivities } from "@/lib/services/activityService";
+import { topicService } from "@/lib/services/topicService";
+import { useCompletedActivities } from "@/hooks/useCompletedActivities";
 import {
-  VocabularyTopicDetailDto,
-  ReviewStatsDto,
+  LessonTopicDto,
   WordWithProgressDto,
 } from "@/types";
 import VocabularyPopupCard from "@/components/vocabulary/VocabularyPopupCard";
 import ActivityProgressChart from "@/components/vocabulary/ActivityProgressChart";
 import { 
   getQuickMemorizeCompletion,
-  calculateQuickMemorizeProgress 
+  calculateQuickMemorizeProgress,
+  storeQuickMemorizeCompletion
 } from "@/lib/services/activityProgressService";
+import { completeActivity } from "@/lib/services/activityService";
 import LearningActivities, {
   ActivityItem,
   createDefaultActivities,
@@ -32,8 +33,7 @@ export default function QuickMemorizePage() {
   const router = useRouter();
   const topicId = parseInt(params.id as string);
 
-  const [topic, setTopic] = useState<VocabularyTopicDetailDto | null>(null);
-  const [stats, setStats] = useState<ReviewStatsDto | null>(null);
+  const [topic, setTopic] = useState<LessonTopicDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedWord, setSelectedWord] = useState<WordWithProgressDto | null>(null);
   const [popupPosition, setPopupPosition] = useState<{ x: number; y: number } | null>(null);
@@ -43,7 +43,6 @@ export default function QuickMemorizePage() {
     monologue: Array<{ chinese: string; pinyin: string; translation: string }>;
   } | null>(null);
   const [isDisplayOptionsOpen, setIsDisplayOptionsOpen] = useState(false);
-  const [completedActivityIds, setCompletedActivityIds] = useState<string[]>([]);
   const [displayOptions, setDisplayOptions] = useState<DisplayOptions>(() => {
     // Load from localStorage hoặc dùng default
     if (typeof window !== "undefined") {
@@ -64,6 +63,14 @@ export default function QuickMemorizePage() {
   });
   const [isGeneratingConversation, setIsGeneratingConversation] = useState(false);
   const [activityProgress, setActivityProgress] = useState<any>(null);
+  const [hasMarkedAsCompleted, setHasMarkedAsCompleted] = useState(false);
+  
+  // Sử dụng hook để quản lý completed activities (đồng bộ giữa các trang)
+  const {
+    completedActivityIds,
+    markActivityCompleted,
+    loadCompletedActivities,
+  } = useCompletedActivities({ topicId });
 
   useEffect(() => {
     if (topicId) {
@@ -71,36 +78,106 @@ export default function QuickMemorizePage() {
     }
   }, [topicId]);
 
+  // Tự động đánh dấu hoàn thành ngay khi user vào trang (chỉ cần lướt qua 1 lần)
+  useEffect(() => {
+    // Chỉ đánh dấu nếu:
+    // 1. Đã load xong topic data
+    // 2. Chưa đánh dấu trước đó
+    // 3. Activity chưa được đánh dấu completed
+    if (!topic || !topic.words || topic.words.length === 0 || 
+        hasMarkedAsCompleted || 
+        completedActivityIds.includes("quick-memorize")) {
+      return;
+    }
+
+    // Đánh dấu hoàn thành ngay khi data đã load
+    const markAsCompleted = async () => {
+      try {
+        // Lấy tất cả từ vựng thuộc chủ đề hiện tại
+        // topic.words đã được filter từ backend, chỉ chứa các từ thuộc chủ đề này
+        const wordsInTopic = topic.words || [];
+        
+        if (wordsInTopic.length === 0) {
+          return;
+        }
+        
+        // Lấy tất cả word IDs của các từ thuộc chủ đề
+        // Đảm bảo chỉ lấy các từ có trong topic.words (thuộc chủ đề hiện tại)
+        const wordIdsInTopic = wordsInTopic
+          .filter(w => w && w.id) // Filter null/undefined
+          .map(w => w.id)
+          .filter(id => typeof id === 'number' && id > 0); // Chỉ lấy valid IDs
+        
+        // XÓA dữ liệu cũ nếu có (tránh lỗi từ các chủ đề khác)
+        // Lưu lại chỉ các word IDs của chủ đề hiện tại
+        storeQuickMemorizeCompletion(topicId, wordIdsInTopic);
+        
+        // Cập nhật progress - chỉ tính các từ thuộc chủ đề
+        const completedWords = new Set(wordIdsInTopic);
+        const progress = calculateQuickMemorizeProgress(wordsInTopic, completedWords);
+        
+        // Đảm bảo total luôn bằng số từ trong chủ đề (không phải từ nguồn khác)
+        progress.total = wordsInTopic.length;
+        progress.completed = Math.min(progress.completed, wordsInTopic.length);
+        progress.notStarted = Math.max(0, wordsInTopic.length - progress.completed);
+        
+        setActivityProgress(progress);
+        
+        // Đánh dấu activity là completed (hook sẽ tự động cập nhật và đồng bộ)
+        await markActivityCompleted("quick-memorize");
+        setHasMarkedAsCompleted(true);
+      } catch (error) {
+        // Silent error handling
+      }
+    };
+
+    // Đánh dấu ngay khi component mount và data đã sẵn sàng
+    markAsCompleted();
+  }, [topic, topicId, hasMarkedAsCompleted, completedActivityIds]);
+
   const loadData = async () => {
     try {
       setLoading(true);
-      const [topicData, statsData] = await Promise.all([
-        vocabularyService.getTopicById(topicId),
-        vocabularyService.getTopicStats(topicId),
-      ]);
+      const topicData = await topicService.getTopicById(topicId);
       setTopic(topicData);
-      setStats(statsData);
       
-      // Load completed activities
-      try {
-        const completedActivities = await getCompletedActivities(undefined, undefined, topicId);
-        const completedIds = completedActivities.map(a => a.activityId);
-        setCompletedActivityIds(completedIds);
-        console.log("Loaded completed activities:", completedIds);
-      } catch (activityError) {
-        console.error("Error loading completed activities:", activityError);
-        // Không cần show error, chỉ log
-      }
+      // Completed activities được load tự động bởi hook useCompletedActivities
       
       // Tạo đoạn hội thoại từ các từ vựng
-      generateConversationText(topicData.words);
+      generateConversationText(topicData.words || []);
       
       // Load quick memorize progress
+      // Chỉ tính progress cho các từ thuộc chủ đề hiện tại
+      const wordsInTopic = (topicData.words || []).filter(w => w && w.id); // Filter valid words
+      const topicWordIds = new Set(wordsInTopic.map(w => w.id));
+      
+      
+      // Lấy completed words từ localStorage (đã được lưu theo topicId)
       const completedWords = getQuickMemorizeCompletion(topicId);
-      const progress = calculateQuickMemorizeProgress(topicData.words, completedWords);
+      
+      // Filter completedWords để CHỈ lấy các từ thuộc chủ đề này
+      // Đây là bước quan trọng để tránh lấy word IDs từ chủ đề khác
+      const completedWordsInTopic = new Set(
+        Array.from(completedWords).filter(id => topicWordIds.has(id))
+      );
+      
+      // Nếu có word IDs không hợp lệ trong localStorage, clean up
+      if (completedWords.size > completedWordsInTopic.size) {
+        // Lưu lại chỉ các word IDs hợp lệ
+        storeQuickMemorizeCompletion(topicId, Array.from(completedWordsInTopic));
+      }
+      
+      // Tính progress - đảm bảo total = số từ trong chủ đề
+      const progress = calculateQuickMemorizeProgress(wordsInTopic, completedWordsInTopic);
+      
+      // Đảm bảo total luôn bằng số từ trong chủ đề (KHÔNG phải từ nguồn khác)
+      // Force update để tránh lỗi hiển thị sai (ví dụ: hiển thị 150 thay vì 14)
+      progress.total = wordsInTopic.length;
+      progress.completed = Math.min(progress.completed, wordsInTopic.length);
+      progress.notStarted = Math.max(0, wordsInTopic.length - progress.completed);
+      
       setActivityProgress(progress);
     } catch (error: any) {
-      console.error("Lỗi khi tải dữ liệu:", error);
       if (error.response?.status === 404) {
         alert("Chủ đề từ vựng chưa được tạo.");
         router.push(`/topics/${topicId}`);
@@ -136,7 +213,6 @@ export default function QuickMemorizePage() {
       const text = conversation.monologue.map(m => m.chinese).join("");
       setConversationText(text);
     } catch (error: any) {
-      console.error("Lỗi khi generate conversation:", error);
       // Fallback về text mẫu nếu AI fail
       const selectedWords = words.slice(0, 15);
       const characters = selectedWords.map(w => w.character);
@@ -152,7 +228,7 @@ export default function QuickMemorizePage() {
   const highlightWords = (text: string) => {
     if (!topic || !text) return <span>{text}</span>;
 
-    const words = topic.words;
+    const words = topic.words || [];
     
     // Sắp xếp từ vựng theo độ dài (từ dài đến ngắn) để match từ dài trước
     const sortedWords = [...words].sort((a, b) => b.character.length - a.character.length);
@@ -298,24 +374,27 @@ export default function QuickMemorizePage() {
     setPopupPosition(null);
   };
 
-  // Tính toán thống kê
-  const getProgressStats = () => {
-    if (!topic || !stats) {
-      return { completed: 0, inProgress: 0, notStarted: 0, total: 0 };
-    }
+  // COPY từ trang vocabulary learning - Cách tính ĐÚNG
+  const vocabStats = topic
+    ? {
+        total: topic.words?.length || 0, // CHỈ dùng topic.words.length
+        mastered: topic.words?.filter((w: any) => w.progress?.status === "Mastered").length || 0,
+        learning: topic.words?.filter((w: any) => w.progress?.status === "Learning").length || 0,
+        new: topic.words?.filter((w: any) => !w.progress || w.progress.status === "New").length || 0,
+      }
+    : { total: 0, mastered: 0, learning: 0, new: 0 };
 
-    const total = topic.words.length;
-    const completed = topic.words.filter(w => w.progress?.status === "Mastered").length;
-    const inProgress = topic.words.filter(w => w.progress?.status === "Learning").length;
-    const notStarted = total - completed - inProgress;
-
-    return { completed, inProgress, notStarted, total };
+  // completedCount = mastered + learning (giống trang vocabulary learning)
+  const completedCount = vocabStats.mastered + vocabStats.learning;
+  
+  // Giữ lại progressStats cho UI khác (nếu cần)
+  const progressStats = {
+    completed: vocabStats.mastered,
+    inProgress: vocabStats.learning,
+    notStarted: vocabStats.new,
+    total: vocabStats.total
   };
 
-  const progressStats = getProgressStats();
-
-  // Tính completedCount như trong topics page (mastered + learning)
-  const completedCount = progressStats.completed + progressStats.inProgress;
 
   // Tính phần trăm cho biểu đồ tròn
   const completedPercent = progressStats.total > 0 
@@ -329,12 +408,19 @@ export default function QuickMemorizePage() {
     : 0;
 
   // Danh sách hoạt động học tập
-  const activities = createDefaultActivities({
-    quickMemorizeLink: `/topics/${topicId}/quick-memorize`,
-    imageQuizLink: undefined, // Chưa implement
-    activeId: "quick-memorize",
-    completedIds: completedActivityIds,
-  });
+  const activities = useMemo(() => {
+    if (!topic) return [];
+    return createDefaultActivities({
+      vocabularyLink: `/topics/${topicId}`,
+      quickMemorizeLink: `/topics/${topicId}/quick-memorize`,
+      imageQuizLink: `/topics/${topicId}/image-quiz`,
+      pronunciationLink: `/topics/${topicId}/pronunciation`,
+      progressLink: `/topics/${topicId}/progress`,
+      grammarLink: `/topics/${topicId}/grammar`,
+      activeId: "quick-memorize",
+      completedIds: completedActivityIds,
+    });
+  }, [topic, topicId, completedActivityIds]);
 
   // Vẽ biểu đồ tròn
   const renderPieChart = () => {
@@ -517,8 +603,17 @@ export default function QuickMemorizePage() {
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Thống kê tiến độ */}
-            {activityProgress && (
-              <ActivityProgressChart progress={activityProgress} showDetails={true} />
+            {activityProgress && topic && (
+              <ActivityProgressChart 
+                progress={{
+                  ...activityProgress,
+                  // Dùng vocabStats.total (đã copy từ vocabulary learning page)
+                  total: vocabStats.total,
+                  completed: Math.min(activityProgress.completed, vocabStats.total),
+                  notStarted: Math.max(0, vocabStats.total - activityProgress.completed),
+                }} 
+                showDetails={true} 
+              />
             )}
 
             {/* Đoạn hội thoại */}
@@ -564,16 +659,7 @@ export default function QuickMemorizePage() {
                 activities={activities}
                 title={topic?.title || "Hán Ngữ"}
                 completedCount={completedCount}
-                totalCount={progressStats.total}
-                showFirstWord={
-                  topic.words && topic.words.length > 0
-                    ? {
-                        character: topic.words[0].character,
-                        meaning: topic.words[0].meaning,
-                        isCompleted: topic.words[0].progress?.status === "Mastered",
-                      }
-                    : undefined
-                }
+                totalCount={vocabStats.total}
                 maxHeight="calc(100vh-200px)"
               />
             </div>

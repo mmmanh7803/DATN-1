@@ -1,0 +1,323 @@
+{
+  "exam_code": "H10901",
+  "hsk_level": 1,
+  "total_questions": 20,
+  "parts": {
+    "part1": {
+      "name": "第一部分",
+      "description": "一共5个题，每题听两遍",
+      "questions": [
+        {
+          "number": 1,
+          "part": 1,
+          "type": "listening_simple",
+          "script": "打电话"
+        },
+        {
+          "number": 2,
+          "part": 1,
+          "type": "listening_simple",
+          "script": "我和儿子"
+        },
+        {
+          "number": 3,
+          "part": 1,
+          "type": "listening_simple",
+          "script": "开车"
+        },
+        {
+          "number": 4,
+          "part": 1,
+          "type": "listening_simple",
+          "script": "吃米饭"
+        },
+        {
+          "number": 5,
+          "part": 1,
+          "type": "listening_simple",
+          "script": "下雨了"
+        }
+      ]
+    },
+    "part2": {
+      "name": "第二部分",
+      "description": "一共5个题，每题听两遍",
+      "questions": [
+        {
+          "number": 6,
+          "part": 2,
+          "type": "listening_sentence",
+          "script": "今天天气很冷。"
+        },
+        {
+          "number": 7,
+          "part": 2,
+          "type": "listening_sentence",
+          "script": "现在是十点十分。"
+        },
+        {
+          "number": 8,
+          "part": 2,
+          "type": "listening_sentence",
+          "script": "她前面有几个人。"
+        },
+        {
+          "number": 9,
+          "part": 2,
+          "type": "listening_sentence",
+          "script": "我今年12岁了。"
+        },
+        {
+          "number": 10,
+          "part": 2,
+          "type": "listening_sentence",
+          "script": "他下个月去中国。"
+        }
+      ]
+    },
+    "part3": {
+      "name": "第三部分",
+      "description": "一共5个题，每题听两遍",
+      "questions": [
+        {
+          "number": 11,
+          "part": 3,
+          "type": "listening_dialogue",
+          "script": "男：你看见我的小猫了吗？\n女：在那儿，在椅子上。",
+          "dialogue": {
+            "male": "你看见我的小猫了吗？",
+            "female": "在那儿，在椅子上。"
+          }
+        },
+        {
+          "number": 12,
+          "part": 3,
+          "type": "listening_dialogue",
+          "script": "女：我们中午去买，好吗？\n男：你看，我没钱了。",
+          "dialogue": {
+            "male": "你看，我没钱了。",
+            "female": "我们中午去买，好吗？"
+          }
+        },
+        {
+          "number": 13,
+          "part": 3,
+          "type": "listening_dialogue",
+          "script": "男：你住在哪儿？\n女：我和妈妈都住在一零二。",
+          "dialogue": {
+            "male": "你住在哪儿？",
+            "female": "我和妈妈都住在一零二。"
+          }
+        },
+        {
+          "number": 14,
+          "part": 3,
+          "type": "listening_dialogue",
+          "script": "女：这个汉字怎么读？\n男：对不起，我不会。",
+          "dialogue": {
+            "male": "对不起，我不会。",
+            "female": "这个汉字怎么读？"
+          }
+        },
+        {
+          "number": 15,
+          "part": 3,
+          "type": "listening_dialogue",
+          "script": "男：谢谢你们！\n女：不客气。再见。",
+          "dialogue": {
+            "male": "谢谢你们！",
+            "female": "不客气。再见。"
+          }
+        }
+      ]
+    },
+    "part4": {
+      "name": "第四部分",
+      "description": "一共5个题，每题听两遍",
+      "questions": [
+        {
+          "number": 16,
+          "part": 4,
+          "type": "listening_question",
+          "script": "我的电脑在他的桌子上。",
+          "question": "那是谁的电脑？"
+        },
+        {
+          "number": 17,
+          "part": 4,
+          "type": "listening_question",
+          "script": "今天星期四，我们明天去看电影。",
+          "question": "我们什么时候去看电影？"
+        },
+        {
+          "number": 18,
+          "part": 4,
+          "type": "listening_question",
+          "script": "他是老师，他有50个学生。",
+          "question": "他有多少个学生？\nH10901 - 11"
+        },
+        {
+          "number": 19,
+          "part": 4,
+          "type": "listening_question",
+          "script": "小姐，你好，你这儿有杯子吗？",
+          "question": "他想买什么？"
+        },
+        {
+          "number": 20,
+          "part": 4,
+          "type": "listening_question",
+          "script": "这是你的朋友吗？很漂亮。",
+          "question": "朋友怎么样？"
+        }
+      ]
+    }
+  },
+  "all_questions": [
+    {
+      "number": 1,
+      "part": 1,
+      "type": "listening_simple",
+      "script": "打电话"
+    },
+    {
+      "number": 2,
+      "part": 1,
+      "type": "listening_simple",
+      "script": "我和儿子"
+    },
+    {
+      "number": 3,
+      "part": 1,
+      "type": "listening_simple",
+      "script": "开车"
+    },
+    {
+      "number": 4,
+      "part": 1,
+      "type": "listening_simple",
+      "script": "吃米饭"
+    },
+    {
+      "number": 5,
+      "part": 1,
+      "type": "listening_simple",
+      "script": "下雨了"
+    },
+    {
+      "number": 6,
+      "part": 2,
+      "type": "listening_sentence",
+      "script": "今天天气很冷。"
+    },
+    {
+      "number": 7,
+      "part": 2,
+      "type": "listening_sentence",
+      "script": "现在是十点十分。"
+    },
+    {
+      "number": 8,
+      "part": 2,
+      "type": "listening_sentence",
+      "script": "她前面有几个人。"
+    },
+    {
+      "number": 9,
+      "part": 2,
+      "type": "listening_sentence",
+      "script": "我今年12岁了。"
+    },
+    {
+      "number": 10,
+      "part": 2,
+      "type": "listening_sentence",
+      "script": "他下个月去中国。"
+    },
+    {
+      "number": 11,
+      "part": 3,
+      "type": "listening_dialogue",
+      "script": "男：你看见我的小猫了吗？\n女：在那儿，在椅子上。",
+      "dialogue": {
+        "male": "你看见我的小猫了吗？",
+        "female": "在那儿，在椅子上。"
+      }
+    },
+    {
+      "number": 12,
+      "part": 3,
+      "type": "listening_dialogue",
+      "script": "女：我们中午去买，好吗？\n男：你看，我没钱了。",
+      "dialogue": {
+        "male": "你看，我没钱了。",
+        "female": "我们中午去买，好吗？"
+      }
+    },
+    {
+      "number": 13,
+      "part": 3,
+      "type": "listening_dialogue",
+      "script": "男：你住在哪儿？\n女：我和妈妈都住在一零二。",
+      "dialogue": {
+        "male": "你住在哪儿？",
+        "female": "我和妈妈都住在一零二。"
+      }
+    },
+    {
+      "number": 14,
+      "part": 3,
+      "type": "listening_dialogue",
+      "script": "女：这个汉字怎么读？\n男：对不起，我不会。",
+      "dialogue": {
+        "male": "对不起，我不会。",
+        "female": "这个汉字怎么读？"
+      }
+    },
+    {
+      "number": 15,
+      "part": 3,
+      "type": "listening_dialogue",
+      "script": "男：谢谢你们！\n女：不客气。再见。",
+      "dialogue": {
+        "male": "谢谢你们！",
+        "female": "不客气。再见。"
+      }
+    },
+    {
+      "number": 16,
+      "part": 4,
+      "type": "listening_question",
+      "script": "我的电脑在他的桌子上。",
+      "question": "那是谁的电脑？"
+    },
+    {
+      "number": 17,
+      "part": 4,
+      "type": "listening_question",
+      "script": "今天星期四，我们明天去看电影。",
+      "question": "我们什么时候去看电影？"
+    },
+    {
+      "number": 18,
+      "part": 4,
+      "type": "listening_question",
+      "script": "他是老师，他有50个学生。",
+      "question": "他有多少个学生？\nH10901 - 11"
+    },
+    {
+      "number": 19,
+      "part": 4,
+      "type": "listening_question",
+      "script": "小姐，你好，你这儿有杯子吗？",
+      "question": "他想买什么？"
+    },
+    {
+      "number": 20,
+      "part": 4,
+      "type": "listening_question",
+      "script": "这是你的朋友吗？很漂亮。",
+      "question": "朋友怎么样？"
+    }
+  ]
+}

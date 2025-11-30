@@ -9,6 +9,7 @@ import {
   UserWordProgress,
   WordWithProgressDto,
   PartProgressDto,
+  QuestionDto,
 } from "../../types";
 
 export const vocabularyService = {
@@ -177,6 +178,16 @@ export const vocabularyService = {
         WordId: wordId,
         Rating: "Mastered",
       }
+    );
+    return response.data;
+  },
+
+  /**
+   * Lấy danh sách câu hỏi kiểm tra từ vựng bằng hình ảnh
+   */
+  async getImageQuizQuestions(topicId: number, count?: number): Promise<QuestionDto[]> {
+    const response = await apiClient.get<QuestionDto[]>(
+      API_ENDPOINTS.VOCABULARY_TOPICS.IMAGE_QUIZ(topicId, count)
     );
     return response.data;
   },

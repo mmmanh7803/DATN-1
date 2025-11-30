@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
@@ -14,6 +14,10 @@ import {
   calculatePronunciationProgress 
 } from "@/lib/services/activityProgressService";
 import { LessonTopicDto, WordDto } from "@/types";
+import { useCompletedActivities } from "@/hooks/useCompletedActivities";
+import LearningActivities, {
+  createDefaultActivities,
+} from "@/components/vocabulary/LearningActivities";
 
 export default function PronunciationPracticePage() {
   const params = useParams();
@@ -27,6 +31,39 @@ export default function PronunciationPracticePage() {
   const [loading, setLoading] = useState(true);
   const [isComplete, setIsComplete] = useState(false);
   const [activityProgress, setActivityProgress] = useState<any>(null);
+  
+  // Sử dụng hook để quản lý completed activities (đồng bộ giữa các trang)
+  const {
+    completedActivityIds,
+  } = useCompletedActivities({ topicId });
+  
+  // Tính stats giống các trang khác
+  const vocabStats = topic
+    ? {
+        total: topic.words?.length || 0,
+        mastered: topic.words?.filter((w: any) => w.progress?.status === "Mastered").length || 0,
+        learning: topic.words?.filter((w: any) => w.progress?.status === "Learning").length || 0,
+        new: topic.words?.filter((w: any) => !w.progress || w.progress.status === "New").length || 0,
+      }
+    : { total: 0, mastered: 0, learning: 0, new: 0 };
+
+  const completedCount = vocabStats.mastered + vocabStats.learning;
+
+  const activities = useMemo(() => {
+    if (!topic) return [];
+    return createDefaultActivities({
+      vocabularyLink: `/topics/${topicId}`,
+      quickMemorizeLink: topic.hskLevel
+        ? `/topics/${topicId}/quick-memorize`
+        : undefined,
+      imageQuizLink: `/topics/${topicId}/image-quiz`,
+      pronunciationLink: `/topics/${topicId}/pronunciation`,
+      grammarLink: `/topics/${topicId}/grammar`,
+      progressLink: `/topics/${topicId}/progress`,
+      activeId: "pronunciation",
+      completedIds: completedActivityIds,
+    });
+  }, [topic, topicId, completedActivityIds]);
 
   useEffect(() => {
     if (topicId) {
@@ -153,30 +190,31 @@ export default function PronunciationPracticePage() {
 
       <main className="flex-grow py-8">
         <div className="container mx-auto px-4">
-          {/* Header */}
-          <div className="mb-8">
-            <Link
-              href={`/topics/${topicId}`}
-              className="inline-flex items-center text-primary hover:text-primary-dark mb-4 transition"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Quay lại chủ đề
-            </Link>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-              Luyện phát âm: {topic.title}
-            </h1>
-            <p className="text-gray-600">
-              Luyện phát âm các từ vựng trong chủ đề này
-            </p>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Header */}
+              <div>
+                <Link
+                  href={`/topics/${topicId}`}
+                  className="inline-flex items-center text-primary hover:text-primary-dark mb-4 transition"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Quay lại chủ đề
+                </Link>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                  Luyện phát âm: {topic.title}
+                </h1>
+                <p className="text-gray-600">
+                  Luyện phát âm các từ vựng trong chủ đề này
+                </p>
+              </div>
 
-          {/* Progress Stats and Bar */}
-          {!isComplete && (
-            <div className="mb-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Progress Bar */}
-              <div className="lg:col-span-2 bg-white rounded-lg shadow-sm p-6">
+              {/* Progress Stats and Bar */}
+              {!isComplete && (
+                <div className="bg-white rounded-lg shadow-sm p-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">
                     Tiến độ session hiện tại
@@ -212,18 +250,15 @@ export default function PronunciationPracticePage() {
                   </div>
                 </div>
               </div>
+              )}
 
               {/* Activity Progress Chart */}
               {activityProgress && (
-                <div className="lg:col-span-1">
-                  <ActivityProgressChart progress={activityProgress} showDetails={true} />
-                </div>
+                <ActivityProgressChart progress={activityProgress} showDetails={true} />
               )}
-            </div>
-          )}
 
-          {/* Main Content */}
-          {!isComplete ? (
+              {/* Main Content */}
+              {!isComplete ? (
             <PronunciationRecorder
               word={words[currentWordIndex]}
               onComplete={handleComplete}
@@ -337,6 +372,21 @@ export default function PronunciationPracticePage() {
               </div>
             </div>
           )}
+            </div>
+
+            {/* Sidebar - Activities */}
+            <aside className="lg:col-span-1">
+              <div className="sticky top-4">
+                <LearningActivities
+                  activities={activities}
+                  title={topic?.title || "Hán Ngữ"}
+                  completedCount={completedCount}
+                  totalCount={vocabStats.total}
+                  maxHeight="calc(100vh-200px)"
+                />
+              </div>
+            </aside>
+          </div>
         </div>
       </main>
 

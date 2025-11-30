@@ -246,6 +246,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .IsRequired()
                 .HasMaxLength(500);
             entity.Property(e => e.ExampleSentence).HasMaxLength(500);
+            entity.Property(e => e.PartOfSpeech).HasMaxLength(50);
+            entity.Property(e => e.PartOfSpeechVi).HasMaxLength(50);
+            entity.Property(e => e.PartOfSpeechEn).HasMaxLength(50);
+            entity.Property(e => e.GrammarNote).HasMaxLength(1000);
+            entity.Property(e => e.Structure).HasMaxLength(500);
             entity.Property(e => e.CreatedAt)
                 .IsRequired()
                 .HasDefaultValueSql("GETDATE()");
@@ -258,6 +263,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             entity.HasIndex(e => e.HSKLevel);
             entity.HasIndex(e => e.Character);
             entity.HasIndex(e => e.TopicId);
+            entity.HasIndex(e => e.PartOfSpeech);
         });
 
         // ============ WORD EXAMPLE ============

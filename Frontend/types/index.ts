@@ -164,9 +164,15 @@ export interface WordDto {
   pinyin: string;
   meaning: string;
   audioUrl?: string;
+  imageUrl?: string;
   exampleSentence?: string;
   hskLevel?: number;
   strokeCount?: number;
+  partOfSpeech?: string;
+  partOfSpeechVi?: string;
+  partOfSpeechEn?: string;
+  grammarNote?: string;
+  structure?: string;
   examples?: WordExampleDto[];
 }
 
@@ -185,9 +191,11 @@ export interface QuestionDto {
   questionText: string;
   questionType: string;
   audioUrl?: string;
+  imageUrl?: string;
   points: number;
   explanation?: string;
   options: QuestionOptionDto[];
+  correctWordId?: number;
 }
 
 export interface QuestionOption {
@@ -335,7 +343,7 @@ export interface LessonTopicDto {
   totalExercises: number;
   totalWords: number;
   progressPercentage: number;
-  words?: WordDto[];
+  words?: WordWithProgressDto[];
 }
 
 export interface LessonTopicListDto {

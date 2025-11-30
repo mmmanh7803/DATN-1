@@ -31,41 +31,74 @@ public class VocabularyRepository : IVocabularyRepository
 
     public async Task<VocabularyTopic?> GetTopicWithWordsAsync(int topicId)
     {
-        // Load Words mà không load navigation property Topic để tránh lỗi nếu cột TopicId chưa tồn tại
+        // Load topic without navigation properties first
         var topic = await _context.VocabularyTopics
-            .Include(t => t.WordVocabularyTopics)
+            .AsNoTracking()
             .FirstOrDefaultAsync(t => t.Id == topicId);
         
-        if (topic != null)
+        if (topic == null)
+            return null;
+        
+        // Query WordVocabularyTopics TRỰC TIẾP với filter theo topicId
+        // ĐÂY LÀ CÁCH ĐÚNG để chỉ lấy words thuộc topic hiện tại
+        var wordVocabularyTopics = await _context.WordVocabularyTopics
+            .Where(wvt => wvt.VocabularyTopicId == topicId)
+            .AsNoTracking()
+            .ToListAsync();
+        
+        Console.WriteLine($"🔍 [VocabularyRepository] Topic ID {topicId}: {topic.Name}");
+        Console.WriteLine($"  - WordVocabularyTopics từ DB (đã filter): {wordVocabularyTopics.Count}");
+        
+        if (wordVocabularyTopics.Count == 0)
         {
-            // Load Words riêng để tránh load navigation property Topic
-            var wordIds = topic.WordVocabularyTopics.Select(wvt => wvt.WordId).ToList();
-            var words = await _context.Words
-                .Where(w => wordIds.Contains(w.Id))
-                .AsNoTracking()
-                .Select(w => new Word
-                {
-                    Id = w.Id,
-                    Character = w.Character,
-                    Pinyin = w.Pinyin,
-                    Meaning = w.Meaning,
-                    AudioUrl = w.AudioUrl,
-                    ExampleSentence = w.ExampleSentence,
-                    HSKLevel = w.HSKLevel,
-                    StrokeCount = w.StrokeCount,
-                    Frequency = w.Frequency,
-                    CreatedAt = w.CreatedAt,
-                    // Không select TopicId để tránh load navigation property
-                    TopicId = null
-                })
-                .OrderBy(w => w.Id) // Sắp xếp theo ID
-                .ToListAsync();
-            
-            // Gán Words vào WordVocabularyTopics
-            foreach (var wvt in topic.WordVocabularyTopics)
+            Console.WriteLine($"  ⚠️ Không tìm thấy WordVocabularyTopics nào cho topic {topicId}");
+            topic.WordVocabularyTopics = new List<WordVocabularyTopic>();
+            return topic;
+        }
+        
+        // Lấy wordIds từ junction table
+        var wordIds = wordVocabularyTopics.Select(wvt => wvt.WordId).Distinct().ToList();
+        Console.WriteLine($"  - Word IDs: {string.Join(", ", wordIds.Take(10))}{(wordIds.Count > 10 ? "..." : "")}");
+        
+        // Load Words từ DB
+        var words = await _context.Words
+            .Where(w => wordIds.Contains(w.Id))
+            .AsNoTracking()
+            .Select(w => new Word
             {
-                wvt.Word = words.FirstOrDefault(w => w.Id == wvt.WordId);
-            }
+                Id = w.Id,
+                Character = w.Character,
+                Pinyin = w.Pinyin,
+                Meaning = w.Meaning,
+                AudioUrl = w.AudioUrl,
+                ImageUrl = w.ImageUrl,
+                ExampleSentence = w.ExampleSentence,
+                HSKLevel = w.HSKLevel,
+                StrokeCount = w.StrokeCount,
+                Frequency = w.Frequency,
+                CreatedAt = w.CreatedAt,
+                TopicId = null // Không load navigation property
+            })
+            .OrderBy(w => w.Id)
+            .ToListAsync();
+        
+        Console.WriteLine($"  - Words loaded từ DB: {words.Count}");
+        
+        // Gán Words vào WordVocabularyTopics
+        foreach (var wvt in wordVocabularyTopics)
+        {
+            wvt.Word = words.FirstOrDefault(w => w.Id == wvt.WordId);
+        }
+        
+        // Assign the filtered list to topic
+        topic.WordVocabularyTopics = wordVocabularyTopics;
+        
+        var assignedCount = wordVocabularyTopics.Count(wvt => wvt.Word != null);
+        Console.WriteLine($"  - Words assigned thành công: {assignedCount}/{wordVocabularyTopics.Count}");
+        
+        if (assignedCount != wordVocabularyTopics.Count)
+        {
+            Console.WriteLine($"  ⚠️ CÓ {wordVocabularyTopics.Count - assignedCount} word(s) không tìm thấy trong DB!");
         }
         
         return topic;
@@ -89,6 +122,7 @@ public class VocabularyRepository : IVocabularyRepository
                 Pinyin = w.Pinyin,
                 Meaning = w.Meaning,
                 AudioUrl = w.AudioUrl,
+                ImageUrl = w.ImageUrl,
                 ExampleSentence = w.ExampleSentence,
                 HSKLevel = w.HSKLevel,
                 StrokeCount = w.StrokeCount,
@@ -124,6 +158,7 @@ public class VocabularyRepository : IVocabularyRepository
                     Pinyin = w.Pinyin,
                     Meaning = w.Meaning,
                     AudioUrl = w.AudioUrl,
+                    ImageUrl = w.ImageUrl,
                     ExampleSentence = w.ExampleSentence,
                     HSKLevel = w.HSKLevel,
                     StrokeCount = w.StrokeCount,
@@ -200,6 +235,7 @@ public class VocabularyRepository : IVocabularyRepository
                     Pinyin = w.Pinyin,
                     Meaning = w.Meaning,
                     AudioUrl = w.AudioUrl,
+                    ImageUrl = w.ImageUrl,
                     ExampleSentence = w.ExampleSentence,
                     HSKLevel = w.HSKLevel,
                     StrokeCount = w.StrokeCount,
@@ -221,6 +257,7 @@ public class VocabularyRepository : IVocabularyRepository
                         Pinyin = w.Pinyin,
                         Meaning = w.Meaning,
                         AudioUrl = w.AudioUrl,
+                        ImageUrl = w.ImageUrl,
                         ExampleSentence = w.ExampleSentence,
                         HSKLevel = w.HSKLevel,
                         StrokeCount = w.StrokeCount,
@@ -271,6 +308,7 @@ public class VocabularyRepository : IVocabularyRepository
                     Pinyin = w.Pinyin,
                     Meaning = w.Meaning,
                     AudioUrl = w.AudioUrl,
+                    ImageUrl = w.ImageUrl,
                     ExampleSentence = w.ExampleSentence,
                     HSKLevel = w.HSKLevel,
                     Frequency = w.Frequency,
