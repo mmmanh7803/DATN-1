@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { adminService, AdminLessonDto, AdminCourseDto, CreateLessonDto } from "@/lib/services/adminService";
+import { useToast } from "@/contexts/ToastContext";
 
 interface LessonEditorProps {
   lessonId?: number;
@@ -14,6 +15,7 @@ interface LessonEditorProps {
 export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClose, onSave }: LessonEditorProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const toast = useToast();
   const [courses, setCourses] = useState<AdminCourseDto[]>([]);
   const [formData, setFormData] = useState<CreateLessonDto>({
     courseId: defaultCourseId || 0,
@@ -74,7 +76,7 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
       });
     } catch (error: any) {
       console.error("Error loading lesson:", error);
-      alert("Không thể tải thông tin bài học");
+      toast.error("Không thể tải thông tin bài học");
     } finally {
       setLoading(false);
     }
@@ -84,12 +86,12 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
     e.preventDefault();
 
     if (!formData.title) {
-      alert("Vui lòng điền tên bài học");
+      toast.warning("Vui lòng điền tên bài học");
       return;
     }
 
     if (!formData.courseId) {
-      alert("Vui lòng chọn khóa học");
+      toast.warning("Vui lòng chọn khóa học");
       return;
     }
 
@@ -104,7 +106,7 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
       onClose();
     } catch (error: any) {
       console.error("Error saving lesson:", error);
-      alert("Lỗi khi lưu bài học: " + (error.message || "Unknown error"));
+      toast.error("Lỗi khi lưu bài học: " + (error.message || "Unknown error"));
     } finally {
       setSaving(false);
     }
@@ -114,7 +116,7 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar m-4">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">
             {lessonId ? "Sửa bài học" : "Thêm bài học mới"}

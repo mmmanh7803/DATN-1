@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { topicService } from "@/lib/services/topicService";
 import { exerciseService } from "@/lib/services/exerciseService";
+import { useToast } from "@/contexts/ToastContext";
 import { useCompletedActivities } from "@/hooks/useCompletedActivities";
 import { LessonTopicDto, LessonExerciseListDto } from "@/types";
 import VocabularyWordItem from "@/components/vocabulary/VocabularyWordItem";
@@ -20,6 +21,7 @@ export default function TopicDetailPage() {
   const params = useParams();
   const router = useRouter();
   const topicId = parseInt(params.id as string);
+  const toast = useToast();
 
   const [topic, setTopic] = useState<LessonTopicDto | null>(null);
   const [exercises, setExercises] = useState<LessonExerciseListDto[]>([]);
@@ -75,6 +77,9 @@ export default function TopicDetailPage() {
       pronunciationLink: `/topics/${topicId}/pronunciation`,
       grammarLink: `/topics/${topicId}/grammar`,
       progressLink: `/topics/${topicId}/progress`,
+      flashcardLink: `/topics/${topicId}/flashcard`,
+      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
+      fillBlankLink: `/topics/${topicId}/fill-blank`,
       activeId: "vocabulary",
       completedIds: completedActivityIds,
     });
@@ -173,13 +178,13 @@ export default function TopicDetailPage() {
         url: error?.config?.url
       });
       if (error.response?.status === 403) {
-        alert("Bạn chưa hoàn thành chủ đề trước đó. Vui lòng hoàn thành chủ đề trước để mở khóa chủ đề này.");
+        toast.warning("Bạn chưa hoàn thành chủ đề trước đó. Vui lòng hoàn thành chủ đề trước để mở khóa chủ đề này.");
         router.push("/courses");
       } else if (error.response?.status === 404) {
-        alert("Chủ đề không tồn tại hoặc đã bị xóa.");
+        toast.error("Chủ đề không tồn tại hoặc đã bị xóa.");
         router.push("/courses");
       } else {
-        alert(`Lỗi khi tải dữ liệu: ${error.response?.data?.message || error.message}`);
+        toast.error(`Lỗi khi tải dữ liệu: ${error.response?.data?.message || error.message}`);
       }
     } finally {
       setLoading(false);

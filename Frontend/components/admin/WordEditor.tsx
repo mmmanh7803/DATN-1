@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { adminService, AdminWordDto, CreateWordDto, UpdateWordDto } from "@/lib/services/adminService";
+import { useToast } from "@/contexts/ToastContext";
 
 interface WordEditorProps {
   wordId?: number;
@@ -13,6 +14,7 @@ interface WordEditorProps {
 export default function WordEditor({ wordId, isOpen, onClose, onSave }: WordEditorProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const toast = useToast();
   const [formData, setFormData] = useState<CreateWordDto>({
     character: "",
     pinyin: "",
@@ -57,7 +59,7 @@ export default function WordEditor({ wordId, isOpen, onClose, onSave }: WordEdit
       });
     } catch (error: any) {
       console.error("Error loading word:", error);
-      alert("Không thể tải thông tin từ vựng");
+      toast.error("Không thể tải thông tin từ vựng");
     } finally {
       setLoading(false);
     }
@@ -67,7 +69,7 @@ export default function WordEditor({ wordId, isOpen, onClose, onSave }: WordEdit
     e.preventDefault();
 
     if (!formData.character || !formData.pinyin || !formData.meaning) {
-      alert("Vui lòng điền đầy đủ thông tin bắt buộc");
+      toast.warning("Vui lòng điền đầy đủ thông tin bắt buộc");
       return;
     }
 
@@ -82,7 +84,7 @@ export default function WordEditor({ wordId, isOpen, onClose, onSave }: WordEdit
       onClose();
     } catch (error: any) {
       console.error("Error saving word:", error);
-      alert("Lỗi khi lưu từ vựng: " + (error.message || "Unknown error"));
+      toast.error("Lỗi khi lưu từ vựng: " + (error.message || "Unknown error"));
     } finally {
       setSaving(false);
     }
@@ -92,7 +94,7 @@ export default function WordEditor({ wordId, isOpen, onClose, onSave }: WordEdit
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar m-4">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">
             {wordId ? "Sửa từ vựng" : "Thêm từ vựng mới"}

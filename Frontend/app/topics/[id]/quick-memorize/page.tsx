@@ -19,6 +19,7 @@ import {
   storeQuickMemorizeCompletion
 } from "@/lib/services/activityProgressService";
 import { completeActivity } from "@/lib/services/activityService";
+import { useToast } from "@/contexts/ToastContext";
 import LearningActivities, {
   ActivityItem,
   createDefaultActivities,
@@ -32,6 +33,7 @@ export default function QuickMemorizePage() {
   const params = useParams();
   const router = useRouter();
   const topicId = parseInt(params.id as string);
+  const toast = useToast();
 
   const [topic, setTopic] = useState<LessonTopicDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -179,7 +181,7 @@ export default function QuickMemorizePage() {
       setActivityProgress(progress);
     } catch (error: any) {
       if (error.response?.status === 404) {
-        alert("Chủ đề từ vựng chưa được tạo.");
+      toast.error("Chủ đề từ vựng chưa được tạo.");
         router.push(`/topics/${topicId}`);
       }
     } finally {
@@ -417,6 +419,9 @@ export default function QuickMemorizePage() {
       pronunciationLink: `/topics/${topicId}/pronunciation`,
       progressLink: `/topics/${topicId}/progress`,
       grammarLink: `/topics/${topicId}/grammar`,
+      flashcardLink: `/topics/${topicId}/flashcard`,
+      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
+      fillBlankLink: `/topics/${topicId}/fill-blank`,
       activeId: "quick-memorize",
       completedIds: completedActivityIds,
     });

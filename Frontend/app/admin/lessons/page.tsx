@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import LessonEditor from "@/components/admin/LessonEditor";
 import { adminService, AdminLessonDto, AdminCourseDto } from "@/lib/services/adminService";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function AdminLessonsPage() {
+  const toast = useToast();
   const [lessons, setLessons] = useState<AdminLessonDto[]>([]);
   const [courses, setCourses] = useState<AdminCourseDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,9 +55,10 @@ export default function AdminLessonsPage() {
 
     try {
       await adminService.deleteLesson(id);
+      toast.success("Đã xóa bài học");
       setLessons(lessons.filter((l) => l.id !== id));
     } catch (err: any) {
-      alert("Lỗi khi xóa bài học: " + (err.message || "Unknown error"));
+      toast.error("Lỗi khi xóa bài học: " + (err.message || "Unknown error"));
     }
   };
 

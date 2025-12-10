@@ -102,6 +102,11 @@ export const API_ENDPOINTS = {
       if (count !== undefined) params.append("count", count.toString());
       return `/api/vocabularytopics/${topicId}/image-quiz?${params.toString()}`;
     },
+    FILL_BLANK: (topicId: number, count?: number) => {
+      const params = new URLSearchParams();
+      if (count !== undefined) params.append("count", count.toString());
+      return `/api/vocabularytopics/${topicId}/fill-blank?${params.toString()}`;
+    },
   },
 
   // AI

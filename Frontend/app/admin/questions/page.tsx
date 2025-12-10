@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import apiClient from '@/lib/api';
+import { useToast } from '@/contexts/ToastContext';
 
 interface Question {
   id: number;
@@ -66,6 +67,7 @@ const EXERCISE_TYPES = [
 ];
 
 export default function AdminQuestionsPage() {
+  const toast = useToast();
   const [category, setCategory] = useState<QuestionCategory>('exam');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -135,14 +137,14 @@ export default function AdminQuestionsPage() {
 
   const handleCreateQuestion = async () => {
     if (!formData.questionText && !formData.audioUrl && !formData.imageUrl) {
-      alert('Vui lòng nhập nội dung câu hỏi hoặc thêm audio/hình ảnh');
+      toast.warning('Vui lòng nhập nội dung câu hỏi hoặc thêm audio/hình ảnh');
       return;
     }
 
     // Validate có đáp án đúng
     const hasCorrectOption = formData.options.some(opt => opt.isCorrect);
     if (!hasCorrectOption) {
-      alert('Vui lòng chọn ít nhất một đáp án đúng');
+      toast.warning('Vui lòng chọn ít nhất một đáp án đúng');
       return;
     }
 
@@ -158,13 +160,13 @@ export default function AdminQuestionsPage() {
       };
 
       await apiClient.post('/api/admin/questions', payload);
-      alert('Tạo câu hỏi thành công!');
+      toast.success('Tạo câu hỏi thành công!');
       setShowCreateModal(false);
       resetForm();
       loadQuestions();
     } catch (error) {
       console.error('Lỗi khi tạo câu hỏi:', error);
-      alert('Không thể tạo câu hỏi');
+      toast.error('Không thể tạo câu hỏi');
     } finally {
       setCreating(false);
     }
@@ -175,10 +177,11 @@ export default function AdminQuestionsPage() {
 
     try {
       await apiClient.delete(`/api/admin/questions/${id}`);
+      toast.success('Đã xóa câu hỏi');
       loadQuestions();
     } catch (error) {
       console.error('Lỗi khi xóa câu hỏi:', error);
-      alert('Không thể xóa câu hỏi');
+      toast.error('Không thể xóa câu hỏi');
     }
   };
 
@@ -434,7 +437,7 @@ export default function AdminQuestionsPage() {
         {/* Create Question Modal */}
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-6 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl p-6 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold">
                   Tạo câu hỏi {category === 'exam' ? 'Đề thi' : 'Hoạt động'}

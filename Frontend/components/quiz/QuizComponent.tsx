@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { QuestionDto, AnswerSubmissionDto, QuizResultDto } from "@/types";
 import { getProxyAudioUrl } from "@/lib/audio";
+import { useToast } from "@/contexts/ToastContext";
 
 interface QuizComponentProps {
   questions: QuestionDto[];
@@ -15,6 +16,7 @@ export default function QuizComponent({ questions, onSubmit, onComplete }: QuizC
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<QuizResultDto | null>(null);
+  const toast = useToast();
 
   const currentQuestion = questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === questions.length - 1;
@@ -57,7 +59,7 @@ export default function QuizComponent({ questions, onSubmit, onComplete }: QuizC
       onComplete(quizResult);
     } catch (error) {
       console.error("Error submitting quiz:", error);
-      alert("Có lỗi xảy ra khi nộp bài. Vui lòng thử lại.");
+      toast.error("Có lỗi xảy ra khi nộp bài. Vui lòng thử lại.");
     } finally {
       setIsSubmitting(false);
     }

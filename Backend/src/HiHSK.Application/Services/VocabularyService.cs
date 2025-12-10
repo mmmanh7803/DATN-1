@@ -923,5 +923,106 @@ public class VocabularyService : IVocabularyService
         
         return questions;
     }
+
+    public async Task<List<QuestionDto>> GenerateFillBlankQuestionsAsync(int topicId, int? count = null)
+    {
+        // Lấy danh sách từ vựng trong topic
+        var words = await _vocabularyRepository.GetWordsByTopicIdAsync(topicId);
+        
+        if (words == null || words.Count < 4)
+        {
+            return new List<QuestionDto>();
+        }
+
+        // Xáo trộn danh sách từ vựng
+        var shuffledWords = words.OrderBy(x => Guid.NewGuid()).ToList();
+        
+        // Số lượng câu hỏi (mặc định là số từ vựng, tối đa 10)
+        var questionCount = count ?? Math.Min(words.Count, 10);
+        questionCount = Math.Min(questionCount, shuffledWords.Count);
+        
+        var questions = new List<QuestionDto>();
+        
+        for (int i = 0; i < questionCount; i++)
+        {
+            var correctWord = shuffledWords[i];
+            
+            // Tạo câu có chỗ trống từ exampleSentence hoặc tạo câu mẫu
+            string sentenceWithBlank;
+            if (!string.IsNullOrWhiteSpace(correctWord.ExampleSentence))
+            {
+                // Thay thế từ đúng bằng chỗ trống
+                sentenceWithBlank = correctWord.ExampleSentence.Replace(
+                    correctWord.Character, 
+                    "_____"
+                );
+            }
+            else
+            {
+                // Tạo câu mẫu đơn giản
+                sentenceWithBlank = $"这是_____。";
+            }
+            
+            // Lấy 3 từ nhiễu ngẫu nhiên (khác với từ đúng)
+            var wrongWords = words
+                .Where(w => w.Id != correctWord.Id)
+                .OrderBy(x => Guid.NewGuid())
+                .Take(3)
+                .ToList();
+            
+            // Tạo 4 lựa chọn: 1 đúng + 3 nhiễu
+            var options = new List<QuestionOptionDto>();
+            
+            // Thêm đáp án đúng
+            options.Add(new QuestionOptionDto
+            {
+                Id = 1,
+                OptionText = correctWord.Character,
+                OptionLabel = "A",
+                IsCorrect = true
+            });
+            
+            // Thêm 3 đáp án nhiễu
+            var labels = new[] { "B", "C", "D" };
+            for (int j = 0; j < wrongWords.Count && j < 3; j++)
+            {
+                options.Add(new QuestionOptionDto
+                {
+                    Id = j + 2,
+                    OptionText = wrongWords[j].Character,
+                    OptionLabel = labels[j],
+                    IsCorrect = false
+                });
+            }
+            
+            // Xáo trộn thứ tự các đáp án
+            options = options.OrderBy(x => Guid.NewGuid()).ToList();
+            
+            // Cập nhật lại label sau khi xáo trộn
+            var newLabels = new[] { "A", "B", "C", "D" };
+            for (int j = 0; j < options.Count; j++)
+            {
+                options[j].OptionLabel = newLabels[j];
+            }
+            
+            // Tạo câu hỏi
+            var question = new QuestionDto
+            {
+                Id = i + 1, // Temporary ID
+                QuestionText = $"Điền từ vào chỗ trống:",
+                QuestionType = "FILL_BLANK",
+                Points = 1,
+                Explanation = $"Đáp án đúng: {correctWord.Character} ({correctWord.Pinyin}) - {correctWord.Meaning}",
+                Options = options,
+                CorrectWordId = correctWord.Id,
+                BlankSentence = sentenceWithBlank,
+                AudioUrl = correctWord.AudioUrl // Cho tab "Nghe và điền từ"
+            };
+            
+            questions.Add(question);
+        }
+        
+        return questions;
+    }
 }
 

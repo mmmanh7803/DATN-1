@@ -161,7 +161,7 @@ export default function AdminQuizPage() {
               <p className="text-gray-600">Đang tải từ vựng...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto custom-scrollbar">
               {words.map((word) => (
                 <div
                   key={word.id}

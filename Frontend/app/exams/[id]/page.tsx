@@ -997,7 +997,7 @@ export default function ExamPage() {
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
             {/* Listening Section */}
             <div>
               <div className="flex items-center gap-2 mb-3">
@@ -1107,7 +1107,7 @@ export default function ExamPage() {
         )}
 
         {/* Question Content */}
-        <main className="flex-1 p-4 lg:p-8 overflow-y-auto scrollbar-thin">
+        <main className="flex-1 p-4 lg:p-8 overflow-y-auto custom-scrollbar">
           <div className="max-w-4xl mx-auto">
             {viewMode === 'single' ? (
               /* Single Question View */
@@ -1157,7 +1157,7 @@ export default function ExamPage() {
                   {/* Question Content - Scrollable for Reading */}
                   <div className={`p-6 ${
                     currentQuestion.skillType === 'READING' 
-                      ? 'max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100' 
+                      ? 'max-h-[60vh] overflow-y-auto custom-scrollbar' 
                       : ''
                   }`}>
                     {renderQuestion()}

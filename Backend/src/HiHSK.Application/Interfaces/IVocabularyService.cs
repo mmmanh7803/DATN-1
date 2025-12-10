@@ -20,5 +20,6 @@ public interface IVocabularyService
     Task<PartProgressDto> GetPartProgressAsync(int hskLevel, int partNumber, string userId);
     Task<WordWithProgressDto?> GetWordByIdAsync(int wordId, string? userId = null);
     Task<List<QuestionDto>> GenerateImageQuizQuestionsAsync(int topicId, int? count = null);
+    Task<List<QuestionDto>> GenerateFillBlankQuestionsAsync(int topicId, int? count = null);
 }
 

@@ -172,7 +172,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
 
           {/* Menu */}
-          <nav className="flex-1 overflow-y-auto px-4 py-4">
+          <nav className="flex-1 overflow-y-auto px-4 py-4 custom-scrollbar">
             <ul className="space-y-1">
               {menuItems.map((item) => {
                 const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href));

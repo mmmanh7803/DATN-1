@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 import PronunciationRecorder from "@/components/pronunciation/PronunciationRecorder";
 import ActivityProgressChart from "@/components/vocabulary/ActivityProgressChart";
 import { topicService } from "@/lib/services/topicService";
+import { useToast } from "@/contexts/ToastContext";
 import { 
   storePronunciationScore, 
   getPronunciationScores,
@@ -23,6 +24,7 @@ export default function PronunciationPracticePage() {
   const params = useParams();
   const router = useRouter();
   const topicId = parseInt(params.id as string);
+  const toast = useToast();
 
   const [topic, setTopic] = useState<LessonTopicDto | null>(null);
   const [words, setWords] = useState<WordDto[]>([]);
@@ -60,6 +62,9 @@ export default function PronunciationPracticePage() {
       pronunciationLink: `/topics/${topicId}/pronunciation`,
       grammarLink: `/topics/${topicId}/grammar`,
       progressLink: `/topics/${topicId}/progress`,
+      flashcardLink: `/topics/${topicId}/flashcard`,
+      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
+      fillBlankLink: `/topics/${topicId}/fill-blank`,
       activeId: "pronunciation",
       completedIds: completedActivityIds,
     });
@@ -87,12 +92,12 @@ export default function PronunciationPracticePage() {
         const progress = calculatePronunciationProgress(topicData.words, pronunciationScores);
         setActivityProgress(progress);
       } else {
-        alert("Chủ đề này chưa có từ vựng để luyện phát âm.");
+        toast.warning("Chủ đề này chưa có từ vựng để luyện phát âm.");
         router.push(`/topics/${topicId}`);
       }
     } catch (error: any) {
       console.error("Error loading topic:", error);
-      alert("Lỗi khi tải dữ liệu chủ đề.");
+      toast.error("Lỗi khi tải dữ liệu chủ đề.");
       router.push(`/topics/${topicId}`);
     } finally {
       setLoading(false);
@@ -327,7 +332,7 @@ export default function PronunciationPracticePage() {
               </div>
 
               {/* Detailed Scores */}
-              <div className="mb-6 max-h-60 overflow-y-auto">
+              <div className="mb-6 max-h-60 overflow-y-auto custom-scrollbar">
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">
                   Chi tiết điểm số
                 </h3>

@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { useToast } from "@/contexts/ToastContext";
 import { AllActivitiesProgress } from "@/components/vocabulary/ActivityProgressChart";
 import { topicService } from "@/lib/services/topicService";
 import {
@@ -24,6 +25,7 @@ export default function TopicProgressPage() {
   const params = useParams();
   const router = useRouter();
   const topicId = parseInt(params.id as string);
+  const toast = useToast();
 
   const [topic, setTopic] = useState<LessonTopicDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -58,6 +60,9 @@ export default function TopicProgressPage() {
       pronunciationLink: `/topics/${topicId}/pronunciation`,
       grammarLink: `/topics/${topicId}/grammar`,
       progressLink: `/topics/${topicId}/progress`,
+      flashcardLink: `/topics/${topicId}/flashcard`,
+      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
+      fillBlankLink: `/topics/${topicId}/fill-blank`,
       activeId: "progress",
       completedIds: completedActivityIds,
     });
@@ -93,7 +98,7 @@ export default function TopicProgressPage() {
       }
     } catch (error: any) {
       console.error("Error loading progress data:", error);
-      alert("Lỗi khi tải dữ liệu tiến độ.");
+      toast.error("Lỗi khi tải dữ liệu tiến độ.");
     } finally {
       setLoading(false);
     }

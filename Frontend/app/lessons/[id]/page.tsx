@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { useToast } from "@/contexts/ToastContext";
 import WordCard from "@/components/lesson/WordCard";
 import QuizComponent from "@/components/quiz/QuizComponent";
 import { lessonService } from "@/lib/services/lessonService";
@@ -17,6 +18,7 @@ export default function LessonDetailPage() {
   const params = useParams();
   const router = useRouter();
   const lessonId = parseInt(params.id as string);
+  const toast = useToast();
 
   const [lesson, setLesson] = useState<LessonDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,7 +38,7 @@ export default function LessonDetailPage() {
     } catch (error: any) {
       console.error("Error loading lesson:", error);
       if (error.response?.status === 403) {
-        alert("Bạn chưa hoàn thành bài học trước đó. Vui lòng hoàn thành bài học trước để tiếp tục.");
+        toast.warning("Bạn chưa hoàn thành bài học trước đó. Vui lòng hoàn thành bài học trước để tiếp tục.");
         router.back();
       } else if (error.response?.status === 404) {
         router.push("/courses");
@@ -63,7 +65,7 @@ export default function LessonDetailPage() {
     
     if (result.lessonCompleted && result.nextLessonUnlocked) {
       // Show success message
-      alert(`Chúc mừng! Bạn đã hoàn thành bài học. Bài học tiếp theo đã được mở khóa!`);
+      toast.success("Chúc mừng! Bạn đã hoàn thành bài học. Bài học tiếp theo đã được mở khóa!");
     }
   };
 

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { adminService, AdminQuestionDto, CreateQuestionDto, CreateQuestionOptionDto, AdminLessonDto } from "@/lib/services/adminService";
+import { useToast } from "@/contexts/ToastContext";
 
 interface QuestionEditorProps {
   questionId?: number;
@@ -20,6 +21,7 @@ interface OptionForm {
 export default function QuestionEditor({ questionId, defaultLessonId, isOpen, onClose, onSave }: QuestionEditorProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const toast = useToast();
   const [lessons, setLessons] = useState<AdminLessonDto[]>([]);
   const [formData, setFormData] = useState<CreateQuestionDto>({
     lessonId: defaultLessonId,
@@ -102,7 +104,7 @@ export default function QuestionEditor({ questionId, defaultLessonId, isOpen, on
       }
     } catch (error: any) {
       console.error("Error loading question:", error);
-      alert("Không thể tải thông tin câu hỏi");
+      toast.error("Không thể tải thông tin câu hỏi");
     } finally {
       setLoading(false);
     }
@@ -127,7 +129,7 @@ export default function QuestionEditor({ questionId, defaultLessonId, isOpen, on
 
   const removeOption = (index: number) => {
     if (options.length <= 2) {
-      alert("Câu hỏi phải có ít nhất 2 lựa chọn");
+      toast.warning("Câu hỏi phải có ít nhất 2 lựa chọn");
       return;
     }
     setOptions(options.filter((_, i) => i !== index));
@@ -137,18 +139,18 @@ export default function QuestionEditor({ questionId, defaultLessonId, isOpen, on
     e.preventDefault();
 
     if (!formData.questionText) {
-      alert("Vui lòng điền nội dung câu hỏi");
+      toast.warning("Vui lòng điền nội dung câu hỏi");
       return;
     }
 
     const validOptions = options.filter(opt => opt.optionText.trim());
     if (validOptions.length < 2) {
-      alert("Câu hỏi phải có ít nhất 2 lựa chọn");
+      toast.warning("Câu hỏi phải có ít nhất 2 lựa chọn");
       return;
     }
 
     if (!validOptions.some(opt => opt.isCorrect)) {
-      alert("Vui lòng chọn đáp án đúng");
+      toast.warning("Vui lòng chọn đáp án đúng");
       return;
     }
 
@@ -168,7 +170,7 @@ export default function QuestionEditor({ questionId, defaultLessonId, isOpen, on
       onClose();
     } catch (error: any) {
       console.error("Error saving question:", error);
-      alert("Lỗi khi lưu câu hỏi: " + (error.message || "Unknown error"));
+      toast.error("Lỗi khi lưu câu hỏi: " + (error.message || "Unknown error"));
     } finally {
       setSaving(false);
     }
@@ -189,7 +191,7 @@ export default function QuestionEditor({ questionId, defaultLessonId, isOpen, on
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto custom-scrollbar m-4">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between z-10">
           <h2 className="text-2xl font-bold text-gray-900">
             {questionId ? "Sửa câu hỏi" : "Thêm câu hỏi mới"}

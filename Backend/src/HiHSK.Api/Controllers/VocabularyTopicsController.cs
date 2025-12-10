@@ -50,6 +50,23 @@ public class VocabularyTopicsController : ControllerBase
         }
     }
 
+    [HttpGet("{topicId}/fill-blank")]
+    public async Task<ActionResult<List<QuestionDto>>> GetFillBlankQuestions(
+        int topicId,
+        [FromQuery] int? count = null)
+    {
+        try
+        {
+            var questions = await _vocabularyService.GenerateFillBlankQuestionsAsync(topicId, count);
+            return Ok(questions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi tạo câu hỏi điền từ vào chỗ trống");
+            return StatusCode(500, new { message = "Lỗi khi tạo câu hỏi", error = ex.Message });
+        }
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<VocabularyTopicDetailDto>> GetTopicById(int id)
     {

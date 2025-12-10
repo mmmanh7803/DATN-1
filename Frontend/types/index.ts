@@ -193,6 +193,7 @@ export interface QuestionDto {
   questionType: string;
   audioUrl?: string;
   imageUrl?: string;
+  blankSentence?: string;
   points: number;
   explanation?: string;
   options: QuestionOptionDto[];

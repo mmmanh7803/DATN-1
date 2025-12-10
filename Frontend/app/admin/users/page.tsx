@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { adminService, AdminUserDto } from "@/lib/services/adminService";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function AdminUsersPage() {
+  const toast = useToast();
   const [users, setUsers] = useState<AdminUserDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,9 +43,10 @@ export default function AdminUsersPage() {
     try {
       setActionLoading(id);
       await adminService.makeAdmin(id);
+      toast.success(`Đã gán quyền Admin cho ${email}`);
       await loadUsers();
     } catch (err: any) {
-      alert("Lỗi: " + (err.message || "Không thể gán quyền Admin"));
+      toast.error("Lỗi: " + (err.message || "Không thể gán quyền Admin"));
     } finally {
       setActionLoading(null);
     }
@@ -57,9 +60,10 @@ export default function AdminUsersPage() {
     try {
       setActionLoading(id);
       await adminService.removeAdmin(id);
+      toast.success(`Đã gỡ quyền Admin của ${email}`);
       await loadUsers();
     } catch (err: any) {
-      alert("Lỗi: " + (err.message || "Không thể gỡ quyền Admin"));
+      toast.error("Lỗi: " + (err.message || "Không thể gỡ quyền Admin"));
     } finally {
       setActionLoading(null);
     }
@@ -73,9 +77,10 @@ export default function AdminUsersPage() {
     try {
       setActionLoading(id);
       await adminService.deleteUser(id);
+      toast.success(`Đã xóa người dùng ${email}`);
       setUsers(users.filter((u) => u.id !== id));
     } catch (err: any) {
-      alert("Lỗi khi xóa người dùng: " + (err.message || "Unknown error"));
+      toast.error("Lỗi khi xóa người dùng: " + (err.message || "Unknown error"));
     } finally {
       setActionLoading(null);
     }

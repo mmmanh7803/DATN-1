@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import AudioButton from "@/components/words/AudioButton";
+import { useToast } from "@/contexts/ToastContext";
 
 interface PronunciationRecorderProps {
   word: {
@@ -19,6 +20,7 @@ export default function PronunciationRecorder({
   onComplete,
   onSkip,
 }: PronunciationRecorderProps) {
+  const toast = useToast();
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
@@ -66,7 +68,7 @@ export default function PronunciationRecorder({
       setIsRecording(true);
     } catch (error) {
       console.error("Error accessing microphone:", error);
-      alert("Không thể truy cập microphone. Vui lòng kiểm tra quyền truy cập.");
+      toast.error("Không thể truy cập microphone. Vui lòng kiểm tra quyền truy cập.");
     }
   };
 

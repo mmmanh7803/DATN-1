@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import CourseEditor from "@/components/admin/CourseEditor";
 import { adminService, AdminCourseDto } from "@/lib/services/adminService";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function AdminCoursesPage() {
+  const toast = useToast();
   const [courses, setCourses] = useState<AdminCourseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,9 +39,10 @@ export default function AdminCoursesPage() {
 
     try {
       await adminService.deleteCourse(id);
+      toast.success("Đã xóa khóa học");
       setCourses(courses.filter((c) => c.id !== id));
     } catch (err: any) {
-      alert("Lỗi khi xóa khóa học: " + (err.message || "Unknown error"));
+      toast.error("Lỗi khi xóa khóa học: " + (err.message || "Unknown error"));
     }
   };
 

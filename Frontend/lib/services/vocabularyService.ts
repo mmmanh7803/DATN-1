@@ -191,5 +191,15 @@ export const vocabularyService = {
     );
     return response.data;
   },
+
+  /**
+   * Lấy danh sách câu hỏi điền từ vào chỗ trống
+   */
+  async getFillBlankQuestions(topicId: number, count?: number): Promise<QuestionDto[]> {
+    const response = await apiClient.get<QuestionDto[]>(
+      API_ENDPOINTS.VOCABULARY_TOPICS.FILL_BLANK(topicId, count)
+    );
+    return response.data;
+  },
 };
 

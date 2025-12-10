@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { adminService, AdminCourseDto, CreateCourseDto, UpdateCourseDto } from "@/lib/services/adminService";
+import { useToast } from "@/contexts/ToastContext";
 
 interface CourseEditorProps {
   courseId?: number;
@@ -13,6 +14,7 @@ interface CourseEditorProps {
 export default function CourseEditor({ courseId, isOpen, onClose, onSave }: CourseEditorProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const toast = useToast();
   const [formData, setFormData] = useState<CreateCourseDto>({
     categoryId: 1,
     title: "",
@@ -60,7 +62,7 @@ export default function CourseEditor({ courseId, isOpen, onClose, onSave }: Cour
       });
     } catch (error: any) {
       console.error("Error loading course:", error);
-      alert("Không thể tải thông tin khóa học");
+      toast.error("Không thể tải thông tin khóa học");
     } finally {
       setLoading(false);
     }
@@ -70,7 +72,7 @@ export default function CourseEditor({ courseId, isOpen, onClose, onSave }: Cour
     e.preventDefault();
 
     if (!formData.title) {
-      alert("Vui lòng điền tên khóa học");
+      toast.warning("Vui lòng điền tên khóa học");
       return;
     }
 
@@ -85,7 +87,7 @@ export default function CourseEditor({ courseId, isOpen, onClose, onSave }: Cour
       onClose();
     } catch (error: any) {
       console.error("Error saving course:", error);
-      alert("Lỗi khi lưu khóa học: " + (error.message || "Unknown error"));
+      toast.error("Lỗi khi lưu khóa học: " + (error.message || "Unknown error"));
     } finally {
       setSaving(false);
     }
@@ -95,7 +97,7 @@ export default function CourseEditor({ courseId, isOpen, onClose, onSave }: Cour
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar m-4">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">
             {courseId ? "Sửa khóa học" : "Thêm khóa học mới"}

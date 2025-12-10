@@ -339,6 +339,9 @@ export const createDefaultActivities = (
     pronunciationLink?: string;
     grammarLink?: string;
     progressLink?: string;
+    flashcardLink?: string;
+    vocabularyPracticeLink?: string;
+    fillBlankLink?: string;
     activeId?: string;
     completedIds?: string[];
     activityProgressMap?: Map<string, number>; // Map activityId -> progressPercentage
@@ -352,6 +355,9 @@ export const createDefaultActivities = (
     pronunciationLink,
     grammarLink,
     progressLink,
+    flashcardLink,
+    vocabularyPracticeLink,
+    fillBlankLink,
     activeId,
     completedIds = [],
     activityProgressMap,
@@ -397,6 +403,32 @@ export const createDefaultActivities = (
       isCompleted: completedIds.includes("image-quiz"),
       isActive: activeId === "image-quiz",
       progressPercentage: getProgressPercentage("image-quiz"),
+    },
+    {
+      id: "vocabulary-practice",
+      name: "Thực hành từ vựng (Đúng/Sai)",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+      link: vocabularyPracticeLink || null,
+      isCompleted: completedIds.includes("vocabulary-practice"),
+      isActive: activeId === "vocabulary-practice",
+      progressPercentage: getProgressPercentage("vocabulary-practice"),
+    },
+    {
+      id: "fill-blank",
+      name: "Điền từ vào chỗ trống",
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      ),
+      link: fillBlankLink || null,
+      isCompleted: completedIds.includes("fill-blank"),
+      isActive: activeId === "fill-blank",
+      progressPercentage: getProgressPercentage("fill-blank"),
     },
     {
       id: "pronunciation",
@@ -451,6 +483,7 @@ export const createDefaultActivities = (
       id: "flashcard",
       name: "Flash card từ vựng",
       icon: icons.flashcard,
+      link: flashcardLink || null,
       isCompleted: completedIds.includes("flashcard"),
       isActive: activeId === "flashcard",
       progressPercentage: getProgressPercentage("flashcard"),

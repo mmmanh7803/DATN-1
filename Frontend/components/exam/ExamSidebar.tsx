@@ -70,7 +70,7 @@ export default function ExamSidebar({
         </div>
 
         {/* Question list */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
           {sections.map((section, sectionIndex) => (
             <div key={sectionIndex}>
               {/* Section header */}

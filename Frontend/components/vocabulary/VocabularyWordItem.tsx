@@ -206,7 +206,7 @@ export default function VocabularyWordItem({ word, onDetailClick, viewMode = "li
       }
     } catch (error: any) {
       console.error("Lỗi khi đánh dấu đã học:", error);
-      alert(error.response?.data?.message || "Không thể đánh dấu đã học. Vui lòng thử lại sau.");
+      toast.error(error.response?.data?.message || "Không thể đánh dấu đã học. Vui lòng thử lại sau.");
     } finally {
       setIsMarking(false);
     }
@@ -257,7 +257,7 @@ export default function VocabularyWordItem({ word, onDetailClick, viewMode = "li
   const handleGenerateExamples = async () => {
     // Kiểm tra character có tồn tại không
     if (!currentWord.character || currentWord.character.trim() === "") {
-      alert("Không thể tạo ví dụ: Từ vựng không hợp lệ.");
+      toast.error("Không thể tạo ví dụ: Từ vựng không hợp lệ.");
       return;
     }
 
@@ -279,7 +279,7 @@ export default function VocabularyWordItem({ word, onDetailClick, viewMode = "li
         console.log(`[VocabularyWordItem] ✅ Tạo ví dụ thành công cho "${currentWord.character}"`);
       } else {
         console.warn(`[VocabularyWordItem] AI không trả về ví dụ nào cho "${currentWord.character}"`);
-        alert("AI không tạo được ví dụ nào. Vui lòng thử lại sau.");
+        toast.warning("AI không tạo được ví dụ nào. Vui lòng thử lại sau.");
         setGeneratedExamples(null);
       }
     } catch (error: any) {
@@ -316,7 +316,7 @@ export default function VocabularyWordItem({ word, onDetailClick, viewMode = "li
         errorMessage = error.message || "Đã xảy ra lỗi không xác định.";
       }
       
-      alert(errorMessage);
+      toast.error(errorMessage);
       setGeneratedExamples(null);
     } finally {
       setIsGenerating(false);

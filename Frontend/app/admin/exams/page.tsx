@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import AdminLayout from '@/components/admin/AdminLayout';
 import apiClient from '@/lib/api';
 import { API_ENDPOINTS } from '@/lib/api-endpoints';
+import { useToast } from '@/contexts/ToastContext';
 
 interface ExamPaper {
   id: number;
@@ -33,6 +34,7 @@ interface CreateExamDto {
 }
 
 export default function AdminExamsPage() {
+  const toast = useToast();
   const router = useRouter();
   const [exams, setExams] = useState<ExamPaper[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,7 +75,7 @@ export default function AdminExamsPage() {
 
   const handleCreateExam = async () => {
     if (!newExam.title.trim()) {
-      alert('Vui lòng nhập tiêu đề đề thi');
+      toast.warning('Vui lòng nhập tiêu đề đề thi');
       return;
     }
 
@@ -81,7 +83,7 @@ export default function AdminExamsPage() {
     try {
       const response = await apiClient.post('/api/exampapers', newExam);
       if (response.data.success) {
-        alert('Tạo đề thi thành công!');
+        toast.success('Tạo đề thi thành công!');
         setShowCreateModal(false);
         setNewExam({
           title: '',
@@ -97,7 +99,7 @@ export default function AdminExamsPage() {
       }
     } catch (error) {
       console.error('Lỗi khi tạo đề thi:', error);
-      alert('Không thể tạo đề thi');
+      toast.error('Không thể tạo đề thi');
     } finally {
       setCreating(false);
     }
@@ -108,10 +110,11 @@ export default function AdminExamsPage() {
 
     try {
       await apiClient.delete(`/api/exampapers/${id}`);
+      toast.success('Đã xóa đề thi');
       loadExams();
     } catch (error) {
       console.error('Lỗi khi xóa đề thi:', error);
-      alert('Không thể xóa đề thi');
+      toast.error('Không thể xóa đề thi');
     }
   };
 
@@ -267,7 +270,7 @@ export default function AdminExamsPage() {
         {/* Create Modal */}
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
               <h2 className="text-xl font-bold mb-4">Tạo đề thi mới</h2>
               
               <div className="space-y-4">

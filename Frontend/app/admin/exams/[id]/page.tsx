@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import AdminLayout from '@/components/admin/AdminLayout';
 import apiClient from '@/lib/api';
+import { useToast } from '@/contexts/ToastContext';
 
 interface ExamPaper {
   id: number;
@@ -62,6 +63,7 @@ interface Pagination {
 }
 
 export default function AdminExamDetailPage() {
+  const toast = useToast();
   const params = useParams();
   const router = useRouter();
   const examId = parseInt(params.id as string);
@@ -151,7 +153,7 @@ export default function AdminExamDetailPage() {
 
   const handleAddQuestions = async () => {
     if (selectedQuestions.length === 0) {
-      alert('Vui lòng chọn ít nhất một câu hỏi');
+      toast.warning('Vui lòng chọn ít nhất một câu hỏi');
       return;
     }
 
@@ -163,13 +165,13 @@ export default function AdminExamDetailPage() {
       });
       
       const addedCount = response.data.addedCount || selectedQuestions.length;
-      alert(`Đã thêm ${addedCount} câu hỏi vào đề thi`);
+      toast.success(`Đã thêm ${addedCount} câu hỏi vào đề thi`);
       setShowAddModal(false);
       setSelectedQuestions([]);
       loadExam();
     } catch (error) {
       console.error('Lỗi khi thêm câu hỏi:', error);
-      alert('Không thể thêm câu hỏi');
+      toast.error('Không thể thêm câu hỏi');
     } finally {
       setAdding(false);
     }
@@ -180,22 +182,23 @@ export default function AdminExamDetailPage() {
 
     try {
       await apiClient.delete(`/api/exampapers/${examId}/questions/${questionId}`);
+      toast.success('Đã xóa câu hỏi khỏi đề thi');
       loadExam();
     } catch (error) {
       console.error('Lỗi khi xóa câu hỏi:', error);
-      alert('Không thể xóa câu hỏi');
+      toast.error('Không thể xóa câu hỏi');
     }
   };
 
   const handleUpdateExam = async () => {
     try {
       await apiClient.put(`/api/exampapers/${examId}`, editForm);
-      alert('Cập nhật đề thi thành công');
+      toast.success('Cập nhật đề thi thành công');
       setShowEditModal(false);
       loadExam();
     } catch (error) {
       console.error('Lỗi khi cập nhật đề thi:', error);
-      alert('Không thể cập nhật đề thi');
+      toast.error('Không thể cập nhật đề thi');
     }
   };
 
@@ -455,7 +458,7 @@ export default function AdminExamDetailPage() {
               </div>
 
               {/* Questions List */}
-              <div className="flex-1 overflow-y-auto border border-gray-200 rounded-lg">
+              <div className="flex-1 overflow-y-auto border border-gray-200 rounded-lg custom-scrollbar">
                 {loadingQuestions ? (
                   <div className="flex items-center justify-center py-12">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>

@@ -5,8 +5,10 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import WordEditor from "@/components/admin/WordEditor";
 import { adminService, AdminWordDto } from "@/lib/services/adminService";
 import apiClient from "@/lib/api";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function AdminVocabularyPage() {
+  const toast = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [hskFilter, setHskFilter] = useState<string>("all");
   const [words, setWords] = useState<AdminWordDto[]>([]);
@@ -44,9 +46,10 @@ export default function AdminVocabularyPage() {
 
     try {
       await adminService.deleteWord(id);
+      toast.success("Đã xóa từ vựng");
       setWords(words.filter((w) => w.id !== id));
     } catch (err: any) {
-      alert("Lỗi khi xóa từ vựng: " + (err.message || "Unknown error"));
+      toast.error("Lỗi khi xóa từ vựng: " + (err.message || "Unknown error"));
     }
   };
 
@@ -66,9 +69,10 @@ export default function AdminVocabularyPage() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
+      toast.success("Đã export thành công");
     } catch (error: any) {
       console.error("Lỗi khi export:", error);
-      alert("Lỗi khi export: " + (error.response?.data?.message || error.message || "Unknown error"));
+      toast.error("Lỗi khi export: " + (error.response?.data?.message || error.message || "Unknown error"));
     }
   };
 

@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { useToast } from "@/contexts/ToastContext";
 import { vocabularyService } from "@/lib/services/vocabularyService";
 import { useCompletedActivities } from "@/hooks/useCompletedActivities";
 import {
@@ -21,6 +22,7 @@ export default function ImageQuizPage() {
   const params = useParams();
   const router = useRouter();
   const topicId = parseInt(params.id as string);
+  const toast = useToast();
 
   const [topic, setTopic] = useState<VocabularyTopicDetailDto | null>(null);
   const [questions, setQuestions] = useState<QuestionDto[]>([]);
@@ -58,7 +60,7 @@ export default function ImageQuizPage() {
     } catch (error: any) {
       console.error("Lỗi khi tải dữ liệu:", error);
       if (error.response?.status === 404) {
-        alert("Chủ đề từ vựng không tồn tại.");
+        toast.error("Chủ đề từ vựng không tồn tại.");
         router.push("/topics");
       }
     } finally {
@@ -101,6 +103,9 @@ export default function ImageQuizPage() {
       pronunciationLink: `/topics/${topicId}/pronunciation`,
       grammarLink: `/topics/${topicId}/grammar`,
       progressLink: `/topics/${topicId}/progress`,
+      flashcardLink: `/topics/${topicId}/flashcard`,
+      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
+      fillBlankLink: `/topics/${topicId}/fill-blank`,
       activeId: "image-quiz",
       completedIds: completedActivityIds,
     });
