@@ -12,13 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HiHSK.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250121000000_AddGrammarFieldsToWords")]
-    partial class AddGrammarFieldsToWords
+    [Migration("20251110000005_SeedWordExamplesHsk1Topic1")]
+    partial class SeedWordExamplesHsk1Topic1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
-            // Migration này chỉ thêm cột, không thay đổi model structure
+            // Migration này chỉ seed data, không thay đổi model
+            // Model đã được định nghĩa trong các migration trước
         }
     }
 }

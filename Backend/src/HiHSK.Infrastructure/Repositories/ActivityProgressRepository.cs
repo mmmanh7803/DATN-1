@@ -8,11 +8,22 @@ namespace HiHSK.Infrastructure.Repositories;
 public class ActivityProgressRepository : IActivityProgressRepository
 {
     private readonly ApplicationDbContext _context;
+    
+    // Danh sách activities bắt buộc để hoàn thành topic
+    // User phải hoàn thành TẤT CẢ các activities này để mở khóa topic tiếp theo
+    private static readonly List<string> RequiredActivityIds = new()
+    {
+        "vocabulary",        // Học từ vựng
+        "quick-memorize",    // Nhớ nhanh từ
+        "pronunciation"      // Luyện phát âm
+    };
 
     public ActivityProgressRepository(ApplicationDbContext context)
     {
         _context = context;
     }
+    
+    public List<string> GetRequiredActivityIds() => RequiredActivityIds;
 
     public async Task<List<UserActivityProgress>> GetUserActivityProgressByPartAsync(
         string userId, 
@@ -226,6 +237,98 @@ public class ActivityProgressRepository : IActivityProgressRepository
         }
 
         return false;
+    }
+    
+    public async Task<bool> IsTopicCompletedAsync(string userId, int topicId)
+    {
+        // Lấy tất cả activities đã hoàn thành của topic
+        var completedActivities = await _context.UserActivityProgresses
+            .Where(p => p.UserId == userId && p.TopicId == topicId && p.IsCompleted)
+            .Select(p => p.ActivityId)
+            .ToListAsync();
+        
+        // Kiểm tra xem tất cả required activities đã hoàn thành chưa
+        return RequiredActivityIds.All(required => completedActivities.Contains(required));
+    }
+    
+    public async Task<(bool unlocked, int? nextTopicId)> CheckAndUnlockNextTopicAsync(
+        string userId, 
+        int completedTopicId)
+    {
+        // Kiểm tra xem topic hiện tại đã hoàn thành chưa
+        var isCurrentTopicCompleted = await IsTopicCompletedAsync(userId, completedTopicId);
+        
+        if (!isCurrentTopicCompleted)
+        {
+            return (false, null);
+        }
+        
+        // Lấy thông tin topic hiện tại
+        var currentTopic = await _context.LessonTopics
+            .FirstOrDefaultAsync(t => t.Id == completedTopicId);
+        
+        if (currentTopic == null)
+        {
+            return (false, null);
+        }
+        
+        // Tìm topic tiếp theo trong cùng HSK level
+        var nextTopic = await _context.LessonTopics
+            .Where(t => t.HSKLevel == currentTopic.HSKLevel 
+                && t.TopicIndex == currentTopic.TopicIndex + 1 
+                && t.IsActive)
+            .FirstOrDefaultAsync();
+        
+        if (nextTopic == null)
+        {
+            // Không có topic tiếp theo (đã hoàn thành tất cả topics của level này)
+            return (false, null);
+        }
+        
+        // Topic đã được mở khóa rồi (kiểm tra global IsLocked)
+        // Lưu ý: IsLocked trong LessonTopic là global, không phải per-user
+        // Chúng ta sẽ sử dụng bảng riêng để track user-specific unlock
+        
+        return (true, nextTopic.Id);
+    }
+    
+    public async Task<(bool canAccess, string reason)> CanAccessTopicAsync(string userId, int topicId)
+    {
+        var topic = await _context.LessonTopics
+            .Include(t => t.PrerequisiteTopic)
+            .FirstOrDefaultAsync(t => t.Id == topicId);
+        
+        if (topic == null)
+        {
+            return (false, "Topic không tồn tại");
+        }
+        
+        // Topic đầu tiên (TopicIndex = 1 hoặc không có prerequisite) luôn mở khóa
+        if (topic.TopicIndex == 1 || topic.PrerequisiteTopicId == null)
+        {
+            return (true, "Topic đầu tiên luôn mở khóa");
+        }
+        
+        // Kiểm tra topic trước đó (prerequisite) đã hoàn thành chưa
+        var prerequisiteTopicId = topic.PrerequisiteTopicId.Value;
+        var isPrerequisiteCompleted = await IsTopicCompletedAsync(userId, prerequisiteTopicId);
+        
+        if (!isPrerequisiteCompleted)
+        {
+            var prerequisiteTopic = topic.PrerequisiteTopic;
+            var prerequisiteTitle = prerequisiteTopic?.Title ?? $"Topic {prerequisiteTopicId}";
+            
+            // Lấy số activities đã hoàn thành của prerequisite topic
+            var completedCount = await _context.UserActivityProgresses
+                .CountAsync(p => p.UserId == userId 
+                    && p.TopicId == prerequisiteTopicId 
+                    && p.IsCompleted
+                    && RequiredActivityIds.Contains(p.ActivityId));
+            
+            return (false, $"Bạn cần hoàn thành chủ đề \"{prerequisiteTitle}\" trước ({completedCount}/{RequiredActivityIds.Count} hoạt động)");
+        }
+        
+        return (true, "Topic đã được mở khóa");
     }
 }
 

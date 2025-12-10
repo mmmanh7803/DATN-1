@@ -1,0 +1,362 @@
+{
+  "exam": {
+    "title": "HSK 2 - Đề thi mẫu số 1",
+    "examType": "HSK",
+    "level": 2,
+    "description": "Đề thi HSK cấp 2 gồm 2 kỹ năng: Nghe và Đọc. Mỗi kỹ năng 35 câu hỏi.",
+    "durationMinutes": 55,
+    "totalQuestions": 70,
+    "totalPoints": 100,
+    "passingScore": 60
+  },
+  "sections": [
+    {
+      "sectionName": "Phần 1: Nghe (Listening)",
+      "skillType": "Listening",
+      "parts": [
+        {
+          "partNumber": 1,
+          "partName": "Nghe và chọn ảnh đúng",
+          "description": "Nghe từ/cụm từ và chọn hình ảnh phù hợp",
+          "questionCount": 10,
+          "questionRange": "1-10",
+          "instructions": "听句子，判断对错",
+          "questions": [
+            {
+              "questionOrder": 1,
+              "questionType": "LISTENING",
+              "questionText": "Nghe và chọn ảnh đúng",
+              "audioUrl": "https://example.com/hsk2/listening/q1.mp3",
+              "audioScript": "打电话",
+              "points": 1,
+              "difficultyLevel": 2,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "Hình ảnh A",
+                  "isCorrect": true,
+                  "explanation": "Đáp án đúng vì..."
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "Hình ảnh B",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "Hình ảnh C",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "D",
+                  "optionText": "Hình ảnh D",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "partNumber": 2,
+          "partName": "Nghe câu và chọn ảnh đúng",
+          "description": "Nghe câu hoàn chỉnh và chọn hình ảnh phù hợp",
+          "questionCount": 10,
+          "questionRange": "11-20",
+          "instructions": "听句子，选择对应的图片",
+          "questions": [
+            {
+              "questionOrder": 11,
+              "questionType": "LISTENING",
+              "questionText": "Nghe và chọn ảnh đúng",
+              "audioUrl": "https://example.com/hsk2/listening/q11.mp3",
+              "audioScript": "今天天气很冷。",
+              "points": 1,
+              "difficultyLevel": 2,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "Hình ảnh A",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "Hình ảnh B",
+                  "isCorrect": true,
+                  "explanation": "Hình ảnh thể hiện thời tiết lạnh"
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "Hình ảnh C",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "D",
+                  "optionText": "Hình ảnh D",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "partNumber": 3,
+          "partName": "Nghe hội thoại và trả lời câu hỏi",
+          "description": "Nghe đoạn hội thoại ngắn giữa hai người",
+          "questionCount": 10,
+          "questionRange": "21-30",
+          "instructions": "听对话，选择正确答案",
+          "questions": [
+            {
+              "questionOrder": 21,
+              "questionType": "LISTENING",
+              "questionText": "男：你看见我的小猫了吗？\n女：在那儿，在椅子上。\n问：小猫在哪儿？",
+              "audioUrl": "https://example.com/hsk2/listening/q21.mp3",
+              "audioScript": "男：你看见我的小猫了吗？\n女：在那儿，在椅子上。",
+              "points": 1,
+              "difficultyLevel": 2,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "在桌子上",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "在椅子上",
+                  "isCorrect": true,
+                  "explanation": "Trong hội thoại nữ nói: 在椅子上"
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "在床上",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "D",
+                  "optionText": "在地上",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "partNumber": 4,
+          "partName": "Nghe đoạn văn và trả lời câu hỏi",
+          "description": "Nghe đoạn văn dài hơn và trả lời nhiều câu hỏi",
+          "questionCount": 5,
+          "questionRange": "31-35",
+          "instructions": "听短文，回答问题",
+          "questions": [
+            {
+              "questionOrder": 31,
+              "questionType": "LISTENING",
+              "questionText": "问：他是做什么的？",
+              "audioUrl": "https://example.com/hsk2/listening/q31-35.mp3",
+              "audioScript": "他是一位老师，今年三十岁，在一所小学工作。他很喜欢他的工作，每天都很开心。",
+              "points": 1,
+              "difficultyLevel": 2,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "学生",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "老师",
+                  "isCorrect": true,
+                  "explanation": "Đoạn văn nói: 他是一位老师"
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "医生",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "D",
+                  "optionText": "司机",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sectionName": "Phần 2: Đọc (Reading)",
+      "skillType": "Reading",
+      "parts": [
+        {
+          "partNumber": 1,
+          "partName": "Ghép từ với hình ảnh",
+          "description": "Nối từ/cụm từ với hình ảnh tương ứng",
+          "questionCount": 5,
+          "questionRange": "36-40",
+          "instructions": "选择词语对应的图片",
+          "questions": [
+            {
+              "questionOrder": 36,
+              "questionType": "READING",
+              "questionText": "苹果",
+              "points": 1,
+              "difficultyLevel": 2,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "Hình ảnh táo",
+                  "isCorrect": true,
+                  "explanation": "苹果 nghĩa là táo"
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "Hình ảnh cam",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "Hình ảnh chuối",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "D",
+                  "optionText": "Hình ảnh nho",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "partNumber": 2,
+          "partName": "Chọn từ điền vào chỗ trống",
+          "description": "Đọc câu và chọn từ phù hợp để điền vào chỗ trống",
+          "questionCount": 10,
+          "questionRange": "41-50",
+          "instructions": "选择合适的词语填空",
+          "questions": [
+            {
+              "questionOrder": 41,
+              "questionType": "READING",
+              "questionText": "我___喜欢吃米饭。",
+              "points": 1,
+              "difficultyLevel": 2,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "很",
+                  "isCorrect": true,
+                  "explanation": "很 + động từ/tính từ để biểu thị mức độ"
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "都",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "也",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "D",
+                  "optionText": "还",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "partNumber": 3,
+          "partName": "Nối hai nửa câu",
+          "description": "Chọn nửa câu phù hợp để hoàn thành câu",
+          "questionCount": 10,
+          "questionRange": "51-60",
+          "instructions": "选择正确的搭配",
+          "questions": [
+            {
+              "questionOrder": 51,
+              "questionType": "READING",
+              "questionText": "今天天气很好，",
+              "points": 1,
+              "difficultyLevel": 2,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "我们去公园玩吧",
+                  "isCorrect": true,
+                  "explanation": "Logic: Thời tiết đẹp → đi chơi"
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "我很累",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "我在睡觉",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "D",
+                  "optionText": "下雨了",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "partNumber": 4,
+          "partName": "Đọc hiểu đoạn văn ngắn",
+          "description": "Đọc đoạn văn và trả lời câu hỏi",
+          "questionCount": 10,
+          "questionRange": "61-70",
+          "instructions": "阅读短文，回答问题",
+          "questions": [
+            {
+              "questionOrder": 61,
+              "questionType": "READING",
+              "questionText": "我叫李明，今年二十岁，是一名大学生。我在北京大学学习汉语。我很喜欢学汉语，因为汉语很有意思。\n问：李明在哪儿学习？",
+              "points": 1,
+              "difficultyLevel": 2,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "在中学",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "在北京大学",
+                  "isCorrect": true,
+                  "explanation": "Đoạn văn nói: 我在北京大学学习汉语"
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "在家里",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "D",
+                  "optionText": "在公司",
+                  "isCorrect": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scoringGuide": {
+    "listeningWeight": 50,
+    "readingWeight": 50,
+    "totalPoints": 100,
+    "passingScore": 60,
+    "excellentScore": 85
+  }
+}
+

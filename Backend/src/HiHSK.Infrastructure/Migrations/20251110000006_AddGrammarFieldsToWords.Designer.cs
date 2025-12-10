@@ -12,18 +12,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HiHSK.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250117000000_RemoveLessonsTableAndEnsureLessonTopics")]
-    partial class RemoveLessonsTableAndEnsureLessonTopics
+    [Migration("20251110000006_AddGrammarFieldsToWords")]
+    partial class AddGrammarFieldsToWords
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
-#pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-#pragma warning restore 612, 618
+            // Migration này chỉ thêm cột, không thay đổi model structure
         }
     }
 }

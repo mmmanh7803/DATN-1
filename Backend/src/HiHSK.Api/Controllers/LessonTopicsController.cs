@@ -16,15 +16,18 @@ public class LessonTopicsController : ControllerBase
     private readonly ApplicationDbContext _context;
     private readonly ILogger<LessonTopicsController> _logger;
     private readonly IUserWordProgressRepository _userProgressRepository;
+    private readonly IActivityProgressRepository _activityProgressRepository;
 
     public LessonTopicsController(
         ApplicationDbContext context, 
         ILogger<LessonTopicsController> logger,
-        IUserWordProgressRepository userProgressRepository)
+        IUserWordProgressRepository userProgressRepository,
+        IActivityProgressRepository activityProgressRepository)
     {
         _context = context;
         _logger = logger;
         _userProgressRepository = userProgressRepository;
+        _activityProgressRepository = activityProgressRepository;
     }
 
     [HttpGet("hsk/{hskLevel}")]
@@ -49,6 +52,52 @@ public class LessonTopicsController : ControllerBase
             .Select(g => new { TopicId = g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.TopicId!.Value, x => x.Count);
 
+        // Lấy userId để kiểm tra trạng thái unlock cho từng user
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        // Tính toán trạng thái unlock cho từng topic dựa trên user
+        var topicUnlockStatus = new Dictionary<int, bool>();
+        var topicProgressPercentage = new Dictionary<int, double>();
+        
+        foreach (var topic in topics)
+        {
+            // Topic đầu tiên luôn mở khóa
+            if (topic.TopicIndex == 1 || topic.PrerequisiteTopicId == null)
+            {
+                topicUnlockStatus[topic.Id] = false; // isLocked = false -> mở khóa
+            }
+            else if (!string.IsNullOrEmpty(userId))
+            {
+                // Kiểm tra prerequisite topic đã hoàn thành chưa
+                var (canAccess, _) = await _activityProgressRepository.CanAccessTopicAsync(userId, topic.Id);
+                topicUnlockStatus[topic.Id] = !canAccess; // isLocked = !canAccess
+            }
+            else
+            {
+                // Không có user -> sử dụng trạng thái global
+                topicUnlockStatus[topic.Id] = topic.IsLocked;
+            }
+            
+            // Tính progress percentage cho topic
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
+                var completedActivities = await _context.UserActivityProgresses
+                    .CountAsync(p => p.UserId == userId 
+                        && p.TopicId == topic.Id 
+                        && p.IsCompleted
+                        && requiredActivities.Contains(p.ActivityId));
+                
+                topicProgressPercentage[topic.Id] = requiredActivities.Count > 0 
+                    ? Math.Round((double)completedActivities / requiredActivities.Count * 100, 1)
+                    : 0;
+            }
+            else
+            {
+                topicProgressPercentage[topic.Id] = 0;
+            }
+        }
+
         var result = topics.Select(t => new LessonTopicListDto
         {
             Id = t.Id,
@@ -58,11 +107,11 @@ public class LessonTopicsController : ControllerBase
             Description = t.Description,
             ImageUrl = t.ImageUrl,
             TopicIndex = t.TopicIndex,
-            IsLocked = t.IsLocked,
+            IsLocked = topicUnlockStatus.GetValueOrDefault(t.Id, t.IsLocked),
             PrerequisiteTopicId = t.PrerequisiteTopicId,
             TotalExercises = exerciseCounts.GetValueOrDefault(t.Id, 0),
             TotalWords = wordCounts.GetValueOrDefault(t.Id, 0),
-            ProgressPercentage = 0
+            ProgressPercentage = topicProgressPercentage.GetValueOrDefault(t.Id, 0)
         }).ToList();
 
         return Ok(result);
@@ -232,7 +281,63 @@ public class LessonTopicsController : ControllerBase
         if (topic == null)
             return NotFound(new { message = "Chủ đề không tồn tại" });
 
-        return Ok(new { topicId = id, isLocked = topic.IsLocked });
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        // Topic đầu tiên luôn mở khóa
+        if (topic.TopicIndex == 1 || topic.PrerequisiteTopicId == null)
+        {
+            return Ok(new 
+            { 
+                topicId = id, 
+                isLocked = false,
+                reason = "Chủ đề đầu tiên luôn mở khóa"
+            });
+        }
+        
+        // Nếu có user đăng nhập, kiểm tra trạng thái dựa trên user
+        if (!string.IsNullOrEmpty(userId))
+        {
+            var (canAccess, reason) = await _activityProgressRepository.CanAccessTopicAsync(userId, id);
+            var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
+            
+            // Lấy progress của prerequisite topic
+            int? prerequisiteTopicId = topic.PrerequisiteTopicId;
+            int completedCount = 0;
+            
+            if (prerequisiteTopicId.HasValue)
+            {
+                completedCount = await _context.UserActivityProgresses
+                    .CountAsync(p => p.UserId == userId 
+                        && p.TopicId == prerequisiteTopicId.Value 
+                        && p.IsCompleted
+                        && requiredActivities.Contains(p.ActivityId));
+            }
+            
+            return Ok(new 
+            { 
+                topicId = id, 
+                isLocked = !canAccess,
+                canAccess,
+                reason,
+                prerequisiteTopicId,
+                prerequisiteProgress = new
+                {
+                    completedCount,
+                    totalRequired = requiredActivities.Count,
+                    percentage = requiredActivities.Count > 0 
+                        ? Math.Round((double)completedCount / requiredActivities.Count * 100, 1) 
+                        : 0
+                }
+            });
+        }
+
+        // Không có user -> sử dụng trạng thái global
+        return Ok(new 
+        { 
+            topicId = id, 
+            isLocked = topic.IsLocked,
+            reason = topic.IsLocked ? "Vui lòng đăng nhập để xem trạng thái mở khóa" : "Chủ đề đã mở khóa"
+        });
     }
 }
 

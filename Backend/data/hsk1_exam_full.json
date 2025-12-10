@@ -1,0 +1,600 @@
+{
+  "examPaper": {
+    "title": "Đề thi HSK 1 - Mẫu 01",
+    "examType": "HSK",
+    "level": 1,
+    "description": "Đề thi thử HSK cấp 1 theo chuẩn quốc tế - 40 câu hỏi",
+    "durationMinutes": 35,
+    "totalQuestions": 40,
+    "totalPoints": 200,
+    "passingScore": 120
+  },
+  "questions": [
+    {
+      "questionOrder": 1,
+      "skillType": "LISTENING",
+      "partNumber": 1,
+      "questionType": "TRUE_FALSE",
+      "questionText": "Câu 1",
+      "instruction": "Nghe câu miêu tả và xác định xem nó có đúng với bức tranh không.",
+      "audioUrl": "/audio/hsk1/l1_q1.mp3",
+      "imageUrl": "/images/hsk1/l1_q1.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": true },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 2,
+      "skillType": "LISTENING",
+      "partNumber": 1,
+      "questionType": "TRUE_FALSE",
+      "questionText": "Câu 2",
+      "instruction": "Nghe câu miêu tả và xác định xem nó có đúng với bức tranh không.",
+      "audioUrl": "/audio/hsk1/l1_q2.mp3",
+      "imageUrl": "/images/hsk1/l1_q2.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": false },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": true }
+      ]
+    },
+    {
+      "questionOrder": 3,
+      "skillType": "LISTENING",
+      "partNumber": 1,
+      "questionType": "TRUE_FALSE",
+      "questionText": "Câu 3",
+      "instruction": "Nghe câu miêu tả và xác định xem nó có đúng với bức tranh không.",
+      "audioUrl": "/audio/hsk1/l1_q3.mp3",
+      "imageUrl": "/images/hsk1/l1_q3.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": true },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 4,
+      "skillType": "LISTENING",
+      "partNumber": 1,
+      "questionType": "TRUE_FALSE",
+      "questionText": "Câu 4",
+      "instruction": "Nghe câu miêu tả và xác định xem nó có đúng với bức tranh không.",
+      "audioUrl": "/audio/hsk1/l1_q4.mp3",
+      "imageUrl": "/images/hsk1/l1_q4.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": false },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": true }
+      ]
+    },
+    {
+      "questionOrder": 5,
+      "skillType": "LISTENING",
+      "partNumber": 1,
+      "questionType": "TRUE_FALSE",
+      "questionText": "Câu 5",
+      "instruction": "Nghe câu miêu tả và xác định xem nó có đúng với bức tranh không.",
+      "audioUrl": "/audio/hsk1/l1_q5.mp3",
+      "imageUrl": "/images/hsk1/l1_q5.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": true },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 6,
+      "skillType": "LISTENING",
+      "partNumber": 2,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "Câu 6",
+      "instruction": "Nghe đoạn hội thoại và chọn bức tranh phù hợp với nội dung.",
+      "audioUrl": "/audio/hsk1/l2_q6.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/l2_q6_a.jpg", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/l2_q6_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/l2_q6_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 7,
+      "skillType": "LISTENING",
+      "partNumber": 2,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "Câu 7",
+      "instruction": "Nghe đoạn hội thoại và chọn bức tranh phù hợp với nội dung.",
+      "audioUrl": "/audio/hsk1/l2_q7.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/l2_q7_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/l2_q7_b.jpg", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/l2_q7_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 8,
+      "skillType": "LISTENING",
+      "partNumber": 2,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "Câu 8",
+      "instruction": "Nghe đoạn hội thoại và chọn bức tranh phù hợp với nội dung.",
+      "audioUrl": "/audio/hsk1/l2_q8.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/l2_q8_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/l2_q8_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/l2_q8_c.jpg", "isCorrect": true }
+      ]
+    },
+    {
+      "questionOrder": 9,
+      "skillType": "LISTENING",
+      "partNumber": 2,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "Câu 9",
+      "instruction": "Nghe đoạn hội thoại và chọn bức tranh phù hợp với nội dung.",
+      "audioUrl": "/audio/hsk1/l2_q9.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/l2_q9_a.jpg", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/l2_q9_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/l2_q9_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 10,
+      "skillType": "LISTENING",
+      "partNumber": 2,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "Câu 10",
+      "instruction": "Nghe đoạn hội thoại và chọn bức tranh phù hợp với nội dung.",
+      "audioUrl": "/audio/hsk1/l2_q10.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/l2_q10_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/l2_q10_b.jpg", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/l2_q10_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 11,
+      "skillType": "LISTENING",
+      "partNumber": 3,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "男的喜欢什么？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l3_q11.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "苹果", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "香蕉", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "橙子", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 12,
+      "skillType": "LISTENING",
+      "partNumber": 3,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "女的去哪儿？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l3_q12.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "学校", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "医院", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "商店", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 13,
+      "skillType": "LISTENING",
+      "partNumber": 3,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "他们什么时候见面？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l3_q13.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "今天", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "明天", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "后天", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 14,
+      "skillType": "LISTENING",
+      "partNumber": 3,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "这个多少钱？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l3_q14.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "十块", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "二十块", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "三十块", "isCorrect": true }
+      ]
+    },
+    {
+      "questionOrder": 15,
+      "skillType": "LISTENING",
+      "partNumber": 3,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "她是谁？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l3_q15.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "老师", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "学生", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "医生", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 16,
+      "skillType": "LISTENING",
+      "partNumber": 4,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "这是谁的书？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l4_q16.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "他的", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "我的", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "同学的", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 17,
+      "skillType": "LISTENING",
+      "partNumber": 4,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "他们什么时候去北京？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l4_q17.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "星期三", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "星期五", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "星期六", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 18,
+      "skillType": "LISTENING",
+      "partNumber": 4,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "他买了多少个苹果？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l4_q18.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "5个", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "15个", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "50个", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 19,
+      "skillType": "LISTENING",
+      "partNumber": 4,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "她想喝什么？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l4_q19.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "茶", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "咖啡", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "水", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 20,
+      "skillType": "LISTENING",
+      "partNumber": 4,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "她的女儿怎么样？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/l4_q20.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "爱学习", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "很漂亮", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "想回家", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 21,
+      "skillType": "READING",
+      "partNumber": 1,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "这是一只猫。",
+      "instruction": "Đọc câu miêu tả và chọn bức tranh phù hợp.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r1_q21_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r1_q21_b.jpg", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r1_q21_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 22,
+      "skillType": "READING",
+      "partNumber": 1,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "我喜欢喝咖啡。",
+      "instruction": "Đọc câu miêu tả và chọn bức tranh phù hợp.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r1_q22_a.jpg", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r1_q22_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r1_q22_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 23,
+      "skillType": "READING",
+      "partNumber": 1,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "他在用电脑工作。",
+      "instruction": "Đọc câu miêu tả và chọn bức tranh phù hợp.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r1_q23_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r1_q23_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r1_q23_c.jpg", "isCorrect": true }
+      ]
+    },
+    {
+      "questionOrder": 24,
+      "skillType": "READING",
+      "partNumber": 1,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "这是我的房子。",
+      "instruction": "Đọc câu miêu tả và chọn bức tranh phù hợp.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r1_q24_a.jpg", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r1_q24_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r1_q24_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 25,
+      "skillType": "READING",
+      "partNumber": 1,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "她是一位老师。",
+      "instruction": "Đọc câu miêu tả và chọn bức tranh phù hợp.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r1_q25_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r1_q25_b.jpg", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r1_q25_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 26,
+      "skillType": "READING",
+      "partNumber": 2,
+      "questionType": "TRUE_FALSE",
+      "questionText": "这是一本书。",
+      "instruction": "Xem hình ảnh và xác định xem câu miêu tả có đúng không.",
+      "imageUrl": "/images/hsk1/r2_q26.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": true },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 27,
+      "skillType": "READING",
+      "partNumber": 2,
+      "questionType": "TRUE_FALSE",
+      "questionText": "这是一辆汽车。",
+      "instruction": "Xem hình ảnh và xác định xem câu miêu tả có đúng không.",
+      "imageUrl": "/images/hsk1/r2_q27.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": false },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": true }
+      ]
+    },
+    {
+      "questionOrder": 28,
+      "skillType": "READING",
+      "partNumber": 2,
+      "questionType": "TRUE_FALSE",
+      "questionText": "她在打电话。",
+      "instruction": "Xem hình ảnh và xác định xem câu miêu tả có đúng không.",
+      "imageUrl": "/images/hsk1/r2_q28.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": true },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 29,
+      "skillType": "READING",
+      "partNumber": 2,
+      "questionType": "TRUE_FALSE",
+      "questionText": "这是水。",
+      "instruction": "Xem hình ảnh và xác định xem câu miêu tả có đúng không.",
+      "imageUrl": "/images/hsk1/r2_q29.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": true },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 30,
+      "skillType": "READING",
+      "partNumber": 2,
+      "questionType": "TRUE_FALSE",
+      "questionText": "这是一只狗。",
+      "instruction": "Xem hình ảnh và xác định xem câu miêu tả có đúng không.",
+      "imageUrl": "/images/hsk1/r2_q30.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": false },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": true }
+      ]
+    },
+    {
+      "questionOrder": 31,
+      "skillType": "READING",
+      "partNumber": 3,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "我想喝一杯水。",
+      "instruction": "Đọc câu miêu tả và chọn hình ảnh phù hợp nhất.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r3_q31_a.jpg", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r3_q31_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r3_q31_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 32,
+      "skillType": "READING",
+      "partNumber": 3,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "他有一只可爱的猫。",
+      "instruction": "Đọc câu miêu tả và chọn hình ảnh phù hợp nhất.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r3_q32_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r3_q32_b.jpg", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r3_q32_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 33,
+      "skillType": "READING",
+      "partNumber": 3,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "这是我的电脑。",
+      "instruction": "Đọc câu miêu tả và chọn hình ảnh phù hợp nhất.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r3_q33_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r3_q33_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r3_q33_c.jpg", "isCorrect": true }
+      ]
+    },
+    {
+      "questionOrder": 34,
+      "skillType": "READING",
+      "partNumber": 3,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "老师在教室里。",
+      "instruction": "Đọc câu miêu tả và chọn hình ảnh phù hợp nhất.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r3_q34_a.jpg", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r3_q34_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r3_q34_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 35,
+      "skillType": "READING",
+      "partNumber": 3,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "学生们在学习。",
+      "instruction": "Đọc câu miêu tả và chọn hình ảnh phù hợp nhất.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/r3_q35_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/r3_q35_b.jpg", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/r3_q35_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 36,
+      "skillType": "READING",
+      "partNumber": 4,
+      "questionType": "FILL_BLANK",
+      "questionText": "Điền từ thích hợp:",
+      "instruction": "Chọn từ đúng để điền vào chỗ trống.",
+      "blankSentence": "我____喝茶。",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "喜欢", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "是", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "有", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 37,
+      "skillType": "READING",
+      "partNumber": 4,
+      "questionType": "FILL_BLANK",
+      "questionText": "Điền từ thích hợp:",
+      "instruction": "Chọn từ đúng để điền vào chỗ trống.",
+      "blankSentence": "她是我的____。",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "朋友", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "书", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "水", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 38,
+      "skillType": "READING",
+      "partNumber": 4,
+      "questionType": "FILL_BLANK",
+      "questionText": "Điền từ thích hợp:",
+      "instruction": "Chọn từ đúng để điền vào chỗ trống.",
+      "blankSentence": "今天天气很____。",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "好", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "喝", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "看", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 39,
+      "skillType": "READING",
+      "partNumber": 4,
+      "questionType": "FILL_BLANK",
+      "questionText": "Điền từ thích hợp:",
+      "instruction": "Chọn từ đúng để điền vào chỗ trống.",
+      "blankSentence": "我____中国人。",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "是", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "有", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "去", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 40,
+      "skillType": "READING",
+      "partNumber": 4,
+      "questionType": "FILL_BLANK",
+      "questionText": "Điền từ thích hợp:",
+      "instruction": "Chọn từ đúng để điền vào chỗ trống.",
+      "blankSentence": "他____三个苹果。",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "有", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "是", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "喜欢", "isCorrect": false }
+      ]
+    }
+  ]
+}
+

@@ -766,7 +766,16 @@ namespace HiHSK.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AudioEndTime")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AudioStartTime")
+                        .HasColumnType("int");
+
                     b.Property<string>("AudioUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BlankSentence")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -788,7 +797,16 @@ namespace HiHSK.Infrastructure.Migrations
                     b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Instruction")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PartNumber")
                         .HasColumnType("int");
 
                     b.Property<int>("Points")
@@ -812,6 +830,9 @@ namespace HiHSK.Infrastructure.Migrations
 
                     b.Property<int?>("SentencePatternId")
                         .HasColumnType("int");
+
+                    b.Property<string>("SkillType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -841,6 +862,9 @@ namespace HiHSK.Infrastructure.Migrations
                     b.Property<string>("Explanation")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsCorrect")
                         .ValueGeneratedOnAdd()
@@ -1525,7 +1549,8 @@ namespace HiHSK.Infrastructure.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<decimal?>("PronunciationAccuracy")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<int?>("Score")
                         .HasColumnType("int");
@@ -1535,7 +1560,8 @@ namespace HiHSK.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<decimal?>("ToneAccuracy")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -1908,6 +1934,10 @@ namespace HiHSK.Infrastructure.Migrations
                     b.Property<int?>("Frequency")
                         .HasColumnType("int");
 
+                    b.Property<string>("GrammarNote")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<int?>("HSKLevel")
                         .HasColumnType("int");
 
@@ -1922,6 +1952,18 @@ namespace HiHSK.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("PartOfSpeech")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PartOfSpeechEn")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PartOfSpeechVi")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Pinyin")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1929,6 +1971,10 @@ namespace HiHSK.Infrastructure.Migrations
 
                     b.Property<int?>("StrokeCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Structure")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int?>("TopicId")
                         .HasColumnType("int");
@@ -1940,6 +1986,8 @@ namespace HiHSK.Infrastructure.Migrations
                     b.HasIndex("HSKLevel");
 
                     b.HasIndex("LessonId");
+
+                    b.HasIndex("PartOfSpeech");
 
                     b.HasIndex("TopicId");
 

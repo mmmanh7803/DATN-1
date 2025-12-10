@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HiHSK.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250116000000_Seed12LessonTopicsHsk1")]
-    partial class Seed12LessonTopicsHsk1
+    [Migration("20251202122124_AddHSKExamQuestionFields")]
+    partial class AddHSKExamQuestionFields
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -772,6 +772,9 @@ namespace HiHSK.Infrastructure.Migrations
                     b.Property<string>("AudioUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("BlankSentence")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -791,7 +794,16 @@ namespace HiHSK.Infrastructure.Migrations
                     b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Instruction")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PartNumber")
                         .HasColumnType("int");
 
                     b.Property<int>("Points")
@@ -815,6 +827,9 @@ namespace HiHSK.Infrastructure.Migrations
 
                     b.Property<int?>("SentencePatternId")
                         .HasColumnType("int");
+
+                    b.Property<string>("SkillType")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -844,6 +859,9 @@ namespace HiHSK.Infrastructure.Migrations
                     b.Property<string>("Explanation")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsCorrect")
                         .ValueGeneratedOnAdd()
@@ -1150,6 +1168,73 @@ namespace HiHSK.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("TranslationHistories");
+                });
+
+            modelBuilder.Entity("HiHSK.Domain.Entities.UserActivityProgress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActivityId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int?>("HskLevel")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsCompleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int?>("PartNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TopicId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TopicId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("HskLevel", "PartNumber");
+
+                    b.HasIndex("UserId", "TopicId", "ActivityId")
+                        .IsUnique()
+                        .HasFilter("[TopicId] IS NOT NULL");
+
+                    b.HasIndex("UserId", "HskLevel", "PartNumber", "ActivityId")
+                        .IsUnique()
+                        .HasFilter("[HskLevel] IS NOT NULL AND [PartNumber] IS NOT NULL");
+
+                    b.ToTable("UserActivityProgresses");
                 });
 
             modelBuilder.Entity("HiHSK.Domain.Entities.UserAnswer", b =>
@@ -1461,7 +1546,8 @@ namespace HiHSK.Infrastructure.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<decimal?>("PronunciationAccuracy")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<int?>("Score")
                         .HasColumnType("int");
@@ -1471,7 +1557,8 @@ namespace HiHSK.Infrastructure.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<decimal?>("ToneAccuracy")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -1844,8 +1931,15 @@ namespace HiHSK.Infrastructure.Migrations
                     b.Property<int?>("Frequency")
                         .HasColumnType("int");
 
+                    b.Property<string>("GrammarNote")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<int?>("HSKLevel")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("LessonId")
                         .HasColumnType("int");
@@ -1855,6 +1949,18 @@ namespace HiHSK.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("PartOfSpeech")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PartOfSpeechEn")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PartOfSpeechVi")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Pinyin")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -1862,6 +1968,10 @@ namespace HiHSK.Infrastructure.Migrations
 
                     b.Property<int?>("StrokeCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Structure")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int?>("TopicId")
                         .HasColumnType("int");
@@ -1873,6 +1983,8 @@ namespace HiHSK.Infrastructure.Migrations
                     b.HasIndex("HSKLevel");
 
                     b.HasIndex("LessonId");
+
+                    b.HasIndex("PartOfSpeech");
 
                     b.HasIndex("TopicId");
 
@@ -2715,16 +2827,14 @@ namespace HiHSK.Infrastructure.Migrations
 
             modelBuilder.Entity("HiHSK.Domain.Entities.Word", b =>
                 {
-                    b.HasOne("HiHSK.Domain.Entities.Lesson", "Lesson")
+                    b.HasOne("HiHSK.Domain.Entities.Lesson", null)
                         .WithMany("Words")
-                        .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("LessonId");
 
                     b.HasOne("HiHSK.Domain.Entities.LessonTopic", "Topic")
                         .WithMany("Words")
-                        .HasForeignKey("TopicId");
-
-                    b.Navigation("Lesson");
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Topic");
                 });

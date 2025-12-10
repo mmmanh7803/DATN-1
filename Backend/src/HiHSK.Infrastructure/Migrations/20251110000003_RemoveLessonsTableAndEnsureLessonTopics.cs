@@ -9,7 +9,16 @@ namespace HiHSK.Infrastructure.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Xóa foreign keys liên quan đến bảng Lessons (nếu có)
+            // Drop all foreign keys referencing Lessons table from other tables
+            migrationBuilder.Sql(@"
+                DECLARE @sql NVARCHAR(MAX) = '';
+                SELECT @sql = @sql + 'ALTER TABLE [' + OBJECT_SCHEMA_NAME(parent_object_id) + '].[' + OBJECT_NAME(parent_object_id) + '] DROP CONSTRAINT [' + name + '];' + CHAR(13)
+                FROM sys.foreign_keys
+                WHERE referenced_object_id = OBJECT_ID('Lessons');
+                EXEC sp_executesql @sql;
+            ");
+
+            // Xóa foreign keys từ bảng Lessons (nếu có)
             migrationBuilder.Sql(@"
                 IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE name = 'FK_Lessons_Courses_CourseId')
                     ALTER TABLE [Lessons] DROP CONSTRAINT [FK_Lessons_Courses_CourseId];

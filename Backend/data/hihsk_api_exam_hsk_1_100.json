@@ -1,0 +1,40 @@
+{
+  "exam": [
+    {
+      "choose": null,
+      "id": 100,
+      "lang_en": "Lesson 16",
+      "lang_vi": "Các loài chim",
+      "status": 1,
+      "cate_id": 8,
+      "parent_cate_id": null,
+      "des": null,
+      "created_at": "2023-11-30T17:22:02.000000Z",
+      "updated_at": "2023-12-01T01:44:07.000000Z",
+      "name": "你好 – Xin chào",
+      "vocal_list": "猫头鹰, 老鹰, 啄木鸟, 孔雀, 麻雀, 鹭, 天鹅, 隼, 鸵鸟, 巢, 羽毛, 爪",
+      "mp3_time": null,
+      "random": null,
+      "is_premium": 1,
+      "conversation": null,
+      "fill_data_json": null,
+      "part1": [],
+      "part2": [],
+      "part3": [],
+      "part4": [],
+      "part5": [],
+      "part6": [],
+      "part7": [],
+      "part8": [],
+      "part9": [],
+      "part10": [],
+      "part11": [],
+      "part12": [],
+      "part13": [],
+      "part14": [],
+      "part15": []
+    }
+  ],
+  "cate": "100",
+  "newData": []
+}

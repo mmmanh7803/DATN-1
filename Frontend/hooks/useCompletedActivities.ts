@@ -1,18 +1,22 @@
 import { useState, useEffect, useCallback } from "react";
 import { getCompletedActivities, completeActivity } from "@/lib/services/activityService";
+import { topicService, TopicCompletedStatus, UnlockNextTopicResult } from "@/lib/services/topicService";
 
 interface UseCompletedActivitiesOptions {
   hskLevel?: number;
   partNumber?: number;
   topicId?: number;
   autoRefresh?: boolean; // Tự động refresh khi có thay đổi
+  autoCheckUnlock?: boolean; // Tự động kiểm tra mở khóa topic tiếp theo
 }
 
 export function useCompletedActivities(options: UseCompletedActivitiesOptions = {}) {
-  const { hskLevel, partNumber, topicId, autoRefresh = true } = options;
+  const { hskLevel, partNumber, topicId, autoRefresh = true, autoCheckUnlock = true } = options;
   const [completedActivityIds, setCompletedActivityIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const [topicCompletedStatus, setTopicCompletedStatus] = useState<TopicCompletedStatus | null>(null);
+  const [unlockResult, setUnlockResult] = useState<UnlockNextTopicResult | null>(null);
 
   // Load completed activities
   const loadCompletedActivities = useCallback(async () => {
@@ -80,11 +84,71 @@ export function useCompletedActivities(options: UseCompletedActivitiesOptions = 
   const isActivityCompleted = useCallback((activityId: string) => {
     return completedActivityIds.includes(activityId);
   }, [completedActivityIds]);
+  
+  // Kiểm tra xem topic đã hoàn thành chưa
+  const checkTopicCompleted = useCallback(async () => {
+    if (!topicId) return null;
+    
+    try {
+      const status = await topicService.isTopicCompleted(topicId);
+      setTopicCompletedStatus(status);
+      return status;
+    } catch (err) {
+      console.error("Error checking topic completed:", err);
+      return null;
+    }
+  }, [topicId]);
+  
+  // Kiểm tra và mở khóa topic tiếp theo
+  const checkAndUnlockNextTopic = useCallback(async () => {
+    if (!topicId) return null;
+    
+    try {
+      const result = await topicService.checkAndUnlockNextTopic(topicId);
+      setUnlockResult(result);
+      
+      // Dispatch event để thông báo unlock
+      if (result.unlocked && typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("topic-unlocked", {
+          detail: { 
+            unlockedTopicId: result.nextTopicId,
+            unlockedTopicTitle: result.nextTopicTitle,
+            completedTopicId: topicId
+          }
+        }));
+      }
+      
+      return result;
+    } catch (err) {
+      console.error("Error checking and unlocking next topic:", err);
+      return null;
+    }
+  }, [topicId]);
 
   // Initial load
   useEffect(() => {
     loadCompletedActivities();
   }, [loadCompletedActivities]);
+  
+  // Auto check topic completed và unlock khi completedActivityIds thay đổi
+  useEffect(() => {
+    if (!topicId || !autoCheckUnlock) return;
+    
+    // Kiểm tra xem đã hoàn thành đủ activities chưa
+    const checkAndUnlock = async () => {
+      const status = await checkTopicCompleted();
+      
+      if (status?.isCompleted) {
+        // Tự động kiểm tra và mở khóa topic tiếp theo
+        await checkAndUnlockNextTopic();
+      }
+    };
+    
+    // Chỉ check khi có activities đã hoàn thành
+    if (completedActivityIds.length > 0) {
+      checkAndUnlock();
+    }
+  }, [topicId, completedActivityIds, autoCheckUnlock, checkTopicCompleted, checkAndUnlockNextTopic]);
 
   // Listen for storage events để đồng bộ giữa các tabs
   useEffect(() => {
@@ -153,6 +217,11 @@ export function useCompletedActivities(options: UseCompletedActivitiesOptions = 
     loadCompletedActivities,
     markActivityCompleted,
     isActivityCompleted,
+    // Topic completion tracking
+    topicCompletedStatus,
+    checkTopicCompleted,
+    checkAndUnlockNextTopic,
+    unlockResult,
   };
 }
 

@@ -1,0 +1,147 @@
+{
+  "examPaper": {
+    "title": "Đề thi HSK 1 - Bài 1",
+    "examType": "HSK",
+    "level": 1,
+    "description": "Đề thi thử HSK cấp 1 theo chuẩn quốc tế",
+    "durationMinutes": 35,
+    "totalQuestions": 40,
+    "totalPoints": 200,
+    "passingScore": 120
+  },
+  "questions": [
+    {
+      "questionOrder": 1,
+      "skillType": "LISTENING",
+      "partNumber": 1,
+      "questionType": "TRUE_FALSE",
+      "questionText": "Câu 1",
+      "instruction": "Nghe câu miêu tả và xác định xem nó có đúng với bức tranh không.",
+      "audioUrl": "/audio/hsk1/listening/part1/q1.mp3",
+      "imageUrl": "/images/hsk1/q1_apple.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": true },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 2,
+      "skillType": "LISTENING",
+      "partNumber": 1,
+      "questionType": "TRUE_FALSE",
+      "questionText": "Câu 2",
+      "instruction": "Nghe câu miêu tả và xác định xem nó có đúng với bức tranh không.",
+      "audioUrl": "/audio/hsk1/listening/part1/q2.mp3",
+      "imageUrl": "/images/hsk1/q2_book.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": false },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": true }
+      ]
+    },
+    {
+      "questionOrder": 6,
+      "skillType": "LISTENING",
+      "partNumber": 2,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "Câu 6",
+      "instruction": "Nghe đoạn hội thoại và chọn bức tranh phù hợp với nội dung.",
+      "audioUrl": "/audio/hsk1/listening/part2/q6.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/q6_a.jpg", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/q6_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/q6_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 11,
+      "skillType": "LISTENING",
+      "partNumber": 3,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "男的喜欢什么？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/listening/part3/q11.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "苹果", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "香蕉", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "橙子", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 16,
+      "skillType": "LISTENING",
+      "partNumber": 4,
+      "questionType": "MULTIPLE_CHOICE",
+      "questionText": "他们在说什么？",
+      "instruction": "Nghe đoạn hội thoại và chọn câu trả lời đúng.",
+      "audioUrl": "/audio/hsk1/listening/part4/q16.mp3",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "天气", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "工作", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "吃饭", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 21,
+      "skillType": "READING",
+      "partNumber": 1,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "这是一只猫。",
+      "instruction": "Đọc câu miêu tả và chọn bức tranh phù hợp.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/q21_a.jpg", "isCorrect": false },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/q21_b_cat.jpg", "isCorrect": true },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/q21_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 26,
+      "skillType": "READING",
+      "partNumber": 2,
+      "questionType": "TRUE_FALSE",
+      "questionText": "这是一本书。",
+      "instruction": "Xem hình ảnh và xác định xem câu miêu tả có đúng không.",
+      "imageUrl": "/images/hsk1/q26_book.jpg",
+      "points": 5,
+      "options": [
+        { "optionLabel": "✓", "optionText": "Đúng", "isCorrect": true },
+        { "optionLabel": "✗", "optionText": "Sai", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 31,
+      "skillType": "READING",
+      "partNumber": 3,
+      "questionType": "SELECT_IMAGE",
+      "questionText": "我想喝一杯水。",
+      "instruction": "Đọc câu miêu tả và chọn hình ảnh phù hợp nhất.",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "", "imageUrl": "/images/hsk1/q31_a_water.jpg", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "", "imageUrl": "/images/hsk1/q31_b.jpg", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "", "imageUrl": "/images/hsk1/q31_c.jpg", "isCorrect": false }
+      ]
+    },
+    {
+      "questionOrder": 36,
+      "skillType": "READING",
+      "partNumber": 4,
+      "questionType": "FILL_BLANK",
+      "questionText": "Điền từ thích hợp:",
+      "instruction": "Chọn từ đúng để điền vào chỗ trống.",
+      "blankSentence": "我____喝茶。",
+      "points": 5,
+      "options": [
+        { "optionLabel": "A", "optionText": "喜欢", "isCorrect": true },
+        { "optionLabel": "B", "optionText": "是", "isCorrect": false },
+        { "optionLabel": "C", "optionText": "有", "isCorrect": false }
+      ]
+    }
+  ]
+}
+

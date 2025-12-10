@@ -34,7 +34,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/tests" className="hover:text-primary transition">
+                <Link href="/exams" className="hover:text-primary transition">
                   Đề thi thử
                 </Link>
               </li>

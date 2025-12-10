@@ -67,5 +67,25 @@ public interface IActivityProgressRepository
         string userId,
         int topicId,
         List<int> wordIds);
+    
+    /// <summary>
+    /// Kiểm tra xem topic đã hoàn thành chưa (tất cả activities bắt buộc đã completed)
+    /// </summary>
+    Task<bool> IsTopicCompletedAsync(string userId, int topicId);
+    
+    /// <summary>
+    /// Lấy danh sách activity IDs bắt buộc để hoàn thành topic
+    /// </summary>
+    List<string> GetRequiredActivityIds();
+    
+    /// <summary>
+    /// Kiểm tra và mở khóa topic tiếp theo nếu topic hiện tại đã hoàn thành
+    /// </summary>
+    Task<(bool unlocked, int? nextTopicId)> CheckAndUnlockNextTopicAsync(string userId, int completedTopicId);
+    
+    /// <summary>
+    /// Kiểm tra xem user có thể truy cập topic không
+    /// </summary>
+    Task<(bool canAccess, string reason)> CanAccessTopicAsync(string userId, int topicId);
 }
 

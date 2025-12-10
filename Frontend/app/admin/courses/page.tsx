@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
+import CourseEditor from "@/components/admin/CourseEditor";
 import { adminService, AdminCourseDto } from "@/lib/services/adminService";
 
 export default function AdminCoursesPage() {
   const [courses, setCourses] = useState<AdminCourseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [editingCourseId, setEditingCourseId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     loadCourses();
@@ -40,6 +43,20 @@ export default function AdminCoursesPage() {
     }
   };
 
+  const handleCreate = () => {
+    setEditingCourseId(undefined);
+    setEditorOpen(true);
+  };
+
+  const handleEdit = (id: number) => {
+    setEditingCourseId(id);
+    setEditorOpen(true);
+  };
+
+  const handleSave = () => {
+    loadCourses();
+  };
+
   return (
     <AdminLayout>
       <div>
@@ -50,10 +67,7 @@ export default function AdminCoursesPage() {
               <p className="text-gray-600">Quản lý các khóa học HSK</p>
             </div>
             <button
-              onClick={() => {
-                // TODO: Open create modal
-                alert("Chức năng thêm khóa học sẽ được implement sau");
-              }}
+              onClick={handleCreate}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
             >
               + Thêm khóa học
@@ -127,19 +141,13 @@ export default function AdminCoursesPage() {
                   </div>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => {
-                        // TODO: Navigate to course detail
-                        alert("Chức năng xem chi tiết sẽ được implement sau");
-                      }}
+                      onClick={() => handleEdit(course.id)}
                       className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
                     >
                       Quản lý
                     </button>
                     <button
-                      onClick={() => {
-                        // TODO: Open edit modal
-                        alert("Chức năng sửa khóa học sẽ được implement sau");
-                      }}
+                      onClick={() => handleEdit(course.id)}
                       className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium"
                     >
                       Sửa
@@ -157,6 +165,17 @@ export default function AdminCoursesPage() {
           </div>
         )}
       </div>
+
+      {/* Course Editor Modal */}
+      <CourseEditor
+        courseId={editingCourseId}
+        isOpen={editorOpen}
+        onClose={() => {
+          setEditorOpen(false);
+          setEditingCourseId(undefined);
+        }}
+        onSave={handleSave}
+      />
     </AdminLayout>
   );
 }

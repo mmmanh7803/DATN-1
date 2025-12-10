@@ -1,0 +1,852 @@
+{
+  "exam": {
+    "title": "HSK 1 - Bài 5",
+    "examType": "HSK",
+    "level": 1,
+    "description": "Đề thi HSK cấp 1 - 2 kỹ năng",
+    "durationMinutes": 40,
+    "totalQuestions": 40,
+    "totalPoints": 40,
+    "passingScore": 60,
+    "sourceId": 325
+  },
+  "sections": [
+    {
+      "sectionName": "Phần 1: Nghe (Listening)",
+      "skillType": "Listening",
+      "parts": [
+        {
+          "partNumber": 1,
+          "partName": "Bài nghe",
+          "questionCount": 20,
+          "questions": [
+            {
+              "questionOrder": 1,
+              "questionType": "LISTENING",
+              "questionText": "很冷",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 1,
+              "sourceId": 179594,
+              "options": [
+                {
+                  "optionLabel": "Đúng",
+                  "optionText": "Đúng",
+                  "isCorrect": true
+                },
+                {
+                  "optionLabel": "Sai",
+                  "optionText": "Sai",
+                  "isCorrect": false
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/Xi96ckC6HMy61725982315.mp3",
+              "audioScript": "很冷",
+              "imageUrl": "https://api.hihsk.com/storage/images/orw5CkkvoHxs1725982315.jpg",
+              "translation": "Rất lạnh."
+            },
+            {
+              "questionOrder": 2,
+              "questionType": "LISTENING",
+              "questionText": "不喜欢",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 2,
+              "sourceId": 179595,
+              "options": [
+                {
+                  "optionLabel": "Đúng",
+                  "optionText": "Đúng",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "Sai",
+                  "optionText": "Sai",
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/dPJiST7PGXi51725982315.mp3",
+              "audioScript": "不喜欢",
+              "imageUrl": "https://api.hihsk.com/storage/images/M7jACVTpJj4E1725982315.jpg",
+              "translation": "Không thích."
+            },
+            {
+              "questionOrder": 3,
+              "questionType": "LISTENING",
+              "questionText": "四个人",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 3,
+              "sourceId": 179596,
+              "options": [
+                {
+                  "optionLabel": "Đúng",
+                  "optionText": "Đúng",
+                  "isCorrect": true
+                },
+                {
+                  "optionLabel": "Sai",
+                  "optionText": "Sai",
+                  "isCorrect": false
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/dcjrUlrjMAhL1725982316.mp3",
+              "audioScript": "四个人",
+              "imageUrl": "https://api.hihsk.com/storage/images/gE2l4yVz9vDu1725982316.jpg",
+              "translation": "Bốn người"
+            },
+            {
+              "questionOrder": 4,
+              "questionType": "LISTENING",
+              "questionText": "在工作",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 4,
+              "sourceId": 179597,
+              "options": [
+                {
+                  "optionLabel": "Đúng",
+                  "optionText": "Đúng",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "Sai",
+                  "optionText": "Sai",
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/3HkBU1sx9Nj01725982316.mp3",
+              "audioScript": "在工作",
+              "imageUrl": "https://api.hihsk.com/storage/images/mQO4olf0O4qW1725982316.jpg",
+              "translation": "\"在工作\" trong tiếng Trung có nghĩa là \"đang làm việc\" trong tiếng Việt."
+            },
+            {
+              "questionOrder": 5,
+              "questionType": "LISTENING",
+              "questionText": "看电视",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 5,
+              "sourceId": 179598,
+              "options": [
+                {
+                  "optionLabel": "Đúng",
+                  "optionText": "Đúng",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "Sai",
+                  "optionText": "Sai",
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/GaU9rAML0N5T1725982316.mp3",
+              "audioScript": "看电视",
+              "imageUrl": "https://api.hihsk.com/storage/images/kFxiMq93XnQL1725982316.jpg",
+              "translation": "\"看电视\" dịch sang tiếng Việt là \"xem tivi\"."
+            },
+            {
+              "questionOrder": 6,
+              "questionType": "LISTENING",
+              "questionText": "明天下午三点见。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 6,
+              "sourceId": 178839,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "9Cx4q1iz4LFW1725982153.jpg",
+                  "isCorrect": true
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "Yv8UXk1njdtQ1725982153.jpg",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "LGlIkNhlw7b71725982153.jpg",
+                  "isCorrect": false
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/dAk0eXGR41va1725982153.mp3",
+              "audioScript": "明天下午三点见。",
+              "translation": "Hẹn gặp bạn vào chiều mai lúc ba giờ."
+            },
+            {
+              "questionOrder": 7,
+              "questionType": "LISTENING",
+              "questionText": "我后面有四个人。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 7,
+              "sourceId": 178840,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "K6YU3AysXO4C1725982154.jpg",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "s4ips0Yge5sn1725982154.jpg",
+                  "isCorrect": true
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "FPqkNXUXhusH1725982154.jpg",
+                  "isCorrect": false
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/WUdnhpZ2fZUr1725982154.mp3",
+              "audioScript": "我后面有四个人。",
+              "translation": "Có bốn người phía sau tôi."
+            },
+            {
+              "questionOrder": 8,
+              "questionType": "LISTENING",
+              "questionText": "他的爸爸是医生。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 8,
+              "sourceId": 178841,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "6xDID5VMJ1kJ1725982154.jpg",
+                  "isCorrect": true
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "GrFaSJuAXmqh1725982154.jpg",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "X9YY1jfdNvy41725982154.jpg",
+                  "isCorrect": false
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/j7OqF08fzHnj1725982154.mp3",
+              "audioScript": "他的爸爸是医生。",
+              "translation": "Bố của anh ấy là bác sĩ."
+            },
+            {
+              "questionOrder": 9,
+              "questionType": "LISTENING",
+              "questionText": "小狗坐在椅子上。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 9,
+              "sourceId": 178842,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "CEusMhMqZC4q1725982155.jpg",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "hTCQlPQPPFro1725982155.jpg",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "AAItCwZ4Umq71725982155.jpg",
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/XWesovmaleKs1725982155.mp3",
+              "audioScript": "小狗坐在椅子上。",
+              "translation": "Chú chó ngồi trên ghế."
+            },
+            {
+              "questionOrder": 10,
+              "questionType": "LISTENING",
+              "questionText": "这个杯子太小了。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 10,
+              "sourceId": 178843,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "g63eKLAksEH21725982155.jpg",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "gr017vetZdA01725982155.jpg",
+                  "isCorrect": true
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "lV1duH8WiIuP1725982156.jpg",
+                  "isCorrect": false
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/0xT9Dvma0JOd1725982156.mp3",
+              "audioScript": "这个杯子太小了。",
+              "translation": "Cái cốc này quá nhỏ."
+            },
+            {
+              "questionOrder": 11,
+              "questionType": "LISTENING",
+              "questionText": "男:妈妈去哪里了?女:她在做饭呢。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 11,
+              "sourceId": 179244,
+              "options": [
+                {
+                  "optionLabel": "B",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/nopIlJqKeUb61725982241.mp3",
+              "audioScript": "男:妈妈去哪里了?女:她在做饭呢。",
+              "imageUrl": "https://api.hihsk.com/storage/images/DMPOhRDulMkhhezeYPhm1727144262.png",
+              "translation": "Nam: Mẹ đi đâu rồi?  \nNữ: Mẹ đang nấu ăn."
+            },
+            {
+              "questionOrder": 12,
+              "questionType": "LISTENING",
+              "questionText": "女:桌子上的书是谁的?男:是我爸爸买的。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 12,
+              "sourceId": 179245,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/edAUqiV4hxyU1725982241.mp3",
+              "audioScript": "女:桌子上的书是谁的?男:是我爸爸买的。",
+              "imageUrl": "https://api.hihsk.com/storage/images/ds8tsAupII7Hfo6DTzVd1727144212.png",
+              "translation": "Nữ: Quyển sách trên bàn là của ai?  \nNam: Là do bố tôi mua."
+            },
+            {
+              "questionOrder": 13,
+              "questionType": "LISTENING",
+              "questionText": "女:今天的电影怎么样?女:很好，我很喜欢。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 13,
+              "sourceId": 179246,
+              "options": [
+                {
+                  "optionLabel": "C",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/YMrwuok7rsrm1725982241.mp3",
+              "audioScript": "女:今天的电影怎么样?女:很好，我很喜欢。",
+              "imageUrl": "https://api.hihsk.com/storage/images/f8tMLGaLaaNPz09Ga6jX1727144377.png",
+              "translation": "Nữ: Hôm nay bộ phim thế nào?  \nNữ: Rất hay, tôi rất thích."
+            },
+            {
+              "questionOrder": 14,
+              "questionType": "LISTENING",
+              "questionText": "男:你是怎么来北京的?女:我是坐飞机来的。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 14,
+              "sourceId": 179247,
+              "options": [],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/hK4wVJqHy7Vg1725982241.mp3",
+              "audioScript": "男:你是怎么来北京的?女:我是坐飞机来的。",
+              "imageUrl": "https://api.hihsk.com/storage/images/V9ucL03WTwyYyOuupPVI1727144498.png",
+              "translation": "Nam: Bạn đã đến Bắc Kinh bằng cách nào?  \nNữ: Tôi đến bằng máy bay."
+            },
+            {
+              "questionOrder": 15,
+              "questionType": "LISTENING",
+              "questionText": "男:你认识王小姐吗?女:认识，她是我的老师。",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 15,
+              "sourceId": 179248,
+              "options": [
+                {
+                  "optionLabel": "D",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/lveSzfeP5Woq1725982241.mp3",
+              "audioScript": "男:你认识王小姐吗?女:认识，她是我的老师。",
+              "imageUrl": "https://api.hihsk.com/storage/images/jBzQ5u8pii6xiHIeJh531727144435.png",
+              "translation": "Nam: Bạn có biết cô Vương không?  \nNữ: Có, cô ấy là giáo viên của tôi."
+            },
+            {
+              "questionOrder": 16,
+              "questionType": "LISTENING",
+              "questionText": "我昨天买了一个电脑。他昨天买了什么？",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 16,
+              "sourceId": 178689,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "{\"data\":[{\"pinyin\":\"diànhuà\",\"title\":\"电话\",\"id\":206,\"mp3\":\"47scoTLChOcI1732264761.mp3\",\"part\":1,\"lang_vi\":\"điện thoại, điện thoại để bàn\"}],\"A\":\"电话\"}",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "{\"data\":[{\"pinyin\":\"diànnǎo\",\"title\":\"电脑\",\"id\":476,\"mp3\":\"vmvw3c4MLB3m1732265033.mp3\",\"part\":1,\"lang_vi\":\"máy tính; máy vi tính\"}],\"A\":\"电脑\"}",
+                  "isCorrect": true
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "{\"data\":[{\"pinyin\":\"shū\",\"title\":\"书\",\"id\":115,\"mp3\":\"qhhNctgP5q0y1732264668.mp3\",\"part\":1,\"lang_vi\":\"sách, cuốn sách\"}],\"A\":\"书\"}",
+                  "isCorrect": false
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/toFTajhzalx01725982122.mp3",
+              "audioScript": "我昨天买了一个电脑。他昨天买了什么？",
+              "translation": "Tôi đã mua một cái máy tính ngày hôm qua.  \nHôm qua, anh ấy đã mua gì?"
+            },
+            {
+              "questionOrder": 17,
+              "questionType": "LISTENING",
+              "questionText": "我喜欢你买的衣服，很漂亮。衣服怎么样？",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 17,
+              "sourceId": 178690,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "{\"data\":[{\"pinyin\":\"tài\",\"title\":\"太\",\"id\":20,\"mp3\":\"XVmiAWpjEDUs1732264574.mp3\",\"part\":1,\"lang_vi\":\"quá, lắm, cực\"},{\"pinyin\":\"dà\",\"title\":\"大\",\"id\":9,\"mp3\":\"AgzHiN9tLO151732264563.mp3\",\"part\":1,\"lang_vi\":\"to, lớn, rộng\"},{\"pinyin\":\"le\",\"title\":\"了\",\"id\":159,\"mp3\":\"99eHAbTjhxY11732264719.mp3\",\"part\":1,\"lang_vi\":\"rồi, rồi chứ, quá rồi (trợ từ ngữ khí\\/trợ từ động thái)\"}],\"A\":\"太大了\"}",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "{\"data\":[{\"pinyin\":\"tài\",\"title\":\"太\",\"id\":20,\"mp3\":\"XVmiAWpjEDUs1732264574.mp3\",\"part\":1,\"lang_vi\":\"quá, lắm, cực\"},{\"pinyin\":\"xiǎo\",\"title\":\"小\",\"id\":306,\"mp3\":\"VnMXIQIijf6P1732264858.mp3\",\"part\":1,\"lang_vi\":\"nhỏ, bé, ít\"},{\"pinyin\":\"le\",\"title\":\"了\",\"id\":159,\"mp3\":\"99eHAbTjhxY11732264719.mp3\",\"part\":1,\"lang_vi\":\"rồi, rồi chứ, quá rồi (trợ từ ngữ khí\\/trợ từ động thái)\"}],\"A\":\"太小了\"}",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "{\"data\":[{\"pinyin\":\"hěn\",\"title\":\"很\",\"id\":17,\"mp3\":\"vrKiGNXv2Kez1732264571.mp3\",\"part\":1,\"lang_vi\":\"rất, lắm\"},{\"pinyin\":\"piàoliàng\",\"title\":\"漂亮\",\"id\":748,\"mp3\":\"vmMGVht5nk0w1732265322.mp3\",\"part\":1,\"lang_vi\":\"xinh đẹp, đẹp đẽ\"}],\"A\":\"很漂亮\"}",
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/YHOp6bb5GNaZ1725982122.mp3",
+              "audioScript": "我喜欢你买的衣服，很漂亮。衣服怎么样？",
+              "translation": "Tôi thích bộ quần áo bạn mua, rất đẹp. Quần áo thế nào rồi?"
+            },
+            {
+              "questionOrder": 18,
+              "questionType": "LISTENING",
+              "questionText": "我下午去学校学习汉语。他下午去哪里？",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 18,
+              "sourceId": 178691,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "{\"data\":[{\"pinyin\":\"shāngdiàn\",\"title\":\"商店\",\"id\":303,\"mp3\":\"KIEaVvTNOXRn1732264855.mp3\",\"part\":1,\"lang_vi\":\"cửa hàng, tiệm\"}],\"A\":\"商店\"}",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "{\"data\":[{\"pinyin\":\"xuéxiào\",\"title\":\"学校\",\"id\":70,\"mp3\":\"d7dNVhenYzDO1732264620.mp3\",\"part\":1,\"lang_vi\":\"trường học\"}],\"A\":\"学校\"}",
+                  "isCorrect": true
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "{\"data\":[{\"pinyin\":\"shūdiàn\",\"title\":\"书店\",\"id\":351,\"mp3\":\"GaqiuUw5Oze21732264903.mp3\",\"part\":1,\"lang_vi\":\"nhà sách, hiệu sách\"}],\"A\":\"书店\"}",
+                  "isCorrect": false
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/QWJMllkNyxjl1725982123.mp3",
+              "audioScript": "我下午去学校学习汉语。他下午去哪里？",
+              "translation": "Tôi buổi chiều đi trường học tiếng Trung.\n\nAnh ấy buổi chiều đi đâu?"
+            },
+            {
+              "questionOrder": 19,
+              "questionType": "LISTENING",
+              "questionText": "明天天气很好，不下雨。明天天气怎么样？",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 19,
+              "sourceId": 178692,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "{\"data\":[{\"pinyin\":\"hěn\",\"title\":\"很\",\"id\":17,\"mp3\":\"vrKiGNXv2Kez1732264571.mp3\",\"part\":1,\"lang_vi\":\"rất, lắm\"},{\"pinyin\":\"rè\",\"title\":\"热\",\"id\":784,\"mp3\":\"ln896eDSzoF81732265360.mp3\",\"part\":1,\"lang_vi\":\"nóng\"}],\"A\":\"很热\"}",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "{\"data\":[{\"pinyin\":\"bùxià\",\"title\":\"不下\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"yǔ\",\"title\":\"雨\",\"id\":263,\"mp3\":\"ZJmvAAGbgxqM1732264816.mp3\",\"part\":1,\"lang_vi\":\"Mưa\"}],\"A\":\"不下雨\"}",
+                  "isCorrect": true
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "{\"data\":[{\"pinyin\":\"hěn\",\"title\":\"很\",\"id\":17,\"mp3\":\"vrKiGNXv2Kez1732264571.mp3\",\"part\":1,\"lang_vi\":\"rất, lắm\"},{\"pinyin\":\"lěng\",\"title\":\"冷\",\"id\":785,\"mp3\":\"bLlZ923HvgRx1732265361.mp3\",\"part\":1,\"lang_vi\":\"lạnh\"}],\"A\":\"很冷\"}",
+                  "isCorrect": false
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/uDz0dguHanEm1725982123.mp3",
+              "audioScript": "明天天气很好，不下雨。明天天气怎么样？",
+              "translation": "Ngày mai thời tiết rất đẹp, không mưa. \n\nNgày mai thời tiết thế nào?"
+            },
+            {
+              "questionOrder": 20,
+              "questionType": "LISTENING",
+              "questionText": "一斤苹果五块钱，我买了五斤。五斤苹果多少钱？",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 20,
+              "sourceId": 178693,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": "{\"data\":[{\"pinyin\":\"5\",\"title\":\"5\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"5\",\"title\":\"5\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"kuài\",\"title\":\"块\",\"id\":164,\"mp3\":\"XJq69E5J7Ysn1732264724.mp3\",\"part\":1,\"lang_vi\":\"tệ, đồng (đơn vị tiền tệ, tương đương NDT), miếng, cục\"}],\"A\":\"55块\"}",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "B",
+                  "optionText": "{\"data\":[{\"pinyin\":\"1\",\"title\":\"1\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"5\",\"title\":\"5\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"1\",\"title\":\"1\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"5\",\"title\":\"5\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"kuài\",\"title\":\"块\",\"id\":164,\"mp3\":\"XJq69E5J7Ysn1732264724.mp3\",\"part\":1,\"lang_vi\":\"tệ, đồng (đơn vị tiền tệ, tương đương NDT), miếng, cục\"}],\"A\":\"1515块\"}",
+                  "isCorrect": false
+                },
+                {
+                  "optionLabel": "C",
+                  "optionText": "{\"data\":[{\"pinyin\":\"2\",\"title\":\"2\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"5\",\"title\":\"5\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"2\",\"title\":\"2\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"5\",\"title\":\"5\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"kuài\",\"title\":\"块\",\"id\":164,\"mp3\":\"XJq69E5J7Ysn1732264724.mp3\",\"part\":1,\"lang_vi\":\"tệ, đồng (đơn vị tiền tệ, tương đương NDT), miếng, cục\"}],\"A\":\"2525块\"}",
+                  "isCorrect": true
+                }
+              ],
+              "audioUrl": "https://api.hihsk.com/storage/mp3/d1tXMv2yv1yt1725982123.mp3",
+              "audioScript": "一斤苹果五块钱，我买了五斤。五斤苹果多少钱？",
+              "translation": "Một cân táo giá năm đồng, tôi đã mua năm cân. Năm cân táo giá bao nhiêu?\n\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sectionName": "Phần 2: Đọc (Reading)",
+      "skillType": "Reading",
+      "parts": [
+        {
+          "partNumber": 1,
+          "partName": "Bài đọc",
+          "questionCount": 20,
+          "questions": [
+            {
+              "questionOrder": 21,
+              "questionType": "READING",
+              "questionText": "\n学习\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 21,
+              "sourceId": 178338,
+              "options": [],
+              "imageUrl": "https://api.hihsk.com/storage/images/ICaaEpBMARnF1725982048.jpg",
+              "translation": "Học tập"
+            },
+            {
+              "questionOrder": 22,
+              "questionType": "READING",
+              "questionText": "我们\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 22,
+              "sourceId": 178734,
+              "options": [],
+              "imageUrl": "https://api.hihsk.com/storage/images/ejifQxiKRRdd1725982132.jpg",
+              "translation": "Chúng tôi"
+            },
+            {
+              "questionOrder": 23,
+              "questionType": "READING",
+              "questionText": "狗\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 23,
+              "sourceId": 178736,
+              "options": [],
+              "imageUrl": "https://api.hihsk.com/storage/images/Y3rhmj0YiWY41725982132.jpg",
+              "translation": "Chó"
+            },
+            {
+              "questionOrder": 24,
+              "questionType": "READING",
+              "questionText": "猫\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 24,
+              "sourceId": 178816,
+              "options": [],
+              "imageUrl": "https://api.hihsk.com/storage/images/oisyRfGIPQDH1725982150.jpg",
+              "translation": "Con mèo"
+            },
+            {
+              "questionOrder": 25,
+              "questionType": "READING",
+              "questionText": "五\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 25,
+              "sourceId": 179614,
+              "options": [],
+              "imageUrl": "https://api.hihsk.com/storage/images/imugj3Si8iPs1725982322.jpg",
+              "translation": "Năm"
+            },
+            {
+              "questionOrder": 26,
+              "questionType": "READING",
+              "questionText": "你女儿的衣服很漂亮。\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 26,
+              "sourceId": 178899,
+              "options": [
+                {
+                  "optionLabel": "B",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "imageUrl": "https://api.hihsk.com/storage/images/PDCetsQX6A1sNHNAoud71727144951.png",
+              "translation": "Con gái bạn mặc chiếc váy thật đẹp."
+            },
+            {
+              "questionOrder": 27,
+              "questionType": "READING",
+              "questionText": "王小姐去买东西了。\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 27,
+              "sourceId": 178900,
+              "options": [
+                {
+                  "optionLabel": "D",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "imageUrl": "https://api.hihsk.com/storage/images/HjZxpGM3PECOsqVv9k0v1727144937.png",
+              "translation": "Cô Vương đã đi mua đồ rồi."
+            },
+            {
+              "questionOrder": 28,
+              "questionType": "READING",
+              "questionText": "他们都是你的同学吗？\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 28,
+              "sourceId": 178901,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "imageUrl": "https://api.hihsk.com/storage/images/9jcdIkE8WLIEbBpT18eA1727145046.png",
+              "translation": "Họ đều là bạn cùng lớp của bạn à?"
+            },
+            {
+              "questionOrder": 29,
+              "questionType": "READING",
+              "questionText": "这些菜，你喜欢哪一个？\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 29,
+              "sourceId": 178902,
+              "options": [],
+              "imageUrl": "https://api.hihsk.com/storage/images/8p2GOM6FRigSfWLZp6dp1727144946.png",
+              "translation": "Những món ăn này, bạn thích món nào?"
+            },
+            {
+              "questionOrder": 30,
+              "questionType": "READING",
+              "questionText": "那个杯子是我朋友的。\n",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 30,
+              "sourceId": 178903,
+              "options": [
+                {
+                  "optionLabel": "C",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "imageUrl": "https://api.hihsk.com/storage/images/DWzkdp7vE5TyVAeM51rn1727145004.png",
+              "translation": "Cái cốc đó là của bạn tôi."
+            },
+            {
+              "questionOrder": 31,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"nǐmen\",\"title\":\"你们\",\"id\":9197,\"mp3\":\"NIrghGFwpO761732304014.mp3\",\"part\":10,\"lang_vi\":\"các bạn, quý vị, các anh\\/chị\"},{\"pinyin\":\"shuí\",\"title\":\"谁\",\"id\":116,\"mp3\":\"TddlFntypCfP1732264669.mp3\",\"part\":1,\"lang_vi\":\"ai, người nào\"},{\"pinyin\":\"huì\",\"title\":\"会\",\"id\":530,\"mp3\":\"jSQZQSXkpAlL1732265087.mp3\",\"part\":1,\"lang_vi\":\"có thể, biết (kỹ năng, khả năng)\"},{\"pinyin\":\"kāichē\",\"title\":\"开车？\",\"id\":862,\"mp3\":\"7WMAEnl4k5ew1732265436.mp3\",\"part\":1,\"lang_vi\":\"lái xe, điều khiển xe (ô tô)\"},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"你们谁会开车？\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 31,
+              "sourceId": 179584,
+              "options": [
+                {
+                  "optionLabel": "D",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "translation": "Bạn nào biết lái xe?  \nTôi."
+            },
+            {
+              "questionOrder": 32,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"tā\",\"title\":\"他\",\"id\":23,\"mp3\":\"SKSUtgMha7pZ1732264576.mp3\",\"part\":1,\"lang_vi\":\"anh ấy, cậu ấy, ông ấy\"},{\"pinyin\":\"nǚér\",\"title\":\"女儿\",\"id\":4424,\"mp3\":\"MIQSQ5vT4PAb1732269219.mp3\",\"part\":5,\"lang_vi\":\"Con gái\"},{\"pinyin\":\"jīnnián\",\"title\":\"今年\",\"id\":411,\"mp3\":\"SQKyWNosiMto1732264970.mp3\",\"part\":1,\"lang_vi\":\"năm nay\"},{\"pinyin\":\"duōdà\",\"title\":\"多大\",\"id\":416,\"mp3\":\"NTjLlmFfodEz1732264975.mp3\",\"part\":1,\"lang_vi\":\"bao nhiêu tuổi, lớn đến mức nào\"},{\"pinyin\":\"le\",\"title\":\"了？\",\"id\":159,\"mp3\":\"99eHAbTjhxY11732264719.mp3\",\"part\":1,\"lang_vi\":\"rồi, rồi chứ, quá rồi (trợ từ ngữ khí\\/trợ từ động thái)\"},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"他女儿今年多大了？\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 32,
+              "sourceId": 179585,
+              "options": [],
+              "translation": "Con gái anh năm nay mấy tuổi?  \n9 tuổi."
+            },
+            {
+              "questionOrder": 33,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"nǐ\",\"title\":\"你\",\"id\":1,\"mp3\":\"cwMMyLUWpquI1732264558.mp3\",\"part\":1,\"lang_vi\":\"bạn, anh, chị, ông, bà\"},{\"pinyin\":\"xiàwǔ\",\"title\":\"下午\",\"id\":177,\"mp3\":\"cxJdUVy6roXs1732264735.mp3\",\"part\":1,\"lang_vi\":\"buổi chiều\"},{\"pinyin\":\"zěnme\",\"title\":\"怎么\",\"id\":171,\"mp3\":\"KLNxtd7JB0XG1732264729.mp3\",\"part\":1,\"lang_vi\":\"làm sao, thế nào, như thế nào\"},{\"pinyin\":\"qùhuǒ\",\"title\":\"去火\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"chēzhàn\",\"title\":\"车站？\",\"id\":670,\"mp3\":\"yqmKFspSwvnm1732265240.mp3\",\"part\":1,\"lang_vi\":\"trạm xe, bến xe buýt, nhà ga\"},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"你下午怎么去火车站？\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 33,
+              "sourceId": 179586,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "translation": "Bạn buổi chiều làm sao đi tới ga tàu?  \nĐi taxi."
+            },
+            {
+              "questionOrder": 34,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"zhège\",\"title\":\"这个\",\"id\":9185,\"mp3\":\"U2en9OVyNyOu1732304002.mp3\",\"part\":10,\"lang_vi\":\"Cái này\"},{\"pinyin\":\"zhuōzǐ\",\"title\":\"桌子\",\"id\":1119,\"mp3\":\"a8aiiXe8MTVX1732265693.mp3\",\"part\":2,\"lang_vi\":\"cái bàn\"},{\"pinyin\":\"zěnmeyàng\",\"title\":\"怎么样？\",\"id\":231,\"mp3\":\"qCSlfAiMB23x1732264785.mp3\",\"part\":1,\"lang_vi\":\"thế nào, ra sao, làm sao\"},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"这个桌子怎么样？\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 34,
+              "sourceId": 179587,
+              "options": [
+                {
+                  "optionLabel": "C",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "translation": "Cái bàn này thế nào?  \nQuá nhỏ."
+            },
+            {
+              "questionOrder": 35,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"māma\",\"title\":\"妈妈\",\"id\":22,\"mp3\":\"ZgvH76mHC6JP1732264575.mp3\",\"part\":1,\"lang_vi\":\"mẹ, má\"},{\"pinyin\":\"shénmeshíhòu\",\"title\":\"什么时候\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"huílái\",\"title\":\"回来？\",\"id\":385,\"mp3\":\"gR0VuvLONb2m1732264941.mp3\",\"part\":1,\"lang_vi\":\"trở về, quay về, về lại\"},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"妈妈什么时候回来？\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 35,
+              "sourceId": 179588,
+              "options": [
+                {
+                  "optionLabel": "B",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "translation": "Mẹ khi nào về?  \nChủ nhật tuần sau."
+            },
+            {
+              "questionOrder": 36,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"xiānshēng\",\"title\":\"先生，\",\"id\":194,\"mp3\":\"Vr92nMKyW6SJ1732264750.mp3\",\"part\":1,\"lang_vi\":\"ông, ngài, thầy, anh (cách gọi lịch sự nam giới)\"},{\"pinyin\":\"zhèér\",\"title\":\"这儿\",\"id\":248,\"mp3\":\"vJZS0j1xCusD1732264801.mp3\",\"part\":1,\"lang_vi\":\"đây, ở đây ( Chỉ một vị trí hoặc nơi chốn cụ thể )\"},{\"pinyin\":\"bùnéng\",\"title\":\"不能\",\"id\":8427,\"mp3\":\"uTPxf2iynPtZ1732303260.mp3\",\"part\":9,\"lang_vi\":\"không thể\"},{\"pinyin\":\"(\",\"title\":\"(\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\")\",\"title\":\")。\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"先生，这儿不能()。\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 36,
+              "sourceId": 178949,
+              "options": [
+                {
+                  "optionLabel": "A",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "translation": "Thưa ông, ở đây không thể ngủ được."
+            },
+            {
+              "questionOrder": 37,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"jīntiān\",\"title\":\"今天\",\"id\":51,\"mp3\":\"sFsC8lK3ig0D1732264603.mp3\",\"part\":1,\"lang_vi\":\"hôm nay\"},{\"pinyin\":\"(\",\"title\":\"(\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\")\",\"title\":\")\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"hào\",\"title\":\"号，\",\"id\":204,\"mp3\":\"vjgCnPD5D1O41732264759.mp3\",\"part\":1,\"lang_vi\":\"ngày (trong tháng), số, con số\"},{\"pinyin\":\"nǐ\",\"title\":\"你\",\"id\":1,\"mp3\":\"cwMMyLUWpquI1732264558.mp3\",\"part\":1,\"lang_vi\":\"bạn, anh, chị, ông, bà\"},{\"pinyin\":\"jǐ\",\"title\":\"几\",\"id\":62,\"mp3\":\"AN4yrd4Vk00D1732264613.mp3\",\"part\":1,\"lang_vi\":\"mấy\"},{\"pinyin\":\"hào\",\"title\":\"号\",\"id\":204,\"mp3\":\"vjgCnPD5D1O41732264759.mp3\",\"part\":1,\"lang_vi\":\"ngày (trong tháng), số, con số\"},{\"pinyin\":\"huí\",\"title\":\"回\",\"id\":69,\"mp3\":\"RKbNLzOaj4h01732264619.mp3\",\"part\":1,\"lang_vi\":\"về, trở về, quay lại\"},{\"pinyin\":\"běijīng\",\"title\":\"北京？\",\"id\":8336,\"mp3\":\"ytqQRg9poqcV1732303171.mp3\",\"part\":9,\"lang_vi\":\"Bắc Kinh\"},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"今天()号，你几号回北京？\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 37,
+              "sourceId": 178950,
+              "options": [
+                {
+                  "optionLabel": "D",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "translation": "Hôm nay là ngày năm, khi nào bạn trở về Bắc Kinh?"
+            },
+            {
+              "questionOrder": 38,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"diànshì\",\"title\":\"电视\",\"id\":338,\"mp3\":\"UEeApg2mVuth1732264890.mp3\",\"part\":1,\"lang_vi\":\"truyền hình, tivi, cái tivi\"},{\"pinyin\":\"lǐ\",\"title\":\"里\",\"id\":257,\"mp3\":\"LjCDyUbIJgjw1732264810.mp3\",\"part\":1,\"lang_vi\":\"Dặm ( = 500 mét), bên trong\"},{\"pinyin\":\"nàgerén\",\"title\":\"那个人\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"shì\",\"title\":\"是\",\"id\":75,\"mp3\":\"siHVIPEVlK101732264625.mp3\",\"part\":1,\"lang_vi\":\"là\"},{\"pinyin\":\"(\",\"title\":\"(\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\")\",\"title\":\")？\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"电视里那个人是()？\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 38,
+              "sourceId": 178951,
+              "options": [
+                {
+                  "optionLabel": "B",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "translation": "Người trong tivi đó là ai?"
+            },
+            {
+              "questionOrder": 39,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"nǚ\",\"title\":\"女\",\"id\":13,\"mp3\":\"Xkzxd8QU9ZwU1732264567.mp3\",\"part\":1,\"lang_vi\":\"nữ, con gái, phụ nữ\"},{\"pinyin\":\":\",\"title\":\":\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"nǐ\",\"title\":\"你\",\"id\":1,\"mp3\":\"cwMMyLUWpquI1732264558.mp3\",\"part\":1,\"lang_vi\":\"bạn, anh, chị, ông, bà\"},{\"pinyin\":\"shì\",\"title\":\"是\",\"id\":75,\"mp3\":\"siHVIPEVlK101732264625.mp3\",\"part\":1,\"lang_vi\":\"là\"},{\"pinyin\":\"zěnme\",\"title\":\"怎么\",\"id\":171,\"mp3\":\"KLNxtd7JB0XG1732264729.mp3\",\"part\":1,\"lang_vi\":\"làm sao, thế nào, như thế nào\"},{\"pinyin\":\"lái\",\"title\":\"来\",\"id\":345,\"mp3\":\"zPebFpydNIXW1732264896.mp3\",\"part\":1,\"lang_vi\":\"đến, tới, lại đây\"},{\"pinyin\":\"de\",\"title\":\"的？\",\"id\":117,\"mp3\":\"SZCmSTrKL2Ce1732264670.mp3\",\"part\":1,\"lang_vi\":\"của, thuộc về (trợ từ sở hữu)\"},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"nán\",\"title\":\"男\",\"id\":25,\"mp3\":\"H8CiOWtGXptu1732264579.mp3\",\"part\":1,\"lang_vi\":\"nam, đàn ông, con trai\"},{\"pinyin\":\":\",\"title\":\":\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"zuò\",\"title\":\"坐\",\"id\":80,\"mp3\":\"qkyDUDqyBdf71732264630.mp3\",\"part\":1,\"lang_vi\":\"ngồi, đi (phương tiện: xe buýt, tàu hỏa)\"},{\"pinyin\":\"(\",\"title\":\"(\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\")\",\"title\":\")。\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"女:你是怎么来的？\\n男:坐()。\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 39,
+              "sourceId": 178952,
+              "options": [],
+              "translation": "Nữ: Bạn đến đây bằng cách nào?  \nNam: Đi taxi."
+            },
+            {
+              "questionOrder": 40,
+              "questionType": "READING",
+              "questionText": "{\"data\":[{\"pinyin\":\"nǚ\",\"title\":\"女\",\"id\":13,\"mp3\":\"Xkzxd8QU9ZwU1732264567.mp3\",\"part\":1,\"lang_vi\":\"nữ, con gái, phụ nữ\"},{\"pinyin\":\":\",\"title\":\":\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"nǐhǎo\",\"title\":\"你好！\",\"id\":4,\"mp3\":\"ntbeCrXw4DNx1732264560.mp3\",\"part\":1,\"lang_vi\":\"xin chào, chào bạn\\/anh\\/chị\"},{\"pinyin\":\"wǒ\",\"title\":\"我\",\"id\":68,\"mp3\":\"c2DCjcYDWDDd1732264618.mp3\",\"part\":1,\"lang_vi\":\"tôi, mình, tớ\"},{\"pinyin\":\"shì\",\"title\":\"是\",\"id\":75,\"mp3\":\"siHVIPEVlK101732264625.mp3\",\"part\":1,\"lang_vi\":\"là\"},{\"pinyin\":\"xiǎo\",\"title\":\"小\",\"id\":306,\"mp3\":\"VnMXIQIijf6P1732264858.mp3\",\"part\":1,\"lang_vi\":\"nhỏ, bé, ít\"},{\"pinyin\":\"míng\",\"title\":\"明\",\"id\":2219,\"mp3\":\"gqetnkJT330r1732266878.mp3\",\"part\":3,\"lang_vi\":\"sáng, rõ ràng\"},{\"pinyin\":\"de\",\"title\":\"的\",\"id\":117,\"mp3\":\"SZCmSTrKL2Ce1732264670.mp3\",\"part\":1,\"lang_vi\":\"của, thuộc về (trợ từ sở hữu)\"},{\"pinyin\":\"lǎoshī\",\"title\":\"老师。\",\"id\":76,\"mp3\":\"yNKleQ9EP3Mo1732264626.mp3\",\"part\":1,\"lang_vi\":\"thầy giáo, cô giáo, giáo viên\"},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"nán\",\"title\":\"男\",\"id\":25,\"mp3\":\"H8CiOWtGXptu1732264579.mp3\",\"part\":1,\"lang_vi\":\"nam, đàn ông, con trai\"},{\"pinyin\":\":\",\"title\":\":\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"nǐhǎo\",\"title\":\"你好！\",\"id\":4,\"mp3\":\"ntbeCrXw4DNx1732264560.mp3\",\"part\":1,\"lang_vi\":\"xin chào, chào bạn\\/anh\\/chị\"},{\"pinyin\":\"hěn\",\"title\":\"很\",\"id\":17,\"mp3\":\"vrKiGNXv2Kez1732264571.mp3\",\"part\":1,\"lang_vi\":\"rất, lắm\"},{\"pinyin\":\"gāoxìng\",\"title\":\"高兴\",\"id\":488,\"mp3\":\"uUaz8p4mmW9m1732265045.mp3\",\"part\":1,\"lang_vi\":\"vui mừng; vui vẻ; hạnh phúc\"},{\"pinyin\":\"(\",\"title\":\"(\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\")\",\"title\":\")\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null},{\"pinyin\":\"nǐ\",\"title\":\"你！\",\"id\":1,\"mp3\":\"cwMMyLUWpquI1732264558.mp3\",\"part\":1,\"lang_vi\":\"bạn, anh, chị, ông, bà\"},{\"pinyin\":\"\\n\",\"title\":\"\\n\",\"id\":null,\"mp3\":null,\"part\":null,\"lang_vi\":null}],\"A\":\"女:你好！我是小明的老师。\\n男:你好！很高兴()你！\\n\"}",
+              "points": 1,
+              "difficultyLevel": 1,
+              "order": 40,
+              "sourceId": 178953,
+              "options": [
+                {
+                  "optionLabel": "C",
+                  "optionText": null,
+                  "isCorrect": true
+                }
+              ],
+              "translation": "Nữ: Xin chào! Tôi là giáo viên của Tiểu Minh.  \nNam: Xin chào! Rất vui được gặp bạn!"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

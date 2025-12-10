@@ -1,6 +1,7 @@
 "use client";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { AuthProvider } from "@/lib/contexts/AuthContext";
 
 export default function ClientProviders({
   children,
@@ -12,9 +13,13 @@ export default function ClientProviders({
   if (!clientId) {
     console.warn("⚠️ NEXT_PUBLIC_GOOGLE_CLIENT_ID chưa được cấu hình. Đăng nhập Google sẽ không hoạt động.");
     console.warn("Vui lòng tạo file .env.local và thêm: NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_client_id");
-    return <>{children}</>;
+    return <AuthProvider>{children}</AuthProvider>;
   }
 
-  return <GoogleOAuthProvider clientId={clientId}>{children}</GoogleOAuthProvider>;
+  return (
+    <AuthProvider>
+      <GoogleOAuthProvider clientId={clientId}>{children}</GoogleOAuthProvider>
+    </AuthProvider>
+  );
 }
 

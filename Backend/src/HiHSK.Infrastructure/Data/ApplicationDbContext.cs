@@ -1111,6 +1111,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .HasMaxLength(450);
             entity.Property(e => e.SentenceText).HasMaxLength(500);
             entity.Property(e => e.Feedback).HasMaxLength(1000);
+            entity.Property(e => e.ToneAccuracy)
+                .HasPrecision(5, 2); // Max 999.99
+            entity.Property(e => e.PronunciationAccuracy)
+                .HasPrecision(5, 2); // Max 999.99
             entity.Property(e => e.AttemptedAt)
                 .IsRequired()
                 .HasDefaultValueSql("GETDATE()");

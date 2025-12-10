@@ -56,7 +56,7 @@ export default function Header() {
               Luyện tập
             </Link>
             <Link
-              href="/tests"
+              href="/exams"
               className="text-gray-700 hover:text-primary transition font-medium"
             >
               Đề thi thử
@@ -142,7 +142,7 @@ export default function Header() {
                 Luyện tập
               </Link>
               <Link
-                href="/tests"
+                href="/exams"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-gray-700 hover:text-primary transition font-medium px-2 py-1"
               >

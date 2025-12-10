@@ -39,6 +39,8 @@ export interface AdminCourseDto extends CourseListDto {
 
 // Admin Lesson DTO
 export interface AdminLessonDto extends LessonListDto {
+  content?: string;
+  prerequisiteLessonId?: number;
   isActive: boolean;
   createdAt: string;
   wordCount?: number;
@@ -66,6 +68,10 @@ export interface AdminUserDto extends User {
   email: string;
   userName?: string;
   roles?: string[];
+  emailConfirmed?: boolean;
+  lockoutEnd?: string | null;
+  lockoutEnabled?: boolean;
+  accessFailedCount?: number;
   createdAt?: string;
   lastLoginAt?: string;
   isActive?: boolean;
@@ -369,7 +375,7 @@ export const adminService = {
           API_ENDPOINTS.LESSONS.BY_ID(id)
         );
         return {
-          ...response,
+          ...response.data,
           isActive: true,
           createdAt: new Date().toISOString(),
         };
@@ -415,7 +421,7 @@ export const adminService = {
   async getQuestions(lessonId?: number, type?: string): Promise<AdminQuestionDto[]> {
     try {
       const response = await apiClient.get<AdminQuestionDto[]>(
-        API_ENDPOINTS.ADMIN.QUESTIONS.LIST(lessonId, type)
+        API_ENDPOINTS.ADMIN.QUESTIONS.LIST(lessonId, undefined, type)
       );
       return response.data;
     } catch (error: any) {
@@ -428,8 +434,8 @@ export const adminService = {
           return response.data.map((question) => ({
             ...question,
             id: question.id || 0,
-            questionType: question.type || "CHOOSE_MEANING",
-            points: 1,
+            questionType: question.questionType || "CHOOSE_MEANING",
+            points: question.points || 1,
             difficultyLevel: 1,
             createdAt: new Date().toISOString(),
           }));
@@ -484,13 +490,17 @@ export const adminService = {
   /**
    * Lấy danh sách người dùng (Admin)
    */
-  async getUsers(): Promise<AdminUserDto[]> {
+  async getUsers(search?: string): Promise<AdminUserDto[]> {
     try {
       const response = await apiClient.get<AdminUserDto[]>(
-        API_ENDPOINTS.ADMIN.USERS.LIST
+        API_ENDPOINTS.ADMIN.USERS.LIST(search)
       );
       return response.data;
     } catch (error: any) {
+      // Nếu 401/403 thì không phải lỗi API chưa implement
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        throw new Error("Bạn không có quyền truy cập chức năng này");
+      }
       // API chưa tồn tại
       if (error.response?.status === 404 || error.response?.status === 501) {
         console.warn("Admin users API chưa được implement, trả về empty array");
@@ -522,10 +532,51 @@ export const adminService = {
   },
 
   /**
+   * Cập nhật roles cho người dùng
+   */
+  async updateUserRoles(id: string, roles: string[]): Promise<{ message: string; userId: string; roles: string[] }> {
+    const response = await apiClient.put<{ message: string; userId: string; roles: string[] }>(
+      API_ENDPOINTS.ADMIN.USERS.UPDATE_ROLES(id),
+      { roles }
+    );
+    return response.data;
+  },
+
+  /**
+   * Gán role Admin cho user
+   */
+  async makeAdmin(id: string): Promise<{ message: string; userId: string; roles: string[] }> {
+    const response = await apiClient.post<{ message: string; userId: string; roles: string[] }>(
+      API_ENDPOINTS.ADMIN.USERS.MAKE_ADMIN(id)
+    );
+    return response.data;
+  },
+
+  /**
+   * Gỡ role Admin khỏi user
+   */
+  async removeAdmin(id: string): Promise<{ message: string; userId: string; roles: string[] }> {
+    const response = await apiClient.post<{ message: string; userId: string; roles: string[] }>(
+      API_ENDPOINTS.ADMIN.USERS.REMOVE_ADMIN(id)
+    );
+    return response.data;
+  },
+
+  /**
    * Xóa người dùng
    */
   async deleteUser(id: string): Promise<void> {
     await apiClient.delete(API_ENDPOINTS.ADMIN.USERS.DELETE(id));
+  },
+
+  /**
+   * Lấy danh sách roles
+   */
+  async getRoles(): Promise<string[]> {
+    const response = await apiClient.get<{ roles: string[] }>(
+      API_ENDPOINTS.ADMIN.ROLES.LIST
+    );
+    return response.data.roles;
   },
 
   // ============ WORD CLASSIFICATION ============

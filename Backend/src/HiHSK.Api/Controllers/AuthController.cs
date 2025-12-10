@@ -115,10 +115,14 @@ public class AuthController : ControllerBase
         
         Console.WriteLine($"User created successfully: {user.Email}");
 
-        // Tạo token và trả về
-        var token = _jwtTokenService.GenerateToken(user);
+        // Gán role User mặc định cho người dùng mới
+        await _userManager.AddToRoleAsync(user, "User");
+
+        // Tạo token và trả về (bao gồm roles)
+        var token = await _jwtTokenService.GenerateTokenAsync(user);
         var expirationMinutes = int.Parse(_configuration["JwtSettings:ExpirationInMinutes"] ?? "60");
         var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes).ToString("o");
+        var roles = await _userManager.GetRolesAsync(user);
 
         return Ok(new AuthResponse
         {
@@ -128,7 +132,8 @@ public class AuthController : ControllerBase
             {
                 Id = user.Id,
                 Email = user.Email ?? string.Empty,
-                UserName = user.UserName
+                UserName = user.UserName,
+                Roles = roles.ToList()
             }
         });
     }
@@ -163,10 +168,11 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Email hoặc mật khẩu không đúng" });
         }
 
-        // Tạo token và trả về
-        var token = _jwtTokenService.GenerateToken(user);
+        // Tạo token và trả về (bao gồm roles)
+        var token = await _jwtTokenService.GenerateTokenAsync(user);
         var expirationMinutes = int.Parse(_configuration["JwtSettings:ExpirationInMinutes"] ?? "60");
         var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes).ToString("o");
+        var userRoles = await _userManager.GetRolesAsync(user);
 
         return Ok(new AuthResponse
         {
@@ -176,7 +182,8 @@ public class AuthController : ControllerBase
             {
                 Id = user.Id,
                 Email = user.Email ?? string.Empty,
-                UserName = user.UserName
+                UserName = user.UserName,
+                Roles = userRoles.ToList()
             }
         });
     }
@@ -227,13 +234,16 @@ public class AuthController : ControllerBase
                     return BadRequest(new { message = "Không thể tạo tài khoản", errors });
                 }
 
+                // Gán role User mặc định
+                await _userManager.AddToRoleAsync(user, "User");
                 Console.WriteLine($"Created new user from Google: {user.Email}");
             }
 
-            // Tạo JWT token
-            var token = _jwtTokenService.GenerateToken(user);
+            // Tạo JWT token (bao gồm roles)
+            var token = await _jwtTokenService.GenerateTokenAsync(user);
             var expirationMinutes = int.Parse(_configuration["JwtSettings:ExpirationInMinutes"] ?? "60");
             var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes).ToString("o");
+            var googleUserRoles = await _userManager.GetRolesAsync(user);
 
             return Ok(new AuthResponse
             {
@@ -243,7 +253,8 @@ public class AuthController : ControllerBase
                 {
                     Id = user.Id,
                     Email = user.Email ?? string.Empty,
-                    UserName = user.UserName
+                    UserName = user.UserName,
+                    Roles = googleUserRoles.ToList()
                 }
             });
         }

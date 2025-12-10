@@ -26,12 +26,16 @@ export default function TopicDetailPage() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [vocabularyProgress, setVocabularyProgress] = useState<any>(null);
+  const [showUnlockNotification, setShowUnlockNotification] = useState(false);
+  const [unlockMessage, setUnlockMessage] = useState("");
   
   // Sử dụng hook để quản lý completed activities (đồng bộ giữa các trang)
   const {
     completedActivityIds,
     loadCompletedActivities,
-  } = useCompletedActivities({ topicId });
+    topicCompletedStatus,
+    unlockResult,
+  } = useCompletedActivities({ topicId, autoCheckUnlock: true });
 
   const stats = topic
     ? {
@@ -80,6 +84,35 @@ export default function TopicDetailPage() {
     if (topicId) {
       loadTopicData();
     }
+  }, [topicId]);
+
+  // Hiển thị thông báo khi mở khóa topic tiếp theo
+  useEffect(() => {
+    if (unlockResult?.unlocked && unlockResult.nextTopicTitle) {
+      setUnlockMessage(`🎉 Chúc mừng! Bạn đã mở khóa chủ đề "${unlockResult.nextTopicTitle}"`);
+      setShowUnlockNotification(true);
+      
+      // Tự động ẩn sau 5 giây
+      const timer = setTimeout(() => {
+        setShowUnlockNotification(false);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [unlockResult]);
+  
+  // Lắng nghe sự kiện topic-unlocked từ các component khác
+  useEffect(() => {
+    const handleTopicUnlocked = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail?.completedTopicId === topicId) {
+        setUnlockMessage(`🎉 Chúc mừng! Bạn đã mở khóa chủ đề "${customEvent.detail.unlockedTopicTitle}"`);
+        setShowUnlockNotification(true);
+      }
+    };
+    
+    window.addEventListener("topic-unlocked", handleTopicUnlocked);
+    return () => window.removeEventListener("topic-unlocked", handleTopicUnlocked);
   }, [topicId]);
 
   // Hook useCompletedActivities tự động load completed activities
@@ -188,6 +221,26 @@ export default function TopicDetailPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
+      
+      {/* Thông báo mở khóa topic tiếp theo */}
+      {showUnlockNotification && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 animate-bounce">
+          <div className="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+            </svg>
+            <span className="font-medium">{unlockMessage}</span>
+            <button 
+              onClick={() => setShowUnlockNotification(false)}
+              className="ml-2 hover:bg-green-600 rounded p-1"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
       <main className="flex-grow">
         <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
@@ -223,7 +276,43 @@ export default function TopicDetailPage() {
                 {topic.totalWords} từ vựng
               </span>
             </div>
-            {topic.progressPercentage > 0 && (
+            {/* Tiến độ hoàn thành các hoạt động bắt buộc */}
+            {topicCompletedStatus && (
+              <div className="mt-6">
+                <div className="flex justify-between text-white/90 mb-2">
+                  <span className="flex items-center gap-2">
+                    Tiến độ mở khóa chủ đề tiếp theo
+                    {topicCompletedStatus.isCompleted && (
+                      <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
+                        ✓ Hoàn thành
+                      </span>
+                    )}
+                  </span>
+                  <span className="font-semibold">
+                    {topicCompletedStatus.completedCount}/{topicCompletedStatus.totalRequired} hoạt động
+                  </span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-3">
+                  <div
+                    className={`h-3 rounded-full transition-all ${
+                      topicCompletedStatus.isCompleted ? "bg-green-400" : "bg-white"
+                    }`}
+                    style={{ 
+                      width: `${(topicCompletedStatus.completedCount / topicCompletedStatus.totalRequired) * 100}%` 
+                    }}
+                  ></div>
+                </div>
+                {!topicCompletedStatus.isCompleted && (
+                  <p className="text-white/70 text-sm mt-2">
+                    Hoàn thành: {topicCompletedStatus.completedActivities.join(", ") || "Chưa có"} | 
+                    Còn lại: {topicCompletedStatus.requiredActivities
+                      .filter(a => !topicCompletedStatus.completedActivities.includes(a))
+                      .join(", ")}
+                  </p>
+                )}
+              </div>
+            )}
+            {topic.progressPercentage > 0 && !topicCompletedStatus && (
               <div className="mt-6">
                 <div className="flex justify-between text-white/90 mb-2">
                   <span>Tiến độ học tập</span>

@@ -150,38 +150,56 @@ export default function CoursesPage() {
                   Chọn bài học để bắt đầu học từ vựng và làm bài tập
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {topics.map((topic) => {
+                  {topics.map((topic, index) => {
                     // Tất cả topics ở đây đều là LessonTopicListDto
                     const lessonTopic = topic as LessonTopicListDto;
+                    const previousTopic = index > 0 ? topics[index - 1] : null;
 
                     const topicLink = `/topics/${lessonTopic.id}`;
 
                     const topicTitle = lessonTopic.title;
                     const topicDescription = lessonTopic.description;
                     const wordCount = lessonTopic.totalWords || 0;
+                    
+                    // Kiểm tra trạng thái hoàn thành (100% progress)
+                    const isCompleted = lessonTopic.progressPercentage >= 100;
 
-                    return (
-                      <Link
-                        key={topic.id}
-                        href={topicLink}
-                        className="block bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-6 hover:-translate-y-1"
-                      >
+                    // Nội dung card
+                    const cardContent = (
+                      <>
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                              <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold bg-primary/20 text-primary">
-                                {lessonTopic.isLocked ? "🔒" : lessonTopic.topicIndex}
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                                lessonTopic.isLocked 
+                                  ? "bg-gray-200 text-gray-500" 
+                                  : isCompleted
+                                    ? "bg-green-500 text-white"
+                                    : "bg-primary/20 text-primary"
+                              }`}>
+                                {lessonTopic.isLocked ? "🔒" : isCompleted ? "✓" : lessonTopic.topicIndex}
                               </div>
-                              <h3 className="text-lg font-bold text-dark">
-                                {topicTitle}
-                              </h3>
+                              <div>
+                                <h3 className={`text-lg font-bold ${
+                                  lessonTopic.isLocked ? "text-gray-400" : "text-dark"
+                                }`}>
+                                  {topicTitle}
+                                </h3>
+                                {isCompleted && (
+                                  <span className="text-xs text-green-600 font-medium">Đã hoàn thành</span>
+                                )}
+                              </div>
                             </div>
                             {topicDescription && (
-                              <p className="text-gray-600 text-sm mb-3 line-clamp-2">{topicDescription}</p>
+                              <p className={`text-sm mb-3 line-clamp-2 ${
+                                lessonTopic.isLocked ? "text-gray-400" : "text-gray-600"
+                              }`}>{topicDescription}</p>
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
+                        <div className={`flex items-center gap-4 text-sm mb-3 ${
+                          lessonTopic.isLocked ? "text-gray-400" : "text-gray-500"
+                        }`}>
                           <span className="flex items-center">
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -195,23 +213,65 @@ export default function CoursesPage() {
                             {wordCount} từ vựng
                           </span>
                         </div>
-                        {lessonTopic.progressPercentage > 0 && (
-                          <div className="mb-2">
-                            <div className="flex justify-between text-xs text-gray-600 mb-1">
-                              <span>Tiến độ</span>
-                              <span>{lessonTopic.progressPercentage}%</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div
-                                className="bg-primary h-2 rounded-full transition-all"
-                                style={{ width: `${lessonTopic.progressPercentage}%` }}
-                              ></div>
-                            </div>
+                        {/* Progress bar */}
+                        <div className="mb-2">
+                          <div className="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>{lessonTopic.isLocked ? "Tiến độ yêu cầu" : "Tiến độ"}</span>
+                            <span>{lessonTopic.progressPercentage}%</span>
                           </div>
-                        )}
-                        <div className="text-primary font-semibold text-sm mt-3">
-                          {lessonTopic.isLocked ? "🔒 Đã khóa" : "Bắt đầu →"}
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full transition-all ${
+                                isCompleted ? "bg-green-500" : "bg-primary"
+                              }`}
+                              style={{ width: `${lessonTopic.progressPercentage}%` }}
+                            ></div>
+                          </div>
                         </div>
+                        {/* Thông tin mở khóa */}
+                        {lessonTopic.isLocked && previousTopic && (
+                          <p className="text-xs text-amber-600 mt-2">
+                            Hoàn thành "{previousTopic.title}" để mở khóa
+                          </p>
+                        )}
+                        <div className={`font-semibold text-sm mt-3 ${
+                          lessonTopic.isLocked 
+                            ? "text-gray-400" 
+                            : isCompleted 
+                              ? "text-green-600" 
+                              : "text-primary"
+                        }`}>
+                          {lessonTopic.isLocked 
+                            ? "🔒 Đã khóa" 
+                            : isCompleted 
+                              ? "✓ Hoàn thành" 
+                              : "Bắt đầu →"}
+                        </div>
+                      </>
+                    );
+
+                    // Nếu topic bị khóa, không cho click
+                    if (lessonTopic.isLocked) {
+                      return (
+                        <div
+                          key={topic.id}
+                          className="block bg-gray-50 rounded-lg shadow-md p-6 cursor-not-allowed opacity-70"
+                          title="Hoàn thành chủ đề trước để mở khóa"
+                        >
+                          {cardContent}
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <Link
+                        key={topic.id}
+                        href={topicLink}
+                        className={`block bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-6 hover:-translate-y-1 ${
+                          isCompleted ? "border-2 border-green-200" : ""
+                        }`}
+                      >
+                        {cardContent}
                       </Link>
                     );
                   })}

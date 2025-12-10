@@ -11,7 +11,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Applicatio
         
         // Default connection string for design-time (can be overridden via environment variable)
         var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-            ?? "Server=localhost;Database=HIHSK;Trusted_Connection=True;TrustServerCertificate=True;";
+            ?? "Server=localhost\\SQLEXPRESS;Database=HIHSK;Trusted_Connection=True;TrustServerCertificate=True;";
 
         optionsBuilder.UseSqlServer(connectionString);
 

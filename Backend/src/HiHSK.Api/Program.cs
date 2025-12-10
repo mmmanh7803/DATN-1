@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using static HiHSK.Api.Services.RoleSeeder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -175,6 +176,16 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Seed roles và admin user
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+    
+    await RoleSeeder.SeedAllAsync(roleManager, userManager, configuration);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

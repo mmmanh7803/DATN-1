@@ -311,6 +311,166 @@ public class ActivityProgressController : ControllerBase
             return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
         }
     }
+    
+    /// <summary>
+    /// Kiểm tra xem user có thể truy cập topic này không
+    /// Topic N unlock khi topic N-1 đã hoàn thành tất cả required activities
+    /// </summary>
+    [HttpGet("can-access-topic")]
+    public async Task<ActionResult> CanAccessTopic([FromQuery] int topicId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized(new { message = "Người dùng chưa đăng nhập" });
+
+        try
+        {
+            var (canAccess, reason) = await _activityProgressRepository.CanAccessTopicAsync(userId, topicId);
+            var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
+            
+            return Ok(new
+            {
+                topicId,
+                canAccess,
+                reason,
+                requiredActivities,
+                totalRequiredActivities = requiredActivities.Count
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Lỗi khi kiểm tra quyền truy cập topic {topicId}");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+    
+    /// <summary>
+    /// Kiểm tra xem topic đã hoàn thành chưa
+    /// </summary>
+    [HttpGet("topic-completed")]
+    public async Task<ActionResult> IsTopicCompleted([FromQuery] int topicId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized(new { message = "Người dùng chưa đăng nhập" });
+
+        try
+        {
+            var isCompleted = await _activityProgressRepository.IsTopicCompletedAsync(userId, topicId);
+            var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
+            
+            // Lấy danh sách activities đã hoàn thành
+            var completedActivities = await _context.UserActivityProgresses
+                .Where(p => p.UserId == userId 
+                    && p.TopicId == topicId 
+                    && p.IsCompleted
+                    && requiredActivities.Contains(p.ActivityId))
+                .Select(p => p.ActivityId)
+                .ToListAsync();
+            
+            return Ok(new
+            {
+                topicId,
+                isCompleted,
+                completedActivities,
+                requiredActivities,
+                completedCount = completedActivities.Count,
+                totalRequired = requiredActivities.Count
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Lỗi khi kiểm tra topic {topicId} completed");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+    
+    /// <summary>
+    /// Kiểm tra và mở khóa topic tiếp theo nếu topic hiện tại đã hoàn thành
+    /// </summary>
+    [HttpPost("check-and-unlock-next-topic")]
+    public async Task<ActionResult> CheckAndUnlockNextTopic([FromBody] CheckUnlockTopicRequest request)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized(new { message = "Người dùng chưa đăng nhập" });
+
+        try
+        {
+            var (unlocked, nextTopicId) = await _activityProgressRepository.CheckAndUnlockNextTopicAsync(
+                userId, request.CompletedTopicId);
+            
+            if (unlocked && nextTopicId.HasValue)
+            {
+                var nextTopic = await _context.LessonTopics.FindAsync(nextTopicId.Value);
+                
+                _logger.LogInformation(
+                    $"User {userId} đã mở khóa topic {nextTopicId} sau khi hoàn thành topic {request.CompletedTopicId}");
+                
+                return Ok(new
+                {
+                    unlocked = true,
+                    message = $"Chúc mừng! Bạn đã mở khóa chủ đề \"{nextTopic?.Title}\"",
+                    nextTopicId = nextTopicId.Value,
+                    nextTopicTitle = nextTopic?.Title
+                });
+            }
+            
+            // Kiểm tra xem topic hiện tại đã hoàn thành chưa
+            var isCurrentCompleted = await _activityProgressRepository.IsTopicCompletedAsync(userId, request.CompletedTopicId);
+            
+            if (!isCurrentCompleted)
+            {
+                var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
+                var completedActivities = await _context.UserActivityProgresses
+                    .Where(p => p.UserId == userId 
+                        && p.TopicId == request.CompletedTopicId 
+                        && p.IsCompleted
+                        && requiredActivities.Contains(p.ActivityId))
+                    .Select(p => p.ActivityId)
+                    .ToListAsync();
+                
+                return Ok(new
+                {
+                    unlocked = false,
+                    message = $"Chưa hoàn thành chủ đề. Còn {requiredActivities.Count - completedActivities.Count} hoạt động cần hoàn thành.",
+                    completedActivities,
+                    requiredActivities,
+                    completedCount = completedActivities.Count,
+                    totalRequired = requiredActivities.Count
+                });
+            }
+            
+            // Topic đã hoàn thành nhưng không có topic tiếp theo
+            return Ok(new
+            {
+                unlocked = false,
+                message = "Chúc mừng! Bạn đã hoàn thành tất cả chủ đề của cấp độ HSK này.",
+                isLevelCompleted = true
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Lỗi khi kiểm tra và mở khóa topic tiếp theo");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+    
+    /// <summary>
+    /// Lấy danh sách required activities
+    /// </summary>
+    [HttpGet("required-activities")]
+    [AllowAnonymous]
+    public ActionResult GetRequiredActivities()
+    {
+        var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
+        return Ok(new
+        {
+            requiredActivities,
+            count = requiredActivities.Count,
+            description = "Danh sách các hoạt động bắt buộc phải hoàn thành để mở khóa chủ đề tiếp theo"
+        });
+    }
 }
 
 public class CompleteActivityRequest
@@ -327,5 +487,10 @@ public class CheckVocabularyRequest
     public int? HskLevel { get; set; }
     public int? PartNumber { get; set; }
     public int? TopicId { get; set; }
+}
+
+public class CheckUnlockTopicRequest
+{
+    public int CompletedTopicId { get; set; }
 }
 

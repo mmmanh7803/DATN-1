@@ -2,17 +2,34 @@
 
 import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { adminService, AdminLessonDto } from "@/lib/services/adminService";
+import LessonEditor from "@/components/admin/LessonEditor";
+import { adminService, AdminLessonDto, AdminCourseDto } from "@/lib/services/adminService";
 
 export default function AdminLessonsPage() {
   const [lessons, setLessons] = useState<AdminLessonDto[]>([]);
+  const [courses, setCourses] = useState<AdminCourseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [courseFilter, setCourseFilter] = useState<string>("all");
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [editingLessonId, setEditingLessonId] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    loadCourses();
+  }, []);
 
   useEffect(() => {
     loadLessons();
   }, [courseFilter]);
+
+  const loadCourses = async () => {
+    try {
+      const data = await adminService.getCourses();
+      setCourses(data);
+    } catch (error) {
+      console.error("Error loading courses:", error);
+    }
+  };
 
   const loadLessons = async () => {
     try {
@@ -42,6 +59,20 @@ export default function AdminLessonsPage() {
     }
   };
 
+  const handleCreate = () => {
+    setEditingLessonId(undefined);
+    setEditorOpen(true);
+  };
+
+  const handleEdit = (id: number) => {
+    setEditingLessonId(id);
+    setEditorOpen(true);
+  };
+
+  const handleSave = () => {
+    loadLessons();
+  };
+
   return (
     <AdminLayout>
       <div>
@@ -52,10 +83,7 @@ export default function AdminLessonsPage() {
               <p className="text-gray-600">Quản lý bài học và nội dung học tập</p>
             </div>
             <button
-              onClick={() => {
-                // TODO: Open create modal
-                alert("Chức năng thêm bài học sẽ được implement sau");
-              }}
+              onClick={handleCreate}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
             >
               + Thêm bài học
@@ -75,7 +103,11 @@ export default function AdminLessonsPage() {
               className="w-full md:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Tất cả khóa học</option>
-              {/* TODO: Load courses for filter */}
+              {courses.map((course) => (
+                <option key={course.id} value={course.id}>
+                  {course.title} {course.hskLevel ? `(HSK ${course.hskLevel})` : ""}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -148,19 +180,13 @@ export default function AdminLessonsPage() {
                   </div>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => {
-                        // TODO: Navigate to lesson detail
-                        alert("Chức năng xem chi tiết sẽ được implement sau");
-                      }}
+                      onClick={() => handleEdit(lesson.id)}
                       className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 text-sm font-medium"
                     >
                       Xem
                     </button>
                     <button
-                      onClick={() => {
-                        // TODO: Open edit modal
-                        alert("Chức năng sửa bài học sẽ được implement sau");
-                      }}
+                      onClick={() => handleEdit(lesson.id)}
                       className="flex-1 px-3 py-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 text-sm font-medium"
                     >
                       Sửa
@@ -178,6 +204,18 @@ export default function AdminLessonsPage() {
           </div>
         )}
       </div>
+
+      {/* Lesson Editor Modal */}
+      <LessonEditor
+        lessonId={editingLessonId}
+        defaultCourseId={courseFilter !== "all" ? parseInt(courseFilter) : undefined}
+        isOpen={editorOpen}
+        onClose={() => {
+          setEditorOpen(false);
+          setEditingLessonId(undefined);
+        }}
+        onSave={handleSave}
+      />
     </AdminLayout>
   );
 }

@@ -3,6 +3,7 @@ using HiHSK.Application.Interfaces;
 using HiHSK.Domain.Entities;
 using HiHSK.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
@@ -15,21 +16,24 @@ namespace HiHSK.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] // Có thể thêm role check: [Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 public class AdminController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<AdminController> _logger;
     private readonly IWordClassificationService _wordClassificationService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public AdminController(
         ApplicationDbContext context, 
         ILogger<AdminController> logger,
-        IWordClassificationService wordClassificationService)
+        IWordClassificationService wordClassificationService,
+        UserManager<ApplicationUser> userManager)
     {
         _context = context;
         _logger = logger;
         _wordClassificationService = wordClassificationService;
+        _userManager = userManager;
     }
 
     /// <summary>
@@ -138,7 +142,7 @@ public class AdminController : ControllerBase
         {
             courseCategories = await _context.CourseCategories.CountAsync(),
             courses = await _context.Courses.CountAsync(),
-            lessons = await _context.Lessons.CountAsync(),
+            lessons = await _context.LessonTopics.CountAsync(),
             words = await _context.Words.CountAsync(),
             questions = await _context.Questions.CountAsync(),
             questionOptions = await _context.QuestionOptions.CountAsync(),
@@ -1152,9 +1156,510 @@ public class AdminController : ControllerBase
             return StatusCode(500, new { message = "Lỗi khi export dữ liệu", error = ex.Message });
         }
     }
+
+    // ============ USER MANAGEMENT ============
+
+    /// <summary>
+    /// Lấy danh sách tất cả users (Admin only)
+    /// </summary>
+    [HttpGet("users")]
+    public async Task<IActionResult> GetUsers([FromQuery] string? search)
+    {
+        try
+        {
+            var usersQuery = _userManager.Users.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim().ToLower();
+                usersQuery = usersQuery.Where(u => 
+                    (u.Email != null && u.Email.ToLower().Contains(search)) ||
+                    (u.UserName != null && u.UserName.ToLower().Contains(search)));
+            }
+
+            var users = await usersQuery.ToListAsync();
+            
+            var result = new List<object>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                result.Add(new
+                {
+                    id = user.Id,
+                    email = user.Email,
+                    userName = user.UserName,
+                    roles = roles.ToList(),
+                    emailConfirmed = user.EmailConfirmed,
+                    lockoutEnd = user.LockoutEnd,
+                    lockoutEnabled = user.LockoutEnabled,
+                    accessFailedCount = user.AccessFailedCount
+                });
+            }
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi lấy danh sách users");
+            return StatusCode(500, new { message = "Lỗi khi lấy danh sách users", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Lấy thông tin chi tiết user
+    /// </summary>
+    [HttpGet("users/{id}")]
+    public async Task<IActionResult> GetUserById(string id)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound(new { message = "Không tìm thấy user" });
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return Ok(new
+            {
+                id = user.Id,
+                email = user.Email,
+                userName = user.UserName,
+                roles = roles.ToList(),
+                emailConfirmed = user.EmailConfirmed,
+                lockoutEnd = user.LockoutEnd,
+                lockoutEnabled = user.LockoutEnabled,
+                accessFailedCount = user.AccessFailedCount
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi lấy thông tin user");
+            return StatusCode(500, new { message = "Lỗi khi lấy thông tin user", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Cập nhật roles cho user
+    /// </summary>
+    [HttpPut("users/{id}/roles")]
+    public async Task<IActionResult> UpdateUserRoles(string id, [FromBody] UpdateUserRolesDto dto)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound(new { message = "Không tìm thấy user" });
+            }
+
+            // Lấy roles hiện tại
+            var currentRoles = await _userManager.GetRolesAsync(user);
+
+            // Xóa tất cả roles hiện tại
+            var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeResult.Succeeded)
+            {
+                return BadRequest(new { message = "Không thể xóa roles cũ", errors = removeResult.Errors });
+            }
+
+            // Thêm roles mới
+            if (dto.Roles != null && dto.Roles.Any())
+            {
+                var addResult = await _userManager.AddToRolesAsync(user, dto.Roles);
+                if (!addResult.Succeeded)
+                {
+                    return BadRequest(new { message = "Không thể thêm roles mới", errors = addResult.Errors });
+                }
+            }
+
+            var newRoles = await _userManager.GetRolesAsync(user);
+
+            return Ok(new
+            {
+                message = "Cập nhật roles thành công",
+                userId = user.Id,
+                roles = newRoles.ToList()
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi cập nhật roles");
+            return StatusCode(500, new { message = "Lỗi khi cập nhật roles", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gán role Admin cho user
+    /// </summary>
+    [HttpPost("users/{id}/make-admin")]
+    public async Task<IActionResult> MakeAdmin(string id)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound(new { message = "Không tìm thấy user" });
+            }
+
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                return BadRequest(new { message = "User đã là Admin" });
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, "Admin");
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { message = "Không thể gán role Admin", errors = result.Errors });
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return Ok(new
+            {
+                message = "Đã gán role Admin thành công",
+                userId = user.Id,
+                email = user.Email,
+                roles = roles.ToList()
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi gán role Admin");
+            return StatusCode(500, new { message = "Lỗi khi gán role Admin", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gỡ role Admin khỏi user
+    /// </summary>
+    [HttpPost("users/{id}/remove-admin")]
+    public async Task<IActionResult> RemoveAdmin(string id)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound(new { message = "Không tìm thấy user" });
+            }
+
+            if (!await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                return BadRequest(new { message = "User không phải là Admin" });
+            }
+
+            var result = await _userManager.RemoveFromRoleAsync(user, "Admin");
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { message = "Không thể gỡ role Admin", errors = result.Errors });
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return Ok(new
+            {
+                message = "Đã gỡ role Admin thành công",
+                userId = user.Id,
+                email = user.Email,
+                roles = roles.ToList()
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi gỡ role Admin");
+            return StatusCode(500, new { message = "Lỗi khi gỡ role Admin", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Xóa user (cẩn thận!)
+    /// </summary>
+    [HttpDelete("users/{id}")]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound(new { message = "Không tìm thấy user" });
+            }
+
+            // Không cho phép xóa admin@hihsk.com
+            if (user.Email?.ToLower() == "admin@hihsk.com")
+            {
+                return BadRequest(new { message = "Không thể xóa tài khoản admin mặc định" });
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { message = "Không thể xóa user", errors = result.Errors });
+            }
+
+            return Ok(new { message = "Đã xóa user thành công" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi xóa user");
+            return StatusCode(500, new { message = "Lỗi khi xóa user", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Lấy danh sách tất cả roles
+    /// </summary>
+    [HttpGet("roles")]
+    public IActionResult GetRoles()
+    {
+        return Ok(new
+        {
+            roles = new[] { "Admin", "User" }
+        });
+    }
+
+    // ============ QUESTION MANAGEMENT ============
+
+    /// <summary>
+    /// Lấy danh sách câu hỏi (phân loại theo đề thi hoặc hoạt động)
+    /// </summary>
+    [HttpGet("questions")]
+    public async Task<IActionResult> GetQuestions(
+        [FromQuery] bool? forExam = null,
+        [FromQuery] string? skillType = null,
+        [FromQuery] int? partNumber = null,
+        [FromQuery] string? questionType = null,
+        [FromQuery] string? exerciseType = null,
+        [FromQuery] int? exerciseId = null,
+        [FromQuery] int? topicId = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 50)
+    {
+        try
+        {
+            var query = _context.Questions
+                .Include(q => q.QuestionOptions)
+                .Include(q => q.Exercise)
+                .AsQueryable();
+
+            // Filter: Câu hỏi đề thi (có SkillType, không có ExerciseId)
+            if (forExam == true)
+            {
+                query = query.Where(q => q.SkillType != null && q.ExerciseId == null);
+            }
+            // Filter: Câu hỏi hoạt động (có ExerciseId)
+            else if (forExam == false)
+            {
+                query = query.Where(q => q.ExerciseId != null);
+            }
+
+            // Filter theo SkillType (cho câu hỏi đề thi)
+            if (!string.IsNullOrEmpty(skillType))
+            {
+                query = query.Where(q => q.SkillType == skillType.ToUpper());
+            }
+
+            // Filter theo PartNumber (cho câu hỏi đề thi)
+            if (partNumber.HasValue)
+            {
+                query = query.Where(q => q.PartNumber == partNumber.Value);
+            }
+
+            // Filter theo QuestionType
+            if (!string.IsNullOrEmpty(questionType))
+            {
+                query = query.Where(q => q.QuestionType == questionType.ToUpper());
+            }
+
+            // Filter theo ExerciseType (cho câu hỏi hoạt động)
+            if (!string.IsNullOrEmpty(exerciseType))
+            {
+                query = query.Where(q => q.Exercise != null && q.Exercise.ExerciseType == exerciseType.ToUpper());
+            }
+
+            // Filter theo ExerciseId cụ thể
+            if (exerciseId.HasValue)
+            {
+                query = query.Where(q => q.ExerciseId == exerciseId.Value);
+            }
+
+            // Filter theo TopicId (thông qua Exercise)
+            if (topicId.HasValue)
+            {
+                query = query.Where(q => q.Exercise != null && q.Exercise.TopicId == topicId.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var questions = await query
+                .OrderByDescending(q => q.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(q => new
+                {
+                    q.Id,
+                    q.QuestionText,
+                    q.QuestionType,
+                    q.SkillType,
+                    q.PartNumber,
+                    q.ExerciseId,
+                    q.Points,
+                    q.DifficultyLevel,
+                    q.AudioUrl,
+                    q.ImageUrl,
+                    q.CreatedAt,
+                    // Thông tin Exercise (cho câu hỏi hoạt động)
+                    Exercise = q.Exercise != null ? new
+                    {
+                        q.Exercise.Id,
+                        q.Exercise.ExerciseType,
+                        q.Exercise.Title,
+                        q.Exercise.TopicId
+                    } : null,
+                    Options = q.QuestionOptions.OrderBy(o => o.OptionLabel).Select(o => new
+                    {
+                        o.Id,
+                        o.OptionLabel,
+                        o.OptionText,
+                        o.ImageUrl,
+                        o.IsCorrect
+                    })
+                })
+                .ToListAsync();
+
+            return Ok(new
+            {
+                data = questions,
+                pagination = new
+                {
+                    page,
+                    pageSize,
+                    totalCount,
+                    totalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi lấy danh sách câu hỏi");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Tạo câu hỏi mới
+    /// </summary>
+    [HttpPost("questions")]
+    public async Task<IActionResult> CreateQuestion([FromBody] CreateQuestionDto dto)
+    {
+        try
+        {
+            var question = new Question
+            {
+                QuestionText = dto.QuestionText,
+                QuestionType = dto.QuestionType?.ToUpper() ?? "MULTIPLE_CHOICE",
+                SkillType = dto.SkillType?.ToUpper(),
+                PartNumber = dto.PartNumber,
+                ExerciseId = dto.ExerciseId,
+                Instruction = dto.Instruction,
+                AudioUrl = dto.AudioUrl,
+                ImageUrl = dto.ImageUrl,
+                BlankSentence = dto.BlankSentence,
+                Points = dto.Points ?? 1,
+                DifficultyLevel = dto.DifficultyLevel ?? 1,
+                Explanation = dto.Explanation,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Questions.Add(question);
+            await _context.SaveChangesAsync();
+
+            // Thêm options
+            if (dto.Options != null && dto.Options.Count > 0)
+            {
+                foreach (var optDto in dto.Options)
+                {
+                    var option = new QuestionOption
+                    {
+                        QuestionId = question.Id,
+                        OptionLabel = optDto.OptionLabel,
+                        OptionText = optDto.OptionText ?? "",
+                        ImageUrl = optDto.ImageUrl,
+                        IsCorrect = optDto.IsCorrect
+                    };
+                    _context.QuestionOptions.Add(option);
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            return Ok(new
+            {
+                success = true,
+                message = "Tạo câu hỏi thành công",
+                questionId = question.Id
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi tạo câu hỏi");
+            return StatusCode(500, new { success = false, message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Xóa câu hỏi
+    /// </summary>
+    [HttpDelete("questions/{id}")]
+    public async Task<IActionResult> DeleteQuestion(int id)
+    {
+        try
+        {
+            var question = await _context.Questions
+                .Include(q => q.QuestionOptions)
+                .Include(q => q.ExamPaperQuestions)
+                .FirstOrDefaultAsync(q => q.Id == id);
+
+            if (question == null)
+            {
+                return NotFound(new { success = false, message = "Không tìm thấy câu hỏi" });
+            }
+
+            // Kiểm tra câu hỏi có đang được sử dụng trong đề thi không
+            if (question.ExamPaperQuestions.Any())
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = $"Không thể xóa. Câu hỏi đang được sử dụng trong {question.ExamPaperQuestions.Count} đề thi"
+                });
+            }
+
+            // Xóa options
+            _context.QuestionOptions.RemoveRange(question.QuestionOptions);
+            // Xóa câu hỏi
+            _context.Questions.Remove(question);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Đã xóa câu hỏi thành công" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi xóa câu hỏi {QuestionId}", id);
+            return StatusCode(500, new { success = false, message = "Lỗi server", error = ex.Message });
+        }
+    }
 }
 
 // ============ Request DTOs ============
+
+public class UpdateUserRolesDto
+{
+    public List<string> Roles { get; set; } = new();
+}
 
 public class CreateWordDto
 {
@@ -1195,5 +1700,30 @@ public class CreateQuizDto
     public string Title { get; set; } = string.Empty;
     public List<int>? WordIds { get; set; }
     public int? HskLevel { get; set; }
+}
+
+public class CreateQuestionDto
+{
+    public string QuestionText { get; set; } = string.Empty;
+    public string? QuestionType { get; set; }
+    public string? SkillType { get; set; }
+    public int? PartNumber { get; set; }
+    public int? ExerciseId { get; set; }
+    public string? Instruction { get; set; }
+    public string? AudioUrl { get; set; }
+    public string? ImageUrl { get; set; }
+    public string? BlankSentence { get; set; }
+    public int? Points { get; set; }
+    public int? DifficultyLevel { get; set; }
+    public string? Explanation { get; set; }
+    public List<CreateQuestionOptionDto>? Options { get; set; }
+}
+
+public class CreateQuestionOptionDto
+{
+    public string OptionLabel { get; set; } = string.Empty;
+    public string? OptionText { get; set; }
+    public string? ImageUrl { get; set; }
+    public bool IsCorrect { get; set; }
 }
 

@@ -1,0 +1,473 @@
+{
+  "exam": [
+    {
+      "choose": "{\"answers\": {\"A\": {\"pinyin\": \"Wǒ de diànhuà hàomǎ shì líng wǔ qī èr bā èr liù èr wǔ wǔ\", \"sentence\": \"我的电话号码是0572826255\", \"meaning_vi\": \"Số điện thoại của tôi là 0572826255\"}, \"B\": {\"pinyin\": \"Tā zài chīfàn\", \"sentence\": \"他在吃饭\", \"meaning_vi\": \"Anh ấy đang ăn cơm\"}, \"C\": {\"pinyin\": \"Wǒ zhù zài sì lóu yī mén sì èr bā hào\", \"sentence\": \"我住在4楼1门428号\", \"meaning_vi\": \"Tôi sống ở lầu 4, cửa 1, số 428\"}, \"D\": {\"pinyin\": \"Wǒ xiǎng zhǎo Wáng lǎoshī\", \"sentence\": \"我想找王老师\", \"meaning_vi\": \"Tôi muốn tìm thầy Vương\"}, \"E\": {\"pinyin\": \"Wáng lǎoshī bù zài\", \"sentence\": \"王老师不在\", \"meaning_vi\": \"Thầy Vương không có ở đây\"}}, \"questions\": [{\"pinyin\": \"Nǐ de diànhuà hàomǎ shì duōshǎo?\", \"sentence\": \"你的电话号码是多少？\", \"answerKey\": \"A\", \"meaning_vi\": \"Số điện thoại của bạn là bao nhiêu?\"}, {\"pinyin\": \"Tā zài zuò shénme?\", \"sentence\": \"他在做什么？\", \"answerKey\": \"B\", \"meaning_vi\": \"Anh ấy đang làm gì?\"}, {\"pinyin\": \"Nǐ zhù nǎ?\", \"sentence\": \"你住哪？\", \"answerKey\": \"C\", \"meaning_vi\": \"Bạn sống ở đâu?\"}, {\"pinyin\": \"Nǐ xiǎng zhǎo shéi?\", \"sentence\": \"你想找谁？\", \"answerKey\": \"D\", \"meaning_vi\": \"Bạn muốn tìm ai?\"}, {\"pinyin\": \"Wǒ xiǎng zhǎo Wáng lǎoshī?\", \"sentence\": \"我想找王老师？\", \"answerKey\": \"E\", \"meaning_vi\": \"Tôi muốn tìm thầy Vương?\"}]}",
+      "id": 10,
+      "lang_en": "Lesson 10",
+      "lang_vi": "Bài 10",
+      "status": 1,
+      "cate_id": 1,
+      "parent_cate_id": null,
+      "des": "住,在,呢",
+      "created_at": "2023-10-18T11:54:39.000000Z",
+      "updated_at": "2025-08-22T04:10:12.000000Z",
+      "name": "他住哪儿 – Ông ấy sống ở đâu?",
+      "vocal_list": "办公室,办公,职员,找,在,家,呢,住,楼,门,房间,号,知道,电话,电,话,号码,零,手机,手",
+      "mp3_time": "[[{\"start\":4,\"duration\":4},{\"start\":8,\"duration\":4},{\"start\":12,\"duration\":4},{\"start\":15.5,\"duration\":5.5},{\"start\":21,\"duration\":4},{\"start\":25,\"duration\":2},{\"start\":27,\"duration\":6.5},{\"start\":33.5,\"duration\":4.5},{\"start\":38,\"duration\":7},{\"start\":45,\"duration\":4},{\"start\":49,\"duration\":2},{\"start\":51,\"duration\":1.7},{\"start\":52.7,\"duration\":1.8}]]\n",
+      "random": null,
+      "is_premium": 1,
+      "conversation": "Trong văn phòng, Lan đang đi tìm đồng nghiệp của mình là anh Nam.\nLan: Chị Mai ơi, em đang [[找|zhǎo|tìm]] anh Nam. Chị có thấy anh ấy [[在|zài|ở]] [[办公室|bàngōngshì|văn phòng]] không ạ?\nMai: Anh Nam hôm nay không vào [[办公|bàngōng|làm việc]] đâu em. Anh ấy xin nghỉ ốm rồi.\nLan: Ồ thế ạ. Anh ấy đang ở [[家|jiā|nhà]] [[呢|ne|à]] chị? Em có việc gấp cần hỏi.\nMai: Chắc vậy rồi. Em thử gọi điện cho anh ấy xem.\nLan: Em lại không có số. Chị có [[知道|zhīdào|biết]] số [[电话|diànhuà|điện thoại]] của anh ấy không ạ?\nMai: Chờ chị chút, để chị xem lại danh bạ [[职员|zhíyuán|nhân viên]]. À đây rồi, chị có số [[手机|shǒujī|điện thoại di động]] của anh ấy.\nLan: Dạ, chị đọc giúp em với.\nMai: Số [[号码|hàomǎ|mã số]] của Nam là [[零|líng|không]]-chín-tám-bảy-sáu-năm-bốn-ba-hai-một.\nLan: Em cảm ơn ạ. Tiện cho em hỏi chị có biết anh ấy [[住|zhù|sống]] ở đâu không ạ?\nMai: Chị nhớ là anh ấy ở tòa [[楼|lóu|nhà]] A, chung cư Hạnh Phúc. Cậu ấy có đưa cho chị cái địa chỉ ghi là số [[门|mén|cửa]] 10, tầng 8.\nLan: Tức là [[房间|fángjiān|phòng]] có [[号|hào|số]] là 810 đúng không chị?\nMai: Đúng rồi đó em. Em cần chị nhắc lại [[电|diện]] [[话|huà|thoại]] của Nam không? Cầm [[手|shǒu|tay]] ghi vào cho nhớ.\nLan: Dạ thôi em nhớ rồi ạ. Em cảm ơn chị Mai nhiều nhé!",
+      "fill_data_json": {
+        "questions": [
+          {
+            "id": 1,
+            "answer": "B",
+            "options": [
+              {
+                "text": "号",
+                "label": "A",
+                "pinyin": "hào",
+                "translation": "Số"
+              },
+              {
+                "text": "在",
+                "label": "B",
+                "pinyin": "zài",
+                "translation": "Ở"
+              },
+              {
+                "text": "手",
+                "label": "C",
+                "pinyin": "shǒu",
+                "translation": "Tay"
+              },
+              {
+                "text": "家",
+                "label": "D",
+                "pinyin": "jiā",
+                "translation": "Nhà"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "他______办公室吗？",
+                "pinyin": "Tā ______ bàngōngshì ma?",
+                "mp3_url": "http://localhost:8000/tts/sub10_q1_d0_f70e45ae6a.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q1_d0_f70e45ae6a.mp3",
+                "text_filled": "他在办公室吗？",
+                "translation": "Anh ấy ____ văn phòng không?"
+              }
+            ],
+            "explanation": "他在办公室吗？= Anh ấy có ở văn phòng không?",
+            "full_translation": "Anh ấy có ở văn phòng không?"
+          },
+          {
+            "id": 2,
+            "answer": "B",
+            "options": [
+              {
+                "text": "手机",
+                "label": "A",
+                "pinyin": "shǒujī",
+                "translation": "Điện thoại"
+              },
+              {
+                "text": "住",
+                "label": "B",
+                "pinyin": "zhù",
+                "translation": "Sống"
+              },
+              {
+                "text": "找",
+                "label": "C",
+                "pinyin": "zhǎo",
+                "translation": "Tìm"
+              },
+              {
+                "text": "办公",
+                "label": "D",
+                "pinyin": "bàngōng",
+                "translation": "Làm việc"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "你______哪儿？",
+                "pinyin": "Nǐ ______ nǎr?",
+                "mp3_url": "http://localhost:8000/tts/sub10_q2_d0_30d14130ab.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q2_d0_30d14130ab.mp3",
+                "text_filled": "你住哪儿？",
+                "translation": "Bạn ____ ở đâu?"
+              }
+            ],
+            "explanation": "你住哪儿？= Bạn sống ở đâu?",
+            "full_translation": "Bạn sống ở đâu?"
+          },
+          {
+            "id": 3,
+            "answer": "B",
+            "options": [
+              {
+                "text": "知道",
+                "label": "A",
+                "pinyin": "zhīdào",
+                "translation": "Biết"
+              },
+              {
+                "text": "找",
+                "label": "B",
+                "pinyin": "zhǎo",
+                "translation": "Tìm"
+              },
+              {
+                "text": "零",
+                "label": "C",
+                "pinyin": "líng",
+                "translation": "Không"
+              },
+              {
+                "text": "电话",
+                "label": "D",
+                "pinyin": "diànhuà",
+                "translation": "Điện thoại"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "他不在办公室，你去______他吧。",
+                "pinyin": "Tā bú zài bàngōngshì, nǐ qù ______ tā ba.",
+                "mp3_url": "http://localhost:8000/tts/sub10_q3_d0_629040b1c1.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q3_d0_629040b1c1.mp3",
+                "text_filled": "他不在办公室，你去找他吧。",
+                "translation": "Anh ấy không ở văn phòng, bạn hãy ____ anh ấy đi."
+              }
+            ],
+            "explanation": "去找他 = đi tìm anh ấy.",
+            "full_translation": "Anh ấy không ở văn phòng, bạn hãy đi tìm anh ấy."
+          },
+          {
+            "id": 4,
+            "answer": "C",
+            "options": [
+              {
+                "text": "办公",
+                "label": "A",
+                "pinyin": "bàngōng",
+                "translation": "Làm việc"
+              },
+              {
+                "text": "门",
+                "label": "B",
+                "pinyin": "mén",
+                "translation": "Cửa"
+              },
+              {
+                "text": "电话",
+                "label": "C",
+                "pinyin": "diànhuà",
+                "translation": "Điện thoại"
+              },
+              {
+                "text": "家",
+                "label": "D",
+                "pinyin": "jiā",
+                "translation": "Nhà"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "你知道他的______号码吗？",
+                "pinyin": "Nǐ zhīdào tā de ______ hàomǎ ma?",
+                "mp3_url": "http://localhost:8000/tts/sub10_q4_d0_4a84a2c370.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q4_d0_4a84a2c370.mp3",
+                "text_filled": "你知道他的电话号码吗？",
+                "translation": "Bạn biết số ____ của anh ấy không?"
+              }
+            ],
+            "explanation": "电话号码 = số điện thoại.",
+            "full_translation": "Bạn biết số điện thoại của anh ấy không?"
+          },
+          {
+            "id": 5,
+            "answer": "B",
+            "options": [
+              {
+                "text": "手",
+                "label": "A",
+                "pinyin": "shǒu",
+                "translation": "Tay"
+              },
+              {
+                "text": "楼",
+                "label": "B",
+                "pinyin": "lóu",
+                "translation": "Tầng"
+              },
+              {
+                "text": "零",
+                "label": "C",
+                "pinyin": "líng",
+                "translation": "Không"
+              },
+              {
+                "text": "号",
+                "label": "D",
+                "pinyin": "hào",
+                "translation": "Số"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "我们在三______工作。",
+                "pinyin": "Wǒmen zài sān ______ gōngzuò.",
+                "mp3_url": "http://localhost:8000/tts/sub10_q5_d0_327092eb86.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q5_d0_327092eb86.mp3",
+                "text_filled": "我们在三楼工作。",
+                "translation": "Chúng tôi đang làm việc ở tầng ____."
+              }
+            ],
+            "explanation": "在三楼 = ở tầng 3.",
+            "full_translation": "Chúng tôi đang làm việc ở tầng 3."
+          },
+          {
+            "id": 6,
+            "answer": "D",
+            "options": [
+              {
+                "text": "房间",
+                "label": "A",
+                "pinyin": "fángjiān",
+                "translation": "Phòng"
+              },
+              {
+                "text": "职员",
+                "label": "B",
+                "pinyin": "zhíyuán",
+                "translation": "Nhân viên"
+              },
+              {
+                "text": "办公室",
+                "label": "C",
+                "pinyin": "bàngōngshì",
+                "translation": "Văn phòng"
+              },
+              {
+                "text": "手机",
+                "label": "D",
+                "pinyin": "shǒujī",
+                "translation": "Điện thoại di động"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "这是我的______号码：13812345678。",
+                "pinyin": "Zhè shì wǒ de ______ hàomǎ: 13812345678.",
+                "mp3_url": "http://localhost:8000/tts/sub10_q6_d0_796ba24ceb.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q6_d0_796ba24ceb.mp3",
+                "text_filled": "这是我的手机号码：13812345678。",
+                "translation": "Đây là số ____ của tôi: 13812345678."
+              }
+            ],
+            "explanation": "手机号码 = số điện thoại di động.",
+            "full_translation": "Đây là số điện thoại di động của tôi: 13812345678."
+          },
+          {
+            "id": 7,
+            "answer": "B",
+            "options": [
+              {
+                "text": "手",
+                "label": "A",
+                "pinyin": "shǒu",
+                "translation": "Tay"
+              },
+              {
+                "text": "房间",
+                "label": "B",
+                "pinyin": "fángjiān",
+                "translation": "Phòng"
+              },
+              {
+                "text": "手机",
+                "label": "C",
+                "pinyin": "shǒujī",
+                "translation": "Điện thoại"
+              },
+              {
+                "text": "办公",
+                "label": "D",
+                "pinyin": "bàngōng",
+                "translation": "Làm việc"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "他住在哪个______？",
+                "pinyin": "Tā zhù zài nǎge ______?",
+                "mp3_url": "http://localhost:8000/tts/sub10_q7_d0_249e08425e.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q7_d0_249e08425e.mp3",
+                "text_filled": "他住在哪个房间？",
+                "translation": "Anh ấy sống ở phòng ____ nào?"
+              }
+            ],
+            "explanation": "哪个房间 = phòng nào.",
+            "full_translation": "Anh ấy sống ở phòng nào?"
+          },
+          {
+            "id": 8,
+            "answer": "B",
+            "options": [
+              {
+                "text": "手",
+                "label": "A",
+                "pinyin": "shǒu",
+                "translation": "Tay"
+              },
+              {
+                "text": "职员",
+                "label": "B",
+                "pinyin": "zhíyuán",
+                "translation": "Nhân viên"
+              },
+              {
+                "text": "零",
+                "label": "C",
+                "pinyin": "líng",
+                "translation": "Không"
+              },
+              {
+                "text": "电话",
+                "label": "D",
+                "pinyin": "diànhuà",
+                "translation": "Điện thoại"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "他是公司里的______。",
+                "pinyin": "Tā shì gōngsī lǐ de ______.",
+                "mp3_url": "http://localhost:8000/tts/sub10_q8_d0_1b1667db5f.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q8_d0_1b1667db5f.mp3",
+                "text_filled": "他是公司里的职员。",
+                "translation": "Anh ấy là ____ trong công ty."
+              }
+            ],
+            "explanation": "职员 = nhân viên.",
+            "full_translation": "Anh ấy là nhân viên trong công ty."
+          },
+          {
+            "id": 9,
+            "answer": "B",
+            "options": [
+              {
+                "text": "零",
+                "label": "A",
+                "pinyin": "líng",
+                "translation": "Không"
+              },
+              {
+                "text": "号",
+                "label": "B",
+                "pinyin": "hào",
+                "translation": "Số"
+              },
+              {
+                "text": "手机",
+                "label": "C",
+                "pinyin": "shǒujī",
+                "translation": "Điện thoại"
+              },
+              {
+                "text": "家",
+                "label": "D",
+                "pinyin": "jiā",
+                "translation": "Nhà"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "请问，这里是几______？",
+                "pinyin": "Qǐngwèn, zhè lǐ shì jǐ ______?",
+                "mp3_url": "http://localhost:8000/tts/sub10_q9_d0_bf4f60b8f9.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q9_d0_bf4f60b8f9.mp3",
+                "text_filled": "请问，这里是几号？",
+                "translation": "Xin hỏi, đây là số ____?"
+              }
+            ],
+            "explanation": "几号 = số mấy.",
+            "full_translation": "Xin hỏi, đây là số mấy?"
+          },
+          {
+            "id": 10,
+            "answer": "C",
+            "options": [
+              {
+                "text": "门",
+                "label": "A",
+                "pinyin": "mén",
+                "translation": "Cửa"
+              },
+              {
+                "text": "零",
+                "label": "B",
+                "pinyin": "líng",
+                "translation": "Không"
+              },
+              {
+                "text": "办公",
+                "label": "C",
+                "pinyin": "bàngōng",
+                "translation": "Làm việc"
+              },
+              {
+                "text": "手",
+                "label": "D",
+                "pinyin": "shǒu",
+                "translation": "Tay"
+              }
+            ],
+            "dialogue": [
+              {
+                "text": "他正在______室工作。",
+                "pinyin": "Tā zhèngzài ______ shì gōngzuò.",
+                "mp3_url": "http://localhost:8000/tts/sub10_q10_d0_1399e1b933.mp3",
+                "speaker": "A",
+                "mp3_path": "fill_data_json/sub10_q10_d0_1399e1b933.mp3",
+                "text_filled": "他正在办公室工作。",
+                "translation": "Anh ấy đang làm việc ở văn phòng ____."
+              }
+            ],
+            "explanation": "办公室 = văn phòng.",
+            "full_translation": "Anh ấy đang làm việc ở văn phòng."
+          }
+        ]
+      },
+      "part1": [],
+      "part2": [],
+      "part3": [],
+      "part4": [],
+      "part5": [],
+      "part6": [],
+      "part7": [],
+      "part8": [],
+      "part9": [],
+      "part10": [],
+      "part11": [],
+      "part12": [],
+      "part13": [],
+      "part14": [],
+      "part15": []
+    }
+  ],
+  "cate": "10",
+  "newData": []
+}

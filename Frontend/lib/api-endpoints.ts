@@ -31,6 +31,18 @@ export const API_ENDPOINTS = {
     UNLOCK_STATUS: (id: number) => `/api/lessontopics/${id}/unlock-status`,
   },
   
+  // Activity Progress
+  ACTIVITY_PROGRESS: {
+    COMPLETE: "/api/activities/complete",
+    CHECK_COMPLETED: "/api/activities/check-completed",
+    COMPLETED_LIST: "/api/activities/completed-list",
+    CHECK_AND_MARK_VOCABULARY: "/api/activities/check-and-mark-vocabulary",
+    CAN_ACCESS_TOPIC: (topicId: number) => `/api/activities/can-access-topic?topicId=${topicId}`,
+    TOPIC_COMPLETED: (topicId: number) => `/api/activities/topic-completed?topicId=${topicId}`,
+    CHECK_AND_UNLOCK_NEXT_TOPIC: "/api/activities/check-and-unlock-next-topic",
+    REQUIRED_ACTIVITIES: "/api/activities/required-activities",
+  },
+  
   // Lesson Exercises
   LESSON_EXERCISES: {
     BASE: "/api/lessonexercises",
@@ -179,10 +191,20 @@ export const API_ENDPOINTS = {
     },
     // Users Management
     USERS: {
-      LIST: "/api/admin/users",
+      LIST: (search?: string) => {
+        const params = new URLSearchParams();
+        if (search) params.append("search", search);
+        return `/api/admin/users?${params.toString()}`;
+      },
       BY_ID: (id: string) => `/api/admin/users/${id}`,
       UPDATE: (id: string) => `/api/admin/users/${id}`,
       DELETE: (id: string) => `/api/admin/users/${id}`,
+      UPDATE_ROLES: (id: string) => `/api/admin/users/${id}/roles`,
+      MAKE_ADMIN: (id: string) => `/api/admin/users/${id}/make-admin`,
+      REMOVE_ADMIN: (id: string) => `/api/admin/users/${id}/remove-admin`,
+    },
+    ROLES: {
+      LIST: "/api/admin/roles",
     },
     // Statistics
     STATISTICS: {
@@ -261,10 +283,70 @@ export const API_ENDPOINTS = {
       DELETE: (id: number) => `/api/admin/lessontopics/${id}`,
       BY_ID: (id: number) => `/api/admin/lessontopics/${id}`,
     },
+    // Exam Papers Management (Admin)
+    EXAMS: {
+      LIST: (examType?: string, level?: number) => {
+        const params = new URLSearchParams();
+        if (examType) params.append("examType", examType);
+        if (level) params.append("level", level.toString());
+        const query = params.toString();
+        return `/api/exampapers${query ? `?${query}` : ""}`;
+      },
+      BY_ID: (id: number) => `/api/exampapers/${id}`,
+      CREATE: "/api/exampapers",
+      UPDATE: (id: number) => `/api/exampapers/${id}`,
+      DELETE: (id: number) => `/api/exampapers/${id}`,
+      ADD_QUESTION: (examId: number) => `/api/exampapers/${examId}/questions`,
+      ADD_QUESTIONS_BULK: (examId: number) => `/api/exampapers/${examId}/questions/bulk`,
+      REMOVE_QUESTION: (examId: number, questionId: number) => `/api/exampapers/${examId}/questions/${questionId}`,
+      AVAILABLE_QUESTIONS: (examId: number, skillType?: string, partNumber?: number, questionType?: string, page?: number) => {
+        const params = new URLSearchParams();
+        if (skillType) params.append("skillType", skillType);
+        if (partNumber) params.append("partNumber", partNumber.toString());
+        if (questionType) params.append("questionType", questionType);
+        if (page) params.append("page", page.toString());
+        params.append("pageSize", "50");
+        const query = params.toString();
+        return `/api/exampapers/${examId}/available-questions${query ? `?${query}` : ""}`;
+      },
+      IMPORT: "/api/exampapers/import",
+    },
   },
   // TTS
   TTS: {
     PROXY: "/api/tts",
+  },
+
+  // Exam Papers
+  EXAM_PAPERS: {
+    BASE: "/api/exampapers",
+    BY_ID: (id: number) => `/api/exampapers/${id}`,
+    BY_TYPE: (examType: string) => `/api/exampapers/by-type/${examType}`,
+    HSK_BY_LEVEL: (level: number) => `/api/exampapers/hsk/level/${level}`,
+    SUBMIT: (id: number) => `/api/exampapers/${id}/submit`,
+    RESULT: (progressId: number) => `/api/exampapers/result/${progressId}`,
+    LATEST_RESULT: (examId: number) => `/api/exampapers/${examId}/latest-result`,
+    HISTORY: (examId?: number, limit?: number) => {
+      const params = new URLSearchParams();
+      if (examId) params.append("examId", examId.toString());
+      if (limit) params.append("limit", limit.toString());
+      const query = params.toString();
+      return `/api/exampapers/history${query ? `?${query}` : ""}`;
+    },
+  },
+
+  // User Profile
+  USER: {
+    PROFILE: "/api/user/profile",
+    LEARNED_WORDS: (hskLevel?: number, reviewLevel?: number, page?: number, pageSize?: number) => {
+      const params = new URLSearchParams();
+      if (hskLevel) params.append("hskLevel", hskLevel.toString());
+      if (reviewLevel !== undefined) params.append("reviewLevel", reviewLevel.toString());
+      if (page) params.append("page", page.toString());
+      if (pageSize) params.append("pageSize", pageSize.toString());
+      const query = params.toString();
+      return `/api/user/learned-words${query ? `?${query}` : ""}`;
+    },
   },
 };
 

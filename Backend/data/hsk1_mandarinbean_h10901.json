@@ -1,0 +1,242 @@
+{
+  "source": "https://mandarinbean.com/h10901-listening/",
+  "examInfo": {
+    "title": "H10901 Listening",
+    "examType": "HSK",
+    "level": 1,
+    "totalQuestions": 20,
+    "durationMinutes": 15,
+    "description": "听力 (20 题, 约 15 分钟) - HSK 1 Listening Sample Test"
+  },
+  "audioUrl": "https://content.libsyn.com/p/9/9/3/993be123b94107db/H10901.mp3",
+  "sections": [
+    {
+      "sectionName": "听力 - Nghe hiểu",
+      "skillType": "LISTENING",
+      "parts": [
+        {
+          "partNumber": 1,
+          "partName": "第一部分 - Phần 1",
+          "questionRange": "1-5",
+          "questionType": "TRUE_FALSE",
+          "instruction": "Nghe câu miêu tả và xác định xem nó có đúng với bức tranh không. (听句子，判断图片与句子内容是否一致)",
+          "exampleImageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_part1-1.jpg",
+          "questions": [
+            {
+              "questionOrder": 1,
+              "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_1.png",
+              "options": [
+                { "optionLabel": "TRUE", "optionText": "Đúng" },
+                { "optionLabel": "FALSE", "optionText": "Sai" }
+              ]
+            },
+            {
+              "questionOrder": 2,
+              "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_2.png",
+              "options": [
+                { "optionLabel": "TRUE", "optionText": "Đúng" },
+                { "optionLabel": "FALSE", "optionText": "Sai" }
+              ]
+            },
+            {
+              "questionOrder": 3,
+              "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_3.png",
+              "options": [
+                { "optionLabel": "TRUE", "optionText": "Đúng" },
+                { "optionLabel": "FALSE", "optionText": "Sai" }
+              ]
+            },
+            {
+              "questionOrder": 4,
+              "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_4.png",
+              "options": [
+                { "optionLabel": "TRUE", "optionText": "Đúng" },
+                { "optionLabel": "FALSE", "optionText": "Sai" }
+              ]
+            },
+            {
+              "questionOrder": 5,
+              "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_5.png",
+              "options": [
+                { "optionLabel": "TRUE", "optionText": "Đúng" },
+                { "optionLabel": "FALSE", "optionText": "Sai" }
+              ]
+            }
+          ]
+        },
+        {
+          "partNumber": 2,
+          "partName": "第二部分 - Phần 2",
+          "questionRange": "6-10",
+          "questionType": "SELECT_IMAGE",
+          "instruction": "Nghe đoạn hội thoại và chọn bức tranh phù hợp. (听对话，选择与对话内容一致的图片)",
+          "exampleImageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_part2.jpg",
+          "questions": [
+            {
+              "questionOrder": 6,
+              "options": [
+                { "optionLabel": "A", "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_6.png" },
+                { "optionLabel": "B", "imageUrl": "" },
+                { "optionLabel": "C", "imageUrl": "" }
+              ]
+            },
+            {
+              "questionOrder": 7,
+              "options": [
+                { "optionLabel": "A", "imageUrl": "" },
+                { "optionLabel": "B", "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_7-1.jpg" },
+                { "optionLabel": "C", "imageUrl": "" }
+              ]
+            },
+            {
+              "questionOrder": 8,
+              "options": [
+                { "optionLabel": "A", "imageUrl": "" },
+                { "optionLabel": "B", "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_8.jpg" },
+                { "optionLabel": "C", "imageUrl": "" }
+              ]
+            },
+            {
+              "questionOrder": 9,
+              "options": [
+                { "optionLabel": "A", "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_9.jpg" },
+                { "optionLabel": "B", "imageUrl": "" },
+                { "optionLabel": "C", "imageUrl": "" }
+              ]
+            },
+            {
+              "questionOrder": 10,
+              "options": [
+                { "optionLabel": "A", "imageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_10.jpg" },
+                { "optionLabel": "B", "imageUrl": "" },
+                { "optionLabel": "C", "imageUrl": "" }
+              ]
+            }
+          ]
+        },
+        {
+          "partNumber": 3,
+          "partName": "第三部分 - Phần 3",
+          "questionRange": "11-15",
+          "questionType": "MATCHING",
+          "instruction": "Nghe đoạn hội thoại và ghép với hình ảnh tương ứng từ A-F. (听对话，把对话与图片配对)",
+          "exampleImageUrl": "https://mandarinbean.com/wp-content/uploads/2020/12/H1_part3.jpg",
+          "questions": [
+            {
+              "questionOrder": 11,
+              "options": [
+                { "optionLabel": "A" },
+                { "optionLabel": "B" },
+                { "optionLabel": "C" },
+                { "optionLabel": "D" },
+                { "optionLabel": "E" },
+                { "optionLabel": "F" }
+              ]
+            },
+            {
+              "questionOrder": 12,
+              "options": [
+                { "optionLabel": "A" },
+                { "optionLabel": "B" },
+                { "optionLabel": "C" },
+                { "optionLabel": "D" },
+                { "optionLabel": "E" },
+                { "optionLabel": "F" }
+              ]
+            },
+            {
+              "questionOrder": 13,
+              "options": [
+                { "optionLabel": "A" },
+                { "optionLabel": "B" },
+                { "optionLabel": "C" },
+                { "optionLabel": "D" },
+                { "optionLabel": "E" },
+                { "optionLabel": "F" }
+              ]
+            },
+            {
+              "questionOrder": 14,
+              "options": [
+                { "optionLabel": "A" },
+                { "optionLabel": "B" },
+                { "optionLabel": "C" },
+                { "optionLabel": "D" },
+                { "optionLabel": "E" },
+                { "optionLabel": "F" }
+              ]
+            },
+            {
+              "questionOrder": 15,
+              "options": [
+                { "optionLabel": "A" },
+                { "optionLabel": "B" },
+                { "optionLabel": "C" },
+                { "optionLabel": "D" },
+                { "optionLabel": "E" },
+                { "optionLabel": "F" }
+              ]
+            }
+          ]
+        },
+        {
+          "partNumber": 4,
+          "partName": "第四部分 - Phần 4",
+          "questionRange": "16-20",
+          "questionType": "MULTIPLE_CHOICE",
+          "instruction": "Nghe đoạn hội thoại và chọn đáp án đúng. (听对话，选择正确答案)",
+          "questions": [
+            {
+              "questionOrder": 16,
+              "questionText": "这是谁的书？",
+              "options": [
+                { "optionLabel": "A", "optionText": "他的", "pinyin": "tā de" },
+                { "optionLabel": "B", "optionText": "我的", "pinyin": "wǒ de" },
+                { "optionLabel": "C", "optionText": "同学的", "pinyin": "tóngxué de" }
+              ]
+            },
+            {
+              "questionOrder": 17,
+              "questionText": "他们什么时候见面？",
+              "options": [
+                { "optionLabel": "A", "optionText": "星期三", "pinyin": "xīngqīsān" },
+                { "optionLabel": "B", "optionText": "星期五", "pinyin": "xīngqīwǔ" },
+                { "optionLabel": "C", "optionText": "星期六", "pinyin": "xīngqīliù" }
+              ]
+            },
+            {
+              "questionOrder": 18,
+              "questionText": "他买了多少个苹果？",
+              "options": [
+                { "optionLabel": "A", "optionText": "5" },
+                { "optionLabel": "B", "optionText": "15" },
+                { "optionLabel": "C", "optionText": "50" }
+              ]
+            },
+            {
+              "questionOrder": 19,
+              "questionText": "她想喝什么？",
+              "options": [
+                { "optionLabel": "A", "optionText": "茶", "pinyin": "chá" },
+                { "optionLabel": "B", "optionText": "苹果", "pinyin": "píngguǒ" },
+                { "optionLabel": "C", "optionText": "杯子", "pinyin": "bēizi" }
+              ]
+            },
+            {
+              "questionOrder": 20,
+              "questionText": "她女儿怎么样？",
+              "options": [
+                { "optionLabel": "A", "optionText": "爱学习", "pinyin": "ài xuéxí" },
+                { "optionLabel": "B", "optionText": "很漂亮", "pinyin": "hěn piàoliang" },
+                { "optionLabel": "C", "optionText": "想回家", "pinyin": "xiǎng huí jiā" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "crawledAt": "2024-12-02T14:20:00Z",
+  "note": "Dữ liệu được crawl từ MandarinBean. Cần download audio và hình ảnh về server riêng để sử dụng."
+}
+
