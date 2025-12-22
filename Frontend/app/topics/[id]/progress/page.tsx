@@ -108,10 +108,19 @@ export default function TopicProgressPage() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-grow flex items-center justify-center">
+        <main className="flex-grow">
+          <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+            <div className="container mx-auto px-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                Tiến Độ Học Tập
+              </h1>
+            </div>
+          </section>
+          <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
             <p className="text-gray-600">Đang tải thống kê tiến độ...</p>
+            </div>
           </div>
         </main>
         <Footer />
@@ -123,12 +132,21 @@ export default function TopicProgressPage() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-grow flex items-center justify-center">
+        <main className="flex-grow">
+          <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+            <div className="container mx-auto px-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                Tiến Độ Học Tập
+              </h1>
+            </div>
+          </section>
+          <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <p className="text-xl text-gray-600 mb-4">Chủ đề không tồn tại</p>
-            <Link href="/courses" className="text-primary hover:underline">
+              <Link href="/vocabulary" className="text-primary hover:text-primary-dark hover:underline">
               Quay lại danh sách chủ đề
             </Link>
+            </div>
           </div>
         </main>
         <Footer />
@@ -140,29 +158,37 @@ export default function TopicProgressPage() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
 
-      <main className="flex-grow py-8">
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Content */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Header */}
-              <div>
                 <Link
                   href={`/topics/${topicId}`}
-                  className="inline-flex items-center text-primary hover:text-primary-dark mb-4 transition"
+              className="inline-flex items-center text-white/80 hover:text-white mb-4 transition"
                 >
                   <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                   Quay lại chủ đề
                 </Link>
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                  Thống kê tiến độ: {topic.title}
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                  Tiến Độ Học Tập
                 </h1>
-                <p className="text-gray-600">
-                  Xem chi tiết tiến độ học tập của bạn trong chủ đề này
+                <p className="text-xl text-white/90">
+                  {topic.title}
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Main Content */}
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-6">
 
               {/* Summary Cards */}
           {summary && (

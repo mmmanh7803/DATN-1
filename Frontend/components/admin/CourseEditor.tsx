@@ -87,7 +87,7 @@ export default function CourseEditor({ courseId, isOpen, onClose, onSave }: Cour
       onClose();
     } catch (error: any) {
       console.error("Error saving course:", error);
-      toast.error("Lỗi khi lưu khóa học: " + (error.message || "Unknown error"));
+      toast.error(error.message || "Lỗi khi lưu khóa học.");
     } finally {
       setSaving(false);
     }

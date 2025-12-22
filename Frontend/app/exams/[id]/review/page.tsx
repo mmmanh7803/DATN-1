@@ -154,11 +154,24 @@ export default function ExamReviewPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-grow">
+          <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+            <div className="container mx-auto px-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                Xem Lại Đề Thi
+              </h1>
+            </div>
+          </section>
+          <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Đang tải kết quả...</p>
         </div>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
@@ -350,9 +363,9 @@ export default function ExamReviewPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Header />
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white">
-        <div className="container mx-auto px-4 py-8">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+        <div className="container mx-auto px-4">
           <Link
             href={`/exams/${examId}/result?progressId=${result.progressId}`}
             className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 transition-colors"
@@ -361,8 +374,8 @@ export default function ExamReviewPage() {
             Quay lại kết quả
           </Link>
           
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Xem lại đáp án</h1>
-          <p className="text-white/90">{result.examTitle}</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Xem Lại Đáp Án</h1>
+          <p className="text-xl text-white/90">{result.examTitle}</p>
           
           {/* Stats Summary */}
           <div className="flex flex-wrap gap-4 mt-6">
@@ -382,7 +395,7 @@ export default function ExamReviewPage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Filter */}
       <div className="container mx-auto px-4 py-6">

@@ -11,9 +11,8 @@ import { useToast } from "@/contexts/ToastContext";
 import { useCompletedActivities } from "@/hooks/useCompletedActivities";
 import { LessonTopicDto, LessonExerciseListDto } from "@/types";
 import VocabularyWordItem from "@/components/vocabulary/VocabularyWordItem";
-import LearningActivities, {
-  createDefaultActivities,
-} from "@/components/vocabulary/LearningActivities";
+import LearningActivities from "@/components/vocabulary/LearningActivities";
+import { useActivities } from "@/hooks/useActivities";
 import ActivityProgressChart from "@/components/vocabulary/ActivityProgressChart";
 import { calculateVocabularyProgress } from "@/lib/services/activityProgressService";
 
@@ -66,24 +65,17 @@ export default function TopicDetailPage() {
 
   const completedCount = stats.mastered + stats.learning;
 
-  const activities = useMemo(() => {
-    if (!topic) return [];
-    return createDefaultActivities({
-      vocabularyLink: `/topics/${topicId}`,
-      quickMemorizeLink: topic.hskLevel
-        ? `/topics/${topicId}/quick-memorize`
-        : undefined,
-      imageQuizLink: `/topics/${topicId}/image-quiz`,
-      pronunciationLink: `/topics/${topicId}/pronunciation`,
-      grammarLink: `/topics/${topicId}/grammar`,
-      progressLink: `/topics/${topicId}/progress`,
-      flashcardLink: `/topics/${topicId}/flashcard`,
-      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
-      fillBlankLink: `/topics/${topicId}/fill-blank`,
+  // Load activities from database
+  const { activities } = useActivities({
+    topicId,
       activeId: "vocabulary",
       completedIds: completedActivityIds,
+    customLinks: topic?.hskLevel
+      ? {
+          "quick-memorize": `/topics/${topicId}/quick-memorize`,
+        }
+      : {},
     });
-  }, [topic, topicId, completedActivityIds]);
 
   useEffect(() => {
     if (topicId) {

@@ -277,17 +277,11 @@ export default function ExamsPage() {
       <Header />
 
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="relative container mx-auto px-4 py-16">
+      <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+        <div className="container mx-auto px-4">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              🎯 Đề Thi HSK
+              Đề Thi HSK
             </h1>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
               Luyện thi HSK với các đề thi chuẩn quốc tế
@@ -312,7 +306,7 @@ export default function ExamsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">

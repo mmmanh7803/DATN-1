@@ -248,33 +248,40 @@ export default function GrammarActivityPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <section className="lg:col-span-2 space-y-6">
-            {/* Header Section */}
-            <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl shadow-lg p-6 border border-primary/20">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex-1">
+      <main className="flex-grow">
+        {/* Hero Section */}
+        <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+          <div className="container mx-auto px-4">
                   <Link
                     href={`/topics/${topicId}`}
-                    className="inline-flex items-center text-primary hover:text-primary-dark mb-4 transition text-sm font-medium"
+              className="inline-flex items-center text-white/80 hover:text-white mb-4 transition"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                     Quay lại chủ đề
                   </Link>
-                  <h1 className="text-4xl font-bold text-gray-900 mb-2">Ngữ pháp từ vựng</h1>
-                  <p className="text-gray-600 text-lg">
-                    Học ngữ pháp qua các từ vựng trong chủ đề <span className="font-semibold text-primary">{topic?.title}</span>
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                  Ngữ Pháp Từ Vựng
+                </h1>
+                <p className="text-xl text-white/90">
+                  {topic?.title || `Chủ đề ${topicId}`}
                   </p>
                 </div>
               </div>
+          </div>
+        </section>
 
+        {/* Main Content */}
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <section className="lg:col-span-2 space-y-6">
               {/* Progress Bar */}
-              <div className="mb-4">
+              <div className="bg-white rounded-xl shadow-sm p-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Tiến độ học tập</span>
                   <span className="text-sm font-semibold text-primary">{grammarProgress}%</span>
@@ -309,7 +316,6 @@ export default function GrammarActivityPage() {
                   value={partOfSpeechOptions.length}
                   description="Loại khác nhau"
                 />
-              </div>
             </div>
 
             {/* Filter and Actions */}
@@ -479,6 +485,7 @@ export default function GrammarActivityPage() {
               />
             </div>
           </aside>
+          </div>
         </div>
       </main>
       <Footer />

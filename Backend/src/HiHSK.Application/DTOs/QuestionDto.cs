@@ -7,6 +7,7 @@ public class QuestionDto
     public string QuestionType { get; set; } = string.Empty;
     public string? AudioUrl { get; set; }
     public string? ImageUrl { get; set; }
+    public string? BlankSentence { get; set; }
     public int Points { get; set; }
     public string? Explanation { get; set; }
     public List<QuestionOptionDto> Options { get; set; } = new();

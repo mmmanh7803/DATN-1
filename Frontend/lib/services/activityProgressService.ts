@@ -1,5 +1,5 @@
 import { ActivityProgress } from "@/components/vocabulary/ActivityProgressChart";
-import { WordDto } from "@/types";
+import { WordWithProgressDto } from "@/types";
 
 export interface ActivityProgressData {
   activityId: string;
@@ -11,7 +11,7 @@ export interface ActivityProgressData {
 }
 
 // Calculate progress for vocabulary activity
-export function calculateVocabularyProgress(words: WordDto[]): ActivityProgress {
+export function calculateVocabularyProgress(words: WordWithProgressDto[]): ActivityProgress {
   const completed = words.filter(w => w.progress?.status === "Mastered").length;
   const inProgress = words.filter(w => w.progress?.status === "Learning").length;
   const notStarted = words.filter(w => !w.progress || w.progress.status === "New").length;
@@ -28,7 +28,7 @@ export function calculateVocabularyProgress(words: WordDto[]): ActivityProgress 
 
 // Calculate progress for pronunciation activity
 export function calculatePronunciationProgress(
-  words: WordDto[],
+  words: WordWithProgressDto[],
   pronunciationScores: Map<number, number>
 ): ActivityProgress {
   let completed = 0;
@@ -60,7 +60,7 @@ export function calculatePronunciationProgress(
 // words: danh sách từ vựng thuộc chủ đề (topic)
 // completedWords: set các word IDs đã hoàn thành
 export function calculateQuickMemorizeProgress(
-  words: WordDto[],
+  words: WordWithProgressDto[],
   completedWords: Set<number>
 ): ActivityProgress {
   // Chỉ tính các từ thuộc chủ đề (words đã được filter từ backend)
@@ -86,17 +86,25 @@ export function calculateQuickMemorizeProgress(
 
 // Calculate progress for flashcard activity
 export function calculateFlashcardProgress(
-  words: WordDto[],
+  words: WordWithProgressDto[],
   reviewedWords: Set<number>
 ): ActivityProgress {
   const completed = words.filter(w => {
     if (!w.progress) return false;
-    return reviewedWords.has(w.id) && w.progress.easinessFactor > 2.5;
+    // Hoàn thành nếu đã review và status là Mastered hoặc Reviewing với nhiều lần review
+    return reviewedWords.has(w.id) && (
+      w.progress.status === "Mastered" || 
+      (w.progress.status === "Reviewing" && w.progress.reviewCount >= 3)
+    );
   }).length;
   
   const inProgress = words.filter(w => {
     if (!w.progress) return false;
-    return reviewedWords.has(w.id) && w.progress.easinessFactor <= 2.5;
+    // Đang học nếu đã review nhưng chưa master
+    return reviewedWords.has(w.id) && (
+      w.progress.status === "Learning" || 
+      (w.progress.status === "Reviewing" && w.progress.reviewCount < 3)
+    );
   }).length;
 
   const notStarted = words.length - completed - inProgress;
@@ -113,7 +121,7 @@ export function calculateFlashcardProgress(
 
 // Calculate all activities progress
 export function calculateAllActivitiesProgress(
-  words: WordDto[],
+  words: WordWithProgressDto[],
   options?: {
     pronunciationScores?: Map<number, number>;
     completedQuickMemorize?: Set<number>;

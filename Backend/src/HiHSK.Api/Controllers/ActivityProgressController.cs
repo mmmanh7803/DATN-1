@@ -471,6 +471,66 @@ public class ActivityProgressController : ControllerBase
             description = "Danh sách các hoạt động bắt buộc phải hoàn thành để mở khóa chủ đề tiếp theo"
         });
     }
+    
+    /// <summary>
+    /// Lấy progress của tất cả activities trong topic
+    /// </summary>
+    [HttpGet("topic-progress")]
+    public async Task<ActionResult> GetTopicActivityProgress([FromQuery] int topicId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized(new { message = "Người dùng chưa đăng nhập" });
+
+        try
+        {
+            // Lấy progress của user cho topic này
+            var userProgresses = await _context.UserActivityProgresses
+                .Where(p => p.UserId == userId && p.TopicId == topicId)
+                .ToListAsync();
+
+            var completedActivityIds = userProgresses
+                .Where(p => p.IsCompleted)
+                .Select(p => p.ActivityId)
+                .Distinct()
+                .ToList();
+
+            // Lấy tất cả activity IDs đã có trong hệ thống (từ UserActivityProgresses và required activities)
+            var allActivityIds = userProgresses
+                .Select(p => p.ActivityId)
+                .Distinct()
+                .ToList();
+            
+            var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
+            foreach (var reqActivity in requiredActivities)
+            {
+                if (!allActivityIds.Contains(reqActivity))
+                {
+                    allActivityIds.Add(reqActivity);
+                }
+            }
+
+            // Tính toán progress
+            var totalActivities = allActivityIds.Count;
+            var completedActivities = completedActivityIds.Count;
+            var progressPercentage = totalActivities > 0 
+                ? Math.Round((double)completedActivities / totalActivities * 100, 1) 
+                : 0;
+
+            return Ok(new
+            {
+                topicId,
+                totalActivities,
+                completedActivities,
+                progressPercentage
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Lỗi khi lấy progress của topic {topicId}");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
 }
 
 public class CompleteActivityRequest

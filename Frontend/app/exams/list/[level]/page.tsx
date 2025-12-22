@@ -251,14 +251,8 @@ export default function ExamListPage() {
       <Header />
 
       {/* Hero Section */}
-      <div className={`relative overflow-hidden bg-gradient-to-r ${config.gradient}`}>
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-72 h-72 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-        </div>
-        
-        <div className="relative container mx-auto px-4 py-12">
+      <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+        <div className="container mx-auto px-4">
           {/* Back Button */}
           <button 
             onClick={() => router.push('/exams')}
@@ -306,7 +300,7 @@ export default function ExamListPage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
@@ -326,7 +320,7 @@ export default function ExamListPage() {
             onClick={() => setFilter('all')}
             className={`px-4 py-2 rounded-xl font-medium transition-all ${
               filter === 'all'
-                ? `bg-gradient-to-r ${config.gradient} text-white`
+                ? 'bg-gradient-to-r from-primary-light via-primary to-primary-dark text-white'
                 : 'text-gray-600 hover:bg-gray-100'
             }`}
           >

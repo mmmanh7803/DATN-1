@@ -179,7 +179,7 @@ export default function VocabularyPracticePage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-grow">
-          <section className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 py-12 md:py-16">
+          <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
             <div className="container mx-auto px-4">
               <Link
                 href={`/topics/${topicId}`}
@@ -191,13 +191,13 @@ export default function VocabularyPracticePage() {
                 Quay lại chủ đề
               </Link>
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
-                📝 Thực hành từ vựng
+                Thực Hành Từ Vựng
               </h1>
             </div>
           </section>
           <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[400px]">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
               <p className="text-gray-600">Đang tải dữ liệu...</p>
             </div>
           </div>
@@ -212,7 +212,7 @@ export default function VocabularyPracticePage() {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-grow">
-          <section className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 py-12 md:py-16">
+          <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
             <div className="container mx-auto px-4">
               <Link
                 href={`/topics/${topicId}`}
@@ -224,7 +224,7 @@ export default function VocabularyPracticePage() {
                 Quay lại chủ đề
               </Link>
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
-                📝 Thực hành từ vựng
+                Thực Hành Từ Vựng
               </h1>
             </div>
           </section>
@@ -233,7 +233,7 @@ export default function VocabularyPracticePage() {
               <p className="text-xl text-gray-600 mb-4">Không có từ vựng nào trong chủ đề này.</p>
               <Link
                 href="/vocabulary"
-                className="text-indigo-600 hover:text-indigo-700 underline"
+                className="text-primary hover:text-primary-dark hover:underline"
               >
                 Quay lại danh sách chủ đề
               </Link>
@@ -251,7 +251,7 @@ export default function VocabularyPracticePage() {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 py-12 md:py-16">
+        <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
           <div className="container mx-auto px-4">
             <Link
               href={`/topics/${topicId}`}

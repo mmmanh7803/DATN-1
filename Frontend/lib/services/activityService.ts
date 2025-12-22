@@ -1,4 +1,22 @@
 import apiClient from '../api';
+import { API_ENDPOINTS } from '../api-endpoints';
+
+export interface ActivityDto {
+  id: string;
+  name: string;
+  displayName: string;
+  description?: string;
+  iconUrl?: string;
+  category?: string;
+  requiresScore: boolean;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export interface ActivitiesResponse {
+  activities: ActivityDto[];
+  count: number;
+}
 
 export interface CompleteActivityRequest {
   hskLevel?: number;
@@ -105,6 +123,26 @@ export const canAccessPart = async (
 ): Promise<CanAccessPartResponse> => {
   const response = await apiClient.get<CanAccessPartResponse>(
     `/activities/can-access-part?hskLevel=${hskLevel}&partNumber=${partNumber}`
+  );
+  return response.data;
+};
+
+/**
+ * Lấy danh sách tất cả activities từ database
+ */
+export const getActivities = async (isActive?: boolean): Promise<ActivityDto[]> => {
+  const response = await apiClient.get<ActivitiesResponse>(
+    API_ENDPOINTS.ACTIVITIES.LIST(isActive)
+  );
+  return response.data.activities;
+};
+
+/**
+ * Lấy thông tin một activity theo ID
+ */
+export const getActivityById = async (id: string): Promise<ActivityDto> => {
+  const response = await apiClient.get<ActivityDto>(
+    API_ENDPOINTS.ACTIVITIES.BY_ID(id)
   );
   return response.data;
 };

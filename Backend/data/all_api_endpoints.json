@@ -1,7 +1,0 @@
-{
-  "all_endpoints": [
-    "https://api.hihsk.com/api/study/save",
-    "https://hihsk.com/api/grammar"
-  ],
-  "exam_endpoints": []
-}

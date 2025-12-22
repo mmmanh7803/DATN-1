@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import LessonEditor from "@/components/admin/LessonEditor";
 import { adminService, AdminLessonDto, AdminCourseDto } from "@/lib/services/adminService";
-import { useToast } from "@/contexts/ToastContext";
+import ConfirmModal from "@/components/common/ConfirmModal";
+import MessageModal from "@/components/common/MessageModal";
 
 export default function AdminLessonsPage() {
-  const toast = useToast();
   const [lessons, setLessons] = useState<AdminLessonDto[]>([]);
   const [courses, setCourses] = useState<AdminCourseDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -15,6 +15,14 @@ export default function AdminLessonsPage() {
   const [courseFilter, setCourseFilter] = useState<string>("all");
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingLessonId, setEditingLessonId] = useState<number | undefined>(undefined);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [lessonToDelete, setLessonToDelete] = useState<number | null>(null);
+  const [messageModal, setMessageModal] = useState<{ isOpen: boolean; type: "success" | "error"; title: string; message: string }>({
+    isOpen: false,
+    type: "success",
+    title: "",
+    message: "",
+  });
 
   useEffect(() => {
     loadCourses();
@@ -48,17 +56,33 @@ export default function AdminLessonsPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa bài học này?")) {
-      return;
-    }
+  const handleDeleteClick = (id: number) => {
+    setLessonToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!lessonToDelete) return;
 
     try {
-      await adminService.deleteLesson(id);
-      toast.success("Đã xóa bài học");
-      setLessons(lessons.filter((l) => l.id !== id));
+      await adminService.deleteLesson(lessonToDelete);
+      setLessons(lessons.filter((l) => l.id !== lessonToDelete));
+      setDeleteConfirmOpen(false);
+      setLessonToDelete(null);
+      setMessageModal({
+        isOpen: true,
+        type: "success",
+        title: "Thành công",
+        message: "Đã xóa bài học thành công",
+      });
     } catch (err: any) {
-      toast.error("Lỗi khi xóa bài học: " + (err.message || "Unknown error"));
+      setDeleteConfirmOpen(false);
+      setMessageModal({
+        isOpen: true,
+        type: "error",
+        title: "Lỗi",
+        message: "Lỗi khi xóa bài học: " + (err.message || "Unknown error"),
+      });
     }
   };
 
@@ -195,7 +219,7 @@ export default function AdminLessonsPage() {
                       Sửa
                     </button>
                     <button
-                      onClick={() => handleDelete(lesson.id)}
+                      onClick={() => handleDeleteClick(lesson.id)}
                       className="px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 text-sm font-medium"
                     >
                       Xóa
@@ -218,6 +242,30 @@ export default function AdminLessonsPage() {
           setEditingLessonId(undefined);
         }}
         onSave={handleSave}
+      />
+
+      {/* Delete Confirm Modal */}
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        title="Xác nhận xóa"
+        message="Bạn có chắc chắn muốn xóa bài học này? Hành động này không thể hoàn tác."
+        confirmText="Xóa"
+        cancelText="Hủy"
+        type="danger"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => {
+          setDeleteConfirmOpen(false);
+          setLessonToDelete(null);
+        }}
+      />
+
+      {/* Message Modal */}
+      <MessageModal
+        isOpen={messageModal.isOpen}
+        title={messageModal.title}
+        message={messageModal.message}
+        type={messageModal.type}
+        onClose={() => setMessageModal({ ...messageModal, isOpen: false })}
       />
     </AdminLayout>
   );

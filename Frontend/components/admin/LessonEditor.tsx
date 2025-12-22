@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { adminService, AdminLessonDto, AdminCourseDto, CreateLessonDto } from "@/lib/services/adminService";
-import { useToast } from "@/contexts/ToastContext";
+import MessageModal from "@/components/common/MessageModal";
 
 interface LessonEditorProps {
   lessonId?: number;
@@ -15,8 +15,8 @@ interface LessonEditorProps {
 export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClose, onSave }: LessonEditorProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const toast = useToast();
   const [courses, setCourses] = useState<AdminCourseDto[]>([]);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const [formData, setFormData] = useState<CreateLessonDto>({
     courseId: defaultCourseId || 0,
     title: "",
@@ -30,92 +30,35 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
 
   useEffect(() => {
     if (isOpen) {
-      loadCourses();
-      if (lessonId) {
-        loadLesson();
-      } else {
-        // Reset form for new lesson
-        setFormData({
-          courseId: defaultCourseId || 0,
-          title: "",
-          description: "",
-          lessonIndex: 1,
-          content: "",
-          isLocked: false,
-          prerequisiteLessonId: undefined,
-          isActive: true,
-        });
-      }
+      // Hiển thị thông báo vì bảng Lessons đã bị xóa
+      setShowInfoModal(true);
     }
-  }, [isOpen, lessonId, defaultCourseId]);
+  }, [isOpen]);
 
-  const loadCourses = async () => {
-    try {
-      const data = await adminService.getCourses();
-      setCourses(data);
-    } catch (error) {
-      console.error("Error loading courses:", error);
-    }
-  };
-
-  const loadLesson = async () => {
-    if (!lessonId) return;
-
-    try {
-      setLoading(true);
-      const lesson = await adminService.getLessonById(lessonId);
-      setFormData({
-        courseId: lesson.courseId || 0,
-        title: lesson.title || "",
-        description: lesson.description || "",
-        lessonIndex: lesson.lessonIndex || 1,
-        content: lesson.content || "",
-        isLocked: lesson.isLocked ?? false,
-        prerequisiteLessonId: lesson.prerequisiteLessonId,
-        isActive: lesson.isActive ?? true,
-      });
-    } catch (error: any) {
-      console.error("Error loading lesson:", error);
-      toast.error("Không thể tải thông tin bài học");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!formData.title) {
-      toast.warning("Vui lòng điền tên bài học");
-      return;
-    }
-
-    if (!formData.courseId) {
-      toast.warning("Vui lòng chọn khóa học");
-      return;
-    }
-
-    try {
-      setSaving(true);
-      if (lessonId) {
-        await adminService.updateLesson(lessonId, formData);
-      } else {
-        await adminService.createLesson(formData);
-      }
-      onSave();
-      onClose();
-    } catch (error: any) {
-      console.error("Error saving lesson:", error);
-      toast.error("Lỗi khi lưu bài học: " + (error.message || "Unknown error"));
-    } finally {
-      setSaving(false);
-    }
+    // Chức năng này không còn khả dụng
+    setShowInfoModal(true);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <>
+      {/* Info Modal */}
+      <MessageModal
+        isOpen={showInfoModal}
+        title="Chức năng không khả dụng"
+        message="Bảng Lessons đã bị xóa trong hệ thống. Hệ thống hiện sử dụng LessonTopics thay vì Lessons. Vui lòng sử dụng chức năng quản lý LessonTopics thay thế."
+        type="info"
+        onClose={() => {
+          setShowInfoModal(false);
+          onClose();
+        }}
+      />
+
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar m-4">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold text-gray-900">
@@ -132,13 +75,24 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Đang tải...</p>
+          {/* Thông báo không khả dụng */}
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div>
+                <p className="text-sm font-medium text-amber-800">
+                  Chức năng này không còn khả dụng
+                </p>
+                <p className="text-sm text-amber-700 mt-1">
+                  Bảng Lessons đã bị xóa. Hệ thống hiện sử dụng LessonTopics thay vì Lessons.
+                </p>
+              </div>
             </div>
-          ) : (
-            <>
+          </div>
+
+          <div className="opacity-50 pointer-events-none space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Khóa học <span className="text-red-500">*</span>
@@ -147,7 +101,8 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
                   value={formData.courseId || ""}
                   onChange={(e) => setFormData({ ...formData, courseId: parseInt(e.target.value) || 0 })}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                 >
                   <option value="">Chọn khóa học</option>
                   {courses.map((course) => (
@@ -167,7 +122,8 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                   placeholder="Ví dụ: Bài 1 - Giới thiệu bản thân"
                 />
               </div>
@@ -193,7 +149,8 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                   rows={5}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                   placeholder="Nội dung chi tiết của bài học (có thể sử dụng markdown)"
                 />
               </div>
@@ -208,7 +165,8 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
                     value={formData.lessonIndex}
                     onChange={(e) => setFormData({ ...formData, lessonIndex: parseInt(e.target.value) || 1 })}
                     min="1"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                   />
                 </div>
 
@@ -224,7 +182,8 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
                       prerequisiteLessonId: e.target.value ? parseInt(e.target.value) : undefined 
                     })}
                     placeholder="ID bài học tiên quyết"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed"
                   />
                 </div>
               </div>
@@ -252,8 +211,7 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
                   <span className="ml-3 text-sm font-medium text-gray-700">Khóa bài học</span>
                 </label>
               </div>
-            </>
-          )}
+          </div>
 
           <div className="flex items-center justify-end gap-4 pt-4 border-t border-gray-200">
             <button
@@ -261,19 +219,13 @@ export default function LessonEditor({ lessonId, defaultCourseId, isOpen, onClos
               onClick={onClose}
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Hủy
-            </button>
-            <button
-              type="submit"
-              disabled={saving || loading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed font-medium"
-            >
-              {saving ? "Đang lưu..." : "Lưu"}
+              Đóng
             </button>
           </div>
         </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

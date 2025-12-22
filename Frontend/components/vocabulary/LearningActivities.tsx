@@ -53,23 +53,20 @@ export default function LearningActivities({
             {title && (
               <h3 className="text-lg font-bold text-gray-900">{title}</h3>
             )}
-            {(completedCount !== undefined && totalCount !== undefined) && (
-              <div className="text-xs text-gray-600 mt-1 flex items-center gap-2">
-                <span>{completedCount}/{totalCount} bài hoàn thành</span>
-                {/* Hiển thị dấu tích xanh khi đạt 100% */}
-                {totalCount > 0 && completedCount >= totalCount && (
-                  <svg
-                    className="w-4 h-4 text-green-500 flex-shrink-0"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                )}
+            {(completedCount !== undefined && totalCount !== undefined && totalCount > 0) && (
+              <div className="mt-2">
+                <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
+                  <span>Hoạt động học: {completedCount}/{totalCount}</span>
+                  <span>{Math.round((completedCount / totalCount) * 100)}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      completedCount >= totalCount ? "bg-green-500" : "bg-primary"
+                    }`}
+                    style={{ width: `${Math.min(100, Math.round((completedCount / totalCount) * 100))}%` }}
+                  ></div>
+                </div>
               </div>
             )}
           </div>
@@ -329,6 +326,112 @@ export const createActivityIcons = () => ({
     </svg>
   ),
 });
+
+// Helper function to map activity ID to link template
+const getActivityLink = (activityId: string, topicId: number): string | null => {
+  const linkMap: Record<string, string> = {
+    "vocabulary": `/topics/${topicId}`,
+    "quick-memorize": `/topics/${topicId}/quick-memorize`,
+    "image-quiz": `/topics/${topicId}/image-quiz`,
+    "pronunciation": `/topics/${topicId}/pronunciation`,
+    "grammar": `/topics/${topicId}/grammar`,
+    "progress": `/topics/${topicId}/progress`,
+    "flashcard": `/topics/${topicId}/flashcard`,
+    "vocabulary-practice": `/topics/${topicId}/vocabulary-practice`,
+    "fill-blank": `/topics/${topicId}/fill-blank`,
+  };
+  return linkMap[activityId] || null;
+};
+
+// Helper function to create activities from database data
+export const createActivitiesFromDatabase = async (
+  topicId: number,
+  options?: {
+    activeId?: string;
+    completedIds?: string[];
+    activityProgressMap?: Map<string, number>;
+    customLinks?: Record<string, string>;
+  }
+): Promise<ActivityItem[]> => {
+  const icons = createActivityIcons();
+  const {
+    activeId,
+    completedIds = [],
+    activityProgressMap,
+    customLinks = {},
+  } = options || {};
+
+  try {
+    // Import activityService dynamically to avoid circular dependency
+    const { getActivities } = await import('@/lib/services/activityService');
+    
+    // Fetch activities from database (only active ones)
+    const dbActivities = await getActivities(true);
+    
+    // Helper function to get icon from activity ID
+    const getIconForActivity = (activityId: string): React.ReactNode => {
+      const iconMap: Record<string, React.ReactNode> = {
+        "vocabulary": icons.vocabulary,
+        "quick-memorize": icons.quickMemorize,
+        "image-quiz": icons.imageQuiz,
+        "pronunciation": icons.pronunciation,
+        "grammar": icons.grammar,
+        "flashcard": icons.flashcard,
+        "fill-blank": icons.fillBlank,
+        "true-false": icons.trueFalse,
+        "true-false-sentence": icons.trueFalseSentence,
+        "listen-image": icons.listenImage,
+        "match-sentence": icons.matchSentence,
+        "conversation": icons.conversation,
+        "reading": icons.reading,
+        "statistics": icons.statistics,
+      };
+      return iconMap[activityId] || icons.vocabulary;
+    };
+
+    // Helper function to get progress percentage
+    const getProgressPercentage = (activityId: string): number | undefined => {
+      if (completedIds.includes(activityId)) {
+        return 100;
+      }
+      if (activityProgressMap?.has(activityId)) {
+        return activityProgressMap.get(activityId);
+      }
+      return undefined;
+    };
+
+    // Map database activities to ActivityItem format
+    return dbActivities
+      .filter(activity => activity.isActive)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map(activity => ({
+        id: activity.id,
+        name: activity.displayName || activity.name,
+        icon: getIconForActivity(activity.id),
+        link: customLinks[activity.id] || getActivityLink(activity.id, topicId),
+        isCompleted: completedIds.includes(activity.id),
+        isActive: activeId === activity.id,
+        progressPercentage: getProgressPercentage(activity.id),
+      }));
+  } catch (error) {
+    console.error('Error fetching activities from database, falling back to default:', error);
+    // Fallback to default activities if API fails
+    return createDefaultActivities({
+      vocabularyLink: customLinks["vocabulary"] || `/topics/${topicId}`,
+      quickMemorizeLink: customLinks["quick-memorize"] || `/topics/${topicId}/quick-memorize`,
+      imageQuizLink: customLinks["image-quiz"] || `/topics/${topicId}/image-quiz`,
+      pronunciationLink: customLinks["pronunciation"] || `/topics/${topicId}/pronunciation`,
+      grammarLink: customLinks["grammar"] || `/topics/${topicId}/grammar`,
+      progressLink: customLinks["progress"] || `/topics/${topicId}/progress`,
+      flashcardLink: customLinks["flashcard"] || `/topics/${topicId}/flashcard`,
+      vocabularyPracticeLink: customLinks["vocabulary-practice"] || `/topics/${topicId}/vocabulary-practice`,
+      fillBlankLink: customLinks["fill-blank"] || `/topics/${topicId}/fill-blank`,
+      activeId,
+      completedIds,
+      activityProgressMap,
+    });
+  }
+};
 
 // Helper function to create default activities list
 export const createDefaultActivities = (

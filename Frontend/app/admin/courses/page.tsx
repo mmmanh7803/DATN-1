@@ -4,15 +4,23 @@ import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import CourseEditor from "@/components/admin/CourseEditor";
 import { adminService, AdminCourseDto } from "@/lib/services/adminService";
-import { useToast } from "@/contexts/ToastContext";
+import ConfirmModal from "@/components/common/ConfirmModal";
+import MessageModal from "@/components/common/MessageModal";
 
 export default function AdminCoursesPage() {
-  const toast = useToast();
   const [courses, setCourses] = useState<AdminCourseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingCourseId, setEditingCourseId] = useState<number | undefined>(undefined);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState<number | null>(null);
+  const [messageModal, setMessageModal] = useState<{ isOpen: boolean; type: "success" | "error"; title: string; message: string }>({
+    isOpen: false,
+    type: "success",
+    title: "",
+    message: "",
+  });
 
   useEffect(() => {
     loadCourses();
@@ -32,17 +40,33 @@ export default function AdminCoursesPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Bạn có chắc chắn muốn xóa khóa học này?")) {
-      return;
-    }
+  const handleDeleteClick = (id: number) => {
+    setCourseToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!courseToDelete) return;
 
     try {
-      await adminService.deleteCourse(id);
-      toast.success("Đã xóa khóa học");
-      setCourses(courses.filter((c) => c.id !== id));
+      await adminService.deleteCourse(courseToDelete);
+      setCourses(courses.filter((c) => c.id !== courseToDelete));
+      setDeleteConfirmOpen(false);
+      setCourseToDelete(null);
+      setMessageModal({
+        isOpen: true,
+        type: "success",
+        title: "Thành công",
+        message: "Đã xóa khóa học thành công",
+      });
     } catch (err: any) {
-      toast.error("Lỗi khi xóa khóa học: " + (err.message || "Unknown error"));
+      setDeleteConfirmOpen(false);
+      setMessageModal({
+        isOpen: true,
+        type: "error",
+        title: "Lỗi",
+        message: "Lỗi khi xóa khóa học: " + (err.message || "Unknown error"),
+      });
     }
   };
 
@@ -156,7 +180,7 @@ export default function AdminCoursesPage() {
                       Sửa
                     </button>
                     <button
-                      onClick={() => handleDelete(course.id)}
+                      onClick={() => handleDeleteClick(course.id)}
                       className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 text-sm font-medium"
                     >
                       Xóa
@@ -178,6 +202,30 @@ export default function AdminCoursesPage() {
           setEditingCourseId(undefined);
         }}
         onSave={handleSave}
+      />
+
+      {/* Delete Confirm Modal */}
+      <ConfirmModal
+        isOpen={deleteConfirmOpen}
+        title="Xác nhận xóa"
+        message="Bạn có chắc chắn muốn xóa khóa học này? Hành động này không thể hoàn tác."
+        confirmText="Xóa"
+        cancelText="Hủy"
+        type="danger"
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => {
+          setDeleteConfirmOpen(false);
+          setCourseToDelete(null);
+        }}
+      />
+
+      {/* Message Modal */}
+      <MessageModal
+        isOpen={messageModal.isOpen}
+        title={messageModal.title}
+        message={messageModal.message}
+        type={messageModal.type}
+        onClose={() => setMessageModal({ ...messageModal, isOpen: false })}
       />
     </AdminLayout>
   );

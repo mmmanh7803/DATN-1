@@ -308,6 +308,16 @@ export interface ReviewStatsDto {
   masteredWords: number;
   wordsDueToday: number;
 }
+export interface activitiesDto {
+  id: string;
+  name: string;
+  displayName: string;
+  description: string;
+  iconUrl: string;
+  category: string;
+  requiresScore: boolean;
+  sortOrder: number;
+}
 
 // Part Progress types
 export interface ActivityProgressDto {

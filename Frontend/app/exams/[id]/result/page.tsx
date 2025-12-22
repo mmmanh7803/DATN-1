@@ -133,11 +133,24 @@ export default function ExamResultPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-grow">
+          <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+            <div className="container mx-auto px-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                Kết Quả Thi
+              </h1>
+            </div>
+          </section>
+          <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Đang tính toán kết quả...</p>
         </div>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
@@ -179,25 +192,11 @@ export default function ExamResultPage() {
       <Header />
 
       {/* Hero Result Section */}
-      <div className={`relative overflow-hidden bg-gradient-to-r ${result.isPassed ? 'from-green-500 via-emerald-500 to-teal-500' : 'from-orange-500 via-red-500 to-pink-500'}`}>
-        {/* Background Effects */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative container mx-auto px-4 py-16 text-center">
-          {/* Trophy/Medal */}
-          <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 ${
-            result.isPassed ? 'bg-yellow-400 text-yellow-800' : 'bg-gray-300 text-gray-600'
-          }`}>
-            <TrophyIcon />
-          </div>
-
+      <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+        <div className="container mx-auto px-4 text-center">
           {/* Status */}
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {result.isPassed ? '🎉 Chúc mừng! Bạn đã đạt!' : '💪 Cố gắng thêm nhé!'}
+            {result.isPassed ? 'Chúc mừng! Bạn đã đạt!' : 'Cố gắng thêm nhé!'}
           </h1>
           <p className="text-xl text-white/90 mb-8">
             {result.examTitle}
@@ -205,7 +204,7 @@ export default function ExamResultPage() {
 
           {/* Score */}
           <div className="inline-block bg-white rounded-3xl px-12 py-8 shadow-2xl">
-            <div className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <div className="text-6xl md:text-7xl font-bold text-primary">
               {result.score}%
             </div>
             <div className="text-gray-500 mt-2">
@@ -213,7 +212,7 @@ export default function ExamResultPage() {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12">

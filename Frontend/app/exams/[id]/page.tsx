@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 import { examService, ExamDetail } from '@/lib/services/examService';
 
 // Icon Components
@@ -656,11 +658,24 @@ export default function ExamPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="min-h-screen flex flex-col bg-gray-50">
+        <Header />
+        <main className="flex-grow">
+          <section className="bg-gradient-to-br from-primary-light via-primary to-primary-dark py-12 md:py-16">
+            <div className="container mx-auto px-4">
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
+                Đề Thi
+              </h1>
+            </div>
+          </section>
+          <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600 mx-auto mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-gray-600">Đang tải đề thi...</p>
         </div>
+          </div>
+        </main>
+        <Footer />
       </div>
     );
   }
@@ -934,7 +949,7 @@ export default function ExamPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
-      <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-lg sticky top-0 z-50">
+      <header className="bg-gradient-to-br from-primary-light via-primary to-primary-dark text-white shadow-lg sticky top-0 z-50">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-4">
             <button
@@ -987,7 +1002,7 @@ export default function ExamPage() {
         <aside className={`${
           showSidebar ? 'translate-x-0' : '-translate-x-full'
         } fixed lg:relative lg:translate-x-0 top-[60px] left-0 w-80 h-[calc(100vh-60px)] bg-white shadow-xl z-40 transition-transform duration-300 overflow-hidden flex flex-col`}>
-          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary to-primary-dark text-white">
             <h2 className="font-bold">Danh sách câu hỏi</h2>
             <button 
               onClick={() => setShowSidebar(false)}
@@ -1592,6 +1607,7 @@ export default function ExamPage() {
           scrollbar-color: #cbd5e1 #f1f5f9;
         }
       `}</style>
+      <Footer />
     </div>
   );
 }

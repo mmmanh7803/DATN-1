@@ -1,6 +1,6 @@
 import apiClient from "../api";
 import { API_ENDPOINTS } from "../api-endpoints";
-import { WordDto, CourseListDto, LessonListDto, QuestionDto, User } from "../../types";
+import { WordDto, CourseListDto, LessonListDto, QuestionDto, User } from "@/types";
 
 export interface AdminStats {
   courseCategories: number;
@@ -28,6 +28,11 @@ export interface AdminWordDto extends WordDto {
 
 // Admin Course DTO
 export interface AdminCourseDto extends CourseListDto {
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  hskLevel?: number;
+  level?: string;
   categoryId: number;
   categoryName?: string;
   isActive: boolean;

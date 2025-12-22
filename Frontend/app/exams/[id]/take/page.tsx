@@ -781,7 +781,7 @@ export default function TakeExamPage() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
-      <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-lg sticky top-0 z-50">
+      <header className="bg-gradient-to-br from-primary-light via-primary to-primary-dark text-white shadow-lg sticky top-0 z-50">
         <div className="flex items-center justify-between px-4 py-3">
           {/* Left */}
           <div className="flex items-center gap-4">
@@ -826,7 +826,7 @@ export default function TakeExamPage() {
           showSidebar ? 'translate-x-0' : '-translate-x-full'
         } fixed lg:relative lg:translate-x-0 top-[60px] left-0 w-80 h-[calc(100vh-60px)] bg-white shadow-xl z-40 transition-transform duration-300 overflow-hidden flex flex-col`}>
           {/* Sidebar Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary to-primary-dark text-white">
             <h2 className="font-bold">Danh sách câu hỏi</h2>
             <button 
               onClick={() => setShowSidebar(false)}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { WordWithProgressDto } from "@/types";
 import { getProxyAudioUrl } from "@/lib/audio";
 
@@ -36,6 +37,7 @@ const learningActivities = [
 ];
 
 export default function VocabularyDetailView({ word, onClose }: VocabularyDetailViewProps) {
+  const router = useRouter();
   const [isExamplesCollapsed, setIsExamplesCollapsed] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -263,6 +265,15 @@ export default function VocabularyDetailView({ word, onClose }: VocabularyDetail
 
   const examples = getExamplesFromWord();
 
+  const handleNavigateToWriting = () => {
+    if (!word?.id) {
+      console.warn("Thiếu ID từ vựng, không thể mở trang luyện viết");
+      return;
+    }
+
+    router.push(`/vocabulary/write/${word.id}`);
+  };
+
   // Highlight từ khóa trong text (case-insensitive và highlight toàn bộ từ)
   const highlightKeyword = (text: string, keyword: string) => {
     if (!text || !keyword) return <span>{text}</span>;
@@ -370,7 +381,10 @@ export default function VocabularyDetailView({ word, onClose }: VocabularyDetail
             <span>Nghe</span>
           </button>
 
-          <button className="px-4 py-3 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors flex items-center justify-center gap-2 text-sm font-medium">
+          <button
+            onClick={handleNavigateToWriting}
+            className="px-4 py-3 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+          >
             <svg
               className="w-5 h-5"
               fill="none"

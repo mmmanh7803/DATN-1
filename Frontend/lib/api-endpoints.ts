@@ -31,6 +31,17 @@ export const API_ENDPOINTS = {
     UNLOCK_STATUS: (id: number) => `/api/lessontopics/${id}/unlock-status`,
   },
   
+  // Activities (Master Data)
+  ACTIVITIES: {
+    BASE: "/api/activities/list",
+    BY_ID: (id: string) => `/api/activities/list/${id}`,
+    LIST: (isActive?: boolean) => {
+      const params = new URLSearchParams();
+      if (isActive !== undefined) params.append("isActive", isActive.toString());
+      return `/api/activities/list?${params.toString()}`;
+    },
+  },
+  
   // Activity Progress
   ACTIVITY_PROGRESS: {
     COMPLETE: "/api/activities/complete",
@@ -287,6 +298,14 @@ export const API_ENDPOINTS = {
       UPDATE: (id: number) => `/api/admin/lessontopics/${id}`,
       DELETE: (id: number) => `/api/admin/lessontopics/${id}`,
       BY_ID: (id: number) => `/api/admin/lessontopics/${id}`,
+    },
+    // Vocabulary Topics Management (Admin)
+    VOCABULARY_TOPICS: {
+      LIST: "/api/admin/vocabulary-topics",
+      CREATE: "/api/admin/vocabulary-topics",
+      UPDATE: (id: number) => `/api/admin/vocabulary-topics/${id}`,
+      DELETE: (id: number) => `/api/admin/vocabulary-topics/${id}`,
+      BY_ID: (id: number) => `/api/admin/vocabulary-topics/${id}`,
     },
     // Exam Papers Management (Admin)
     EXAMS: {

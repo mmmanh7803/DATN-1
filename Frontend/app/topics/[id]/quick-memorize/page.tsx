@@ -507,7 +507,7 @@ export default function QuickMemorizePage() {
                 Quay lại chủ đề
               </Link>
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
-                Nhớ từ qua hội thoại
+                Nhớ Nhanh Từ
               </h1>
             </div>
           </section>
@@ -540,7 +540,7 @@ export default function QuickMemorizePage() {
                 Quay lại chủ đề
               </Link>
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">
-                Nhớ từ qua hội thoại
+                Nhớ Nhanh Từ
               </h1>
             </div>
           </section>
