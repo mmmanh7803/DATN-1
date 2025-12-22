@@ -60,9 +60,10 @@ export default function FillInBlankPage() {
       completedIds: completedActivityIds,
     });
 
-  // Tính progress dựa trên activities (không phải từ vựng)
-  const totalActivities = activities.length;
-  const completedActivities = activities.filter(a => a.isCompleted).length;
+  // Tính progress dựa trên activities (hoạt động học) của lesson topic
+  // Dùng useMemo để đảm bảo tính lại khi activities thay đổi
+  const totalActivities = useMemo(() => activities.length, [activities]);
+  const completedActivities = useMemo(() => activities.filter(a => a.isCompleted).length, [activities]);
 
   const errorMessage = !topic || words.length === 0 
     ? "Không có từ vựng nào trong chủ đề này." 

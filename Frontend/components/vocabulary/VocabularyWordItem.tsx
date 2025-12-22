@@ -188,6 +188,13 @@ export default function VocabularyWordItem({ word, onDetailClick, viewMode = "li
               // Hiển thị toast notification
               toast.success("🎉 Chúc mừng! Bạn đã học xong tất cả từ vựng trong chủ đề này!", 5000);
               
+              // Dispatch event để đồng bộ với các component khác (giống như markActivityCompleted)
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(new CustomEvent("activity-completed", {
+                  detail: { activityId: "vocabulary", topicId, hskLevel: undefined, partNumber: undefined }
+                }));
+              }
+              
               // Gọi callback lại để refresh sau khi mark activity
               if (onVocabularyCompleted) {
                 onVocabularyCompleted();

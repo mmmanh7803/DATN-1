@@ -5,9 +5,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import LearningActivities, {
-  createDefaultActivities,
-} from "@/components/vocabulary/LearningActivities";
+import LearningActivities from "@/components/vocabulary/LearningActivities";
+import { useActivities } from "@/hooks/useActivities";
 import { useCompletedActivities } from "@/hooks/useCompletedActivities";
 import { exerciseService } from "@/lib/services/exerciseService";
 import { topicService } from "@/lib/services/topicService";
@@ -57,27 +56,27 @@ export default function GrammarActivityPage() {
     return Math.round((studiedWordIds.size / wordsWithGrammar.length) * 100);
   }, [wordsWithGrammar.length, studiedWordIds]);
 
-  const activities = useMemo(() => {
-    if (!topic) return [];
+  // Tạo progressMap cho grammar activity
+  const activityProgressMap = useMemo(() => {
     const progressMap = new Map<string, number>();
     if (grammarProgress > 0) {
       progressMap.set("grammar", grammarProgress);
     }
-    return createDefaultActivities({
-      vocabularyLink: `/topics/${topicId}`,
-      quickMemorizeLink: topic.hskLevel ? `/topics/${topicId}/quick-memorize` : undefined,
-      imageQuizLink: `/topics/${topicId}/image-quiz`,
-      pronunciationLink: `/topics/${topicId}/pronunciation`,
-      grammarLink: `/topics/${topicId}/grammar`,
-      progressLink: `/topics/${topicId}/progress`,
-      flashcardLink: `/topics/${topicId}/flashcard`,
-      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
-      fillBlankLink: `/topics/${topicId}/fill-blank`,
-      activeId: "grammar",
-      completedIds: completedActivityIds,
-      activityProgressMap: progressMap,
-    });
-  }, [topic, topicId, completedActivityIds, grammarProgress]);
+    return progressMap;
+  }, [grammarProgress]);
+
+  // Load activities from database (đồng bộ với các trang khác)
+  const { activities } = useActivities({
+    topicId,
+    activeId: "grammar",
+    completedIds: completedActivityIds,
+    activityProgressMap,
+  });
+
+  // Tính progress dựa trên activities (hoạt động học) của lesson topic
+  // Dùng useMemo để đảm bảo tính lại khi activities thay đổi
+  const totalActivities = useMemo(() => activities.length, [activities]);
+  const completedActivities = useMemo(() => activities.filter(a => a.isCompleted).length, [activities]);
 
   const filteredWords = useMemo(() => {
     if (selectedPartOfSpeech === "all") {
@@ -479,8 +478,8 @@ export default function GrammarActivityPage() {
               <LearningActivities
                 activities={activities}
                 title={topic?.title || "Hán Ngữ"}
-                completedCount={completedCount}
-                totalCount={vocabStats.total}
+                completedCount={completedActivities}
+                totalCount={totalActivities}
                 maxHeight="calc(100vh-200px)"
               />
             </div>

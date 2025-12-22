@@ -22,8 +22,8 @@ import { completeActivity } from "@/lib/services/activityService";
 import { useToast } from "@/contexts/ToastContext";
 import LearningActivities, {
   ActivityItem,
-  createDefaultActivities,
 } from "@/components/vocabulary/LearningActivities";
+import { useActivities } from "@/hooks/useActivities";
 import DisplayOptionsModal, {
   DisplayOptions,
 } from "@/components/vocabulary/DisplayOptionsModal";
@@ -386,8 +386,17 @@ export default function QuickMemorizePage() {
       }
     : { total: 0, mastered: 0, learning: 0, new: 0 };
 
-  // completedCount = mastered + learning (giống trang vocabulary learning)
-  const completedCount = vocabStats.mastered + vocabStats.learning;
+  // Load activities from database (đồng bộ với các trang khác)
+  const { activities } = useActivities({
+    topicId,
+    activeId: "quick-memorize",
+    completedIds: completedActivityIds,
+  });
+
+  // Tính progress dựa trên activities (hoạt động học) của lesson topic
+  // Dùng useMemo để đảm bảo tính lại khi activities thay đổi
+  const totalActivities = useMemo(() => activities.length, [activities]);
+  const completedActivities = useMemo(() => activities.filter(a => a.isCompleted).length, [activities]);
   
   // Giữ lại progressStats cho UI khác (nếu cần)
   const progressStats = {
@@ -408,24 +417,6 @@ export default function QuickMemorizePage() {
   const notStartedPercent = progressStats.total > 0 
     ? Math.round((progressStats.notStarted / progressStats.total) * 100) 
     : 0;
-
-  // Danh sách hoạt động học tập
-  const activities = useMemo(() => {
-    if (!topic) return [];
-    return createDefaultActivities({
-      vocabularyLink: `/topics/${topicId}`,
-      quickMemorizeLink: `/topics/${topicId}/quick-memorize`,
-      imageQuizLink: `/topics/${topicId}/image-quiz`,
-      pronunciationLink: `/topics/${topicId}/pronunciation`,
-      progressLink: `/topics/${topicId}/progress`,
-      grammarLink: `/topics/${topicId}/grammar`,
-      flashcardLink: `/topics/${topicId}/flashcard`,
-      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
-      fillBlankLink: `/topics/${topicId}/fill-blank`,
-      activeId: "quick-memorize",
-      completedIds: completedActivityIds,
-    });
-  }, [topic, topicId, completedActivityIds]);
 
   // Vẽ biểu đồ tròn
   const renderPieChart = () => {
@@ -663,8 +654,8 @@ export default function QuickMemorizePage() {
               <LearningActivities
                 activities={activities}
                 title={topic?.title || "Hán Ngữ"}
-                completedCount={completedCount}
-                totalCount={vocabStats.total}
+                completedCount={completedActivities}
+                totalCount={totalActivities}
                 maxHeight="calc(100vh-200px)"
               />
             </div>

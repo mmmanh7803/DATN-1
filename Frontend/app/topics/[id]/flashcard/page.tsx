@@ -9,9 +9,8 @@ import { useToast } from "@/contexts/ToastContext";
 import { topicService } from "@/lib/services/topicService";
 import { useCompletedActivities } from "@/hooks/useCompletedActivities";
 import { LessonTopicDto, WordWithProgressDto } from "@/types";
-import LearningActivities, {
-  createDefaultActivities,
-} from "@/components/vocabulary/LearningActivities";
+import LearningActivities from "@/components/vocabulary/LearningActivities";
+import { useActivities } from "@/hooks/useActivities";
 import { getProxyAudioUrl } from "@/lib/audio";
 
 interface FlashcardWord extends WordWithProgressDto {
@@ -155,25 +154,17 @@ export default function FlashcardPage() {
       }
     : { total: 0, mastered: 0, learning: 0, new: 0 };
 
-  const completedCount = vocabStats.mastered + vocabStats.learning;
+  // Load activities from database (đồng bộ với các trang khác)
+  const { activities } = useActivities({
+    topicId,
+    activeId: "flashcard",
+    completedIds: completedActivityIds,
+  });
 
-  // Danh sách hoạt động
-  const activities = useMemo(() => {
-    if (!topic) return [];
-    return createDefaultActivities({
-      vocabularyLink: `/topics/${topicId}`,
-      quickMemorizeLink: `/topics/${topicId}/quick-memorize`,
-      imageQuizLink: `/topics/${topicId}/image-quiz`,
-      pronunciationLink: `/topics/${topicId}/pronunciation`,
-      progressLink: `/topics/${topicId}/progress`,
-      grammarLink: `/topics/${topicId}/grammar`,
-      flashcardLink: `/topics/${topicId}/flashcard`,
-      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
-      fillBlankLink: `/topics/${topicId}/fill-blank`,
-      activeId: "flashcard",
-      completedIds: completedActivityIds,
-    });
-  }, [topic, topicId, completedActivityIds]);
+  // Tính progress dựa trên activities (hoạt động học) của lesson topic
+  // Dùng useMemo để đảm bảo tính lại khi activities thay đổi
+  const totalActivities = useMemo(() => activities.length, [activities]);
+  const completedActivities = useMemo(() => activities.filter(a => a.isCompleted).length, [activities]);
 
   if (loading) {
     return (
@@ -486,8 +477,8 @@ export default function FlashcardPage() {
                 <LearningActivities
                   activities={activities}
                   title={topic?.title || "Hán Ngữ"}
-                  completedCount={completedCount}
-                  totalCount={vocabStats.total}
+                  completedCount={completedActivities}
+                  totalCount={totalActivities}
                   maxHeight="calc(100vh - 200px)"
                 />
               </div>

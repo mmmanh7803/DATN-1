@@ -16,9 +16,8 @@ import {
 } from "@/lib/services/activityProgressService";
 import { LessonTopicDto, WordDto } from "@/types";
 import { useCompletedActivities } from "@/hooks/useCompletedActivities";
-import LearningActivities, {
-  createDefaultActivities,
-} from "@/components/vocabulary/LearningActivities";
+import LearningActivities from "@/components/vocabulary/LearningActivities";
+import { useActivities } from "@/hooks/useActivities";
 
 export default function PronunciationPracticePage() {
   const params = useParams();
@@ -37,38 +36,20 @@ export default function PronunciationPracticePage() {
   // Sử dụng hook để quản lý completed activities (đồng bộ giữa các trang)
   const {
     completedActivityIds,
+    markActivityCompleted,
   } = useCompletedActivities({ topicId });
   
-  // Tính stats giống các trang khác
-  const vocabStats = topic
-    ? {
-        total: topic.words?.length || 0,
-        mastered: topic.words?.filter((w: any) => w.progress?.status === "Mastered").length || 0,
-        learning: topic.words?.filter((w: any) => w.progress?.status === "Learning").length || 0,
-        new: topic.words?.filter((w: any) => !w.progress || w.progress.status === "New").length || 0,
-      }
-    : { total: 0, mastered: 0, learning: 0, new: 0 };
+  // Load activities from database (đồng bộ với các trang khác)
+  const { activities } = useActivities({
+    topicId,
+    activeId: "pronunciation",
+    completedIds: completedActivityIds,
+  });
 
-  const completedCount = vocabStats.mastered + vocabStats.learning;
-
-  const activities = useMemo(() => {
-    if (!topic) return [];
-    return createDefaultActivities({
-      vocabularyLink: `/topics/${topicId}`,
-      quickMemorizeLink: topic.hskLevel
-        ? `/topics/${topicId}/quick-memorize`
-        : undefined,
-      imageQuizLink: `/topics/${topicId}/image-quiz`,
-      pronunciationLink: `/topics/${topicId}/pronunciation`,
-      grammarLink: `/topics/${topicId}/grammar`,
-      progressLink: `/topics/${topicId}/progress`,
-      flashcardLink: `/topics/${topicId}/flashcard`,
-      vocabularyPracticeLink: `/topics/${topicId}/vocabulary-practice`,
-      fillBlankLink: `/topics/${topicId}/fill-blank`,
-      activeId: "pronunciation",
-      completedIds: completedActivityIds,
-    });
-  }, [topic, topicId, completedActivityIds]);
+  // Tính progress dựa trên activities (hoạt động học) của lesson topic
+  // Dùng useMemo để đảm bảo tính lại khi activities thay đổi
+  const totalActivities = useMemo(() => activities.length, [activities]);
+  const completedActivities = useMemo(() => activities.filter(a => a.isCompleted).length, [activities]);
 
   useEffect(() => {
     if (topicId) {
@@ -124,6 +105,11 @@ export default function PronunciationPracticePage() {
     } else {
       // All words completed
       setIsComplete(true);
+      // Đánh dấu hoạt động pronunciation đã hoàn thành
+      const avgScore = newScores.length > 0 
+        ? Math.round(newScores.reduce((a, b) => a + b, 0) / newScores.length)
+        : 0;
+      markActivityCompleted("pronunciation", avgScore);
     }
   };
 
@@ -134,7 +120,15 @@ export default function PronunciationPracticePage() {
     if (currentWordIndex < words.length - 1) {
       setCurrentWordIndex(currentWordIndex + 1);
     } else {
+      // All words completed (even if skipped)
       setIsComplete(true);
+      // Chỉ đánh dấu completed nếu đã hoàn thành ít nhất 1 từ (không phải tất cả đều skip)
+      if (scores.length > 0 && scores.some(s => s > 0)) {
+        const avgScore = scores.length > 0 
+          ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
+          : 0;
+        markActivityCompleted("pronunciation", avgScore);
+      }
     }
   };
 
@@ -429,8 +423,8 @@ export default function PronunciationPracticePage() {
                 <LearningActivities
                   activities={activities}
                   title={topic?.title || "Hán Ngữ"}
-                  completedCount={completedCount}
-                  totalCount={vocabStats.total}
+                  completedCount={completedActivities}
+                  totalCount={totalActivities}
                   maxHeight="calc(100vh-200px)"
                 />
               </div>

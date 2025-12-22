@@ -457,10 +457,47 @@ public class ActivityProgressController : ControllerBase
     }
     
     /// <summary>
+    /// Lấy danh sách tất cả activities (master data)
+    /// </summary>
+    [AllowAnonymous]
+    [HttpGet("list")]
+    public ActionResult GetActivities([FromQuery] bool? isActive)
+    {
+        var allActivities = new[]
+        {
+            new { id = "vocabulary", name = "vocabulary", displayName = "Từ vựng", description = "Học từ vựng", iconUrl = "", category = "vocabulary", requiresScore = false, sortOrder = 1, isActive = true },
+            new { id = "quick-memorize", name = "quick-memorize", displayName = "Nhớ nhanh từ", description = "Nhớ nhanh từ", iconUrl = "", category = "vocabulary", requiresScore = false, sortOrder = 2, isActive = true },
+            new { id = "image-quiz", name = "image-quiz", displayName = "Kiểm tra từ vựng bằng hình ảnh", description = "Kiểm tra từ vựng bằng hình ảnh", iconUrl = "", category = "quiz", requiresScore = true, sortOrder = 3, isActive = true },
+            new { id = "vocabulary-practice", name = "vocabulary-practice", displayName = "Thực hành từ vựng (Đúng/Sai)", description = "Thực hành từ vựng", iconUrl = "", category = "practice", requiresScore = true, sortOrder = 4, isActive = true },
+            new { id = "fill-blank", name = "fill-blank", displayName = "Điền từ vào chỗ trống", description = "Điền từ vào chỗ trống", iconUrl = "", category = "practice", requiresScore = true, sortOrder = 5, isActive = true },
+            new { id = "pronunciation", name = "pronunciation", displayName = "Luyện phát âm", description = "Luyện phát âm", iconUrl = "", category = "pronunciation", requiresScore = true, sortOrder = 6, isActive = true },
+            new { id = "true-false", name = "true-false", displayName = "Chọn đúng sai", description = "Chọn đúng sai", iconUrl = "", category = "quiz", requiresScore = true, sortOrder = 7, isActive = true },
+            new { id = "true-false-sentence", name = "true-false-sentence", displayName = "Chọn đúng sai với câu", description = "Chọn đúng sai với câu", iconUrl = "", category = "quiz", requiresScore = true, sortOrder = 8, isActive = true },
+            new { id = "listen-image", name = "listen-image", displayName = "Nghe câu chọn hình ảnh", description = "Nghe câu chọn hình ảnh", iconUrl = "", category = "listening", requiresScore = true, sortOrder = 9, isActive = true },
+            new { id = "match-sentence", name = "match-sentence", displayName = "Ghép câu", description = "Ghép câu", iconUrl = "", category = "practice", requiresScore = true, sortOrder = 10, isActive = true },
+            new { id = "flashcard", name = "flashcard", displayName = "Flash card từ vựng", description = "Flash card từ vựng", iconUrl = "", category = "vocabulary", requiresScore = false, sortOrder = 11, isActive = true },
+            new { id = "conversation", name = "conversation", displayName = "Hội thoại", description = "Hội thoại", iconUrl = "", category = "conversation", requiresScore = false, sortOrder = 12, isActive = true },
+            new { id = "reading", name = "reading", displayName = "Đọc hiểu", description = "Đọc hiểu", iconUrl = "", category = "reading", requiresScore = false, sortOrder = 13, isActive = true },
+            new { id = "grammar", name = "grammar", displayName = "Ngữ pháp", description = "Ngữ pháp", iconUrl = "", category = "grammar", requiresScore = false, sortOrder = 14, isActive = true },
+            new { id = "statistics", name = "statistics", displayName = "Thống kê tiến độ", description = "Thống kê tiến độ", iconUrl = "", category = "statistics", requiresScore = false, sortOrder = 15, isActive = true },
+        };
+
+        var filteredActivities = isActive.HasValue
+            ? allActivities.Where(a => a.isActive == isActive.Value).ToList()
+            : allActivities.ToList();
+
+        return Ok(new
+        {
+            activities = filteredActivities,
+            count = filteredActivities.Count
+        });
+    }
+
+    /// <summary>
     /// Lấy danh sách required activities
     /// </summary>
-    [HttpGet("required-activities")]
     [AllowAnonymous]
+    [HttpGet("required-activities")]
     public ActionResult GetRequiredActivities()
     {
         var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();

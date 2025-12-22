@@ -575,14 +575,6 @@ export const createDefaultActivities = (
       progressPercentage: getProgressPercentage("match-sentence"),
     },
     {
-      id: "fill-blank",
-      name: "Điền từ",
-      icon: icons.fillBlank,
-      isCompleted: completedIds.includes("fill-blank"),
-      isActive: activeId === "fill-blank",
-      progressPercentage: getProgressPercentage("fill-blank"),
-    },
-    {
       id: "flashcard",
       name: "Flash card từ vựng",
       icon: icons.flashcard,

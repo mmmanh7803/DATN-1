@@ -46,36 +46,27 @@ export default function TopicDetailPage() {
         new: topic.words?.filter((w: any) => !w.progress || w.progress.status === "New").length || 0,
       }
     : { total: 0, mastered: 0, learning: 0, new: 0 };
-  
-  // DEBUG: Log để kiểm tra giá trị total
-  if (topic && topic.words) {
-    console.log(`🔍 DEBUG Topic Page - Topic ${topicId}:`);
-    console.log(`  - topic.words.length: ${topic.words.length}`);
-    console.log(`  - stats.total: ${stats.total}`);
-    console.log(`  - Số từ theo status:`, {
-      mastered: stats.mastered,
-      learning: stats.learning,
-      new: stats.new,
-    });
-  }
 
   const progressPercentage = stats.total > 0
     ? Math.round(((stats.mastered + stats.learning) / stats.total) * 100)
     : 0;
 
-  const completedCount = stats.mastered + stats.learning;
-
   // Load activities from database
   const { activities } = useActivities({
     topicId,
-      activeId: "vocabulary",
-      completedIds: completedActivityIds,
+    activeId: "vocabulary",
+    completedIds: completedActivityIds,
     customLinks: topic?.hskLevel
       ? {
           "quick-memorize": `/topics/${topicId}/quick-memorize`,
         }
       : {},
-    });
+  });
+
+  // Tính progress dựa trên activities (hoạt động học) của lesson topic
+  // Dùng useMemo để đảm bảo tính lại khi activities thay đổi
+  const totalActivities = useMemo(() => activities.length, [activities]);
+  const completedActivities = useMemo(() => activities.filter(a => a.isCompleted).length, [activities]);
 
   useEffect(() => {
     if (topicId) {
@@ -489,8 +480,8 @@ export default function TopicDetailPage() {
                 <LearningActivities
                   activities={activities}
                   title={topic?.title || "Hán Ngữ"}
-                  completedCount={completedCount}
-                  totalCount={stats.total}
+                  completedCount={completedActivities}
+                  totalCount={totalActivities}
                   maxHeight="calc(100vh-200px)"
                 />
               </div>

@@ -93,7 +93,7 @@ export const getCompletedActivities = async (
   if (topicId) params.append('topicId', topicId.toString());
 
   const response = await apiClient.get<ActivityProgressResponse[]>(
-    `/activities/completed-list?${params.toString()}`
+    `/api/activities/completed-list?${params.toString()}`
   );
   return response.data;
 };

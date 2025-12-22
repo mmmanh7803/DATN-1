@@ -33,88 +33,131 @@ public class LessonTopicsController : ControllerBase
     [HttpGet("hsk/{hskLevel}")]
     public async Task<ActionResult<List<LessonTopicListDto>>> GetTopicsByHSKLevel(int hskLevel)
     {
-        var topics = await _context.LessonTopics
-            .Where(t => t.HSKLevel == hskLevel && t.IsActive)
-            .OrderBy(t => t.TopicIndex)
-            .ToListAsync();
-
-        var topicIds = topics.Select(t => t.Id).ToList();
-        
-        var exerciseCounts = await _context.LessonExercises
-            .Where(e => topicIds.Contains(e.TopicId) && e.IsActive)
-            .GroupBy(e => e.TopicId)
-            .Select(g => new { TopicId = g.Key, Count = g.Count() })
-            .ToDictionaryAsync(x => x.TopicId, x => x.Count);
-
-        var wordCounts = await _context.Words
-            .Where(w => w.TopicId != null && topicIds.Contains(w.TopicId.Value))
-            .GroupBy(w => w.TopicId)
-            .Select(g => new { TopicId = g.Key, Count = g.Count() })
-            .ToDictionaryAsync(x => x.TopicId!.Value, x => x.Count);
-
-        // Lấy userId để kiểm tra trạng thái unlock cho từng user
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        
-        // Tính toán trạng thái unlock cho từng topic dựa trên user
-        var topicUnlockStatus = new Dictionary<int, bool>();
-        var topicProgressPercentage = new Dictionary<int, double>();
-        
-        foreach (var topic in topics)
+        try
         {
-            // Topic đầu tiên luôn mở khóa
-            if (topic.TopicIndex == 1 || topic.PrerequisiteTopicId == null)
-            {
-                topicUnlockStatus[topic.Id] = false; // isLocked = false -> mở khóa
-            }
-            else if (!string.IsNullOrEmpty(userId))
-            {
-                // Kiểm tra prerequisite topic đã hoàn thành chưa
-                var (canAccess, _) = await _activityProgressRepository.CanAccessTopicAsync(userId, topic.Id);
-                topicUnlockStatus[topic.Id] = !canAccess; // isLocked = !canAccess
-            }
-            else
-            {
-                // Không có user -> sử dụng trạng thái global
-                topicUnlockStatus[topic.Id] = topic.IsLocked;
-            }
+            _logger.LogInformation($"Đang lấy danh sách chủ đề cho HSK level: {hskLevel}");
+
+            var topics = await _context.LessonTopics
+                .Where(t => t.HSKLevel == hskLevel && t.IsActive)
+                .OrderBy(t => t.TopicIndex)
+                .ToListAsync();
+
+            _logger.LogInformation($"Tìm thấy {topics.Count} chủ đề cho HSK level {hskLevel}");
+
+            var topicIds = topics.Select(t => t.Id).ToList();
             
-            // Tính progress percentage cho topic
-            if (!string.IsNullOrEmpty(userId))
+            // Tính số lượng activities (thay vì exercises từ bảng LessonExercises không dùng)
+            // Sử dụng số lượng required activities làm tổng số activities cho mỗi topic
+            var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
+            var totalActivitiesCount = requiredActivities.Count;
+            
+            // Tất cả topics đều có cùng số lượng activities
+            var exerciseCounts = topicIds.ToDictionary(id => id, id => totalActivitiesCount);
+
+            // Tính số lượng words - xử lý trường hợp bảng chưa tồn tại
+            Dictionary<int, int> wordCounts = new Dictionary<int, int>();
+            try
             {
-                var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
-                var completedActivities = await _context.UserActivityProgresses
-                    .CountAsync(p => p.UserId == userId 
-                        && p.TopicId == topic.Id 
-                        && p.IsCompleted
-                        && requiredActivities.Contains(p.ActivityId));
-                
-                topicProgressPercentage[topic.Id] = requiredActivities.Count > 0 
-                    ? Math.Round((double)completedActivities / requiredActivities.Count * 100, 1)
-                    : 0;
+                wordCounts = await _context.Words
+                    .Where(w => w.TopicId != null && topicIds.Contains(w.TopicId.Value))
+                    .GroupBy(w => w.TopicId)
+                    .Select(g => new { TopicId = g.Key, Count = g.Count() })
+                    .ToDictionaryAsync(x => x.TopicId!.Value, x => x.Count);
             }
-            else
+            catch (Exception ex)
             {
-                topicProgressPercentage[topic.Id] = 0;
+                _logger.LogWarning(ex, "Không thể query bảng Words. Có thể bảng chưa được tạo. Trả về 0 words cho tất cả topics.");
+                // Nếu bảng không tồn tại, set tất cả về 0
+                wordCounts = new Dictionary<int, int>();
             }
+
+            // Lấy userId để kiểm tra trạng thái unlock cho từng user
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
+            // Tính toán trạng thái unlock cho từng topic dựa trên user
+            var topicUnlockStatus = new Dictionary<int, bool>();
+            var topicProgressPercentage = new Dictionary<int, double>();
+            
+            foreach (var topic in topics)
+            {
+                try
+                {
+                    // Topic đầu tiên luôn mở khóa
+                    if (topic.TopicIndex == 1 || topic.PrerequisiteTopicId == null)
+                    {
+                        topicUnlockStatus[topic.Id] = false; // isLocked = false -> mở khóa
+                    }
+                    else if (!string.IsNullOrEmpty(userId))
+                    {
+                        // Kiểm tra prerequisite topic đã hoàn thành chưa
+                        var (canAccess, _) = await _activityProgressRepository.CanAccessTopicAsync(userId, topic.Id);
+                        topicUnlockStatus[topic.Id] = !canAccess; // isLocked = !canAccess
+                    }
+                    else
+                    {
+                        // Không có user -> sử dụng trạng thái global
+                        topicUnlockStatus[topic.Id] = topic.IsLocked;
+                    }
+                    
+                    // Tính progress percentage cho topic
+                    if (!string.IsNullOrEmpty(userId))
+                    {
+                        // Sử dụng lại biến requiredActivities đã khai báo ở scope ngoài
+                        var completedActivities = await _context.UserActivityProgresses
+                            .CountAsync(p => p.UserId == userId 
+                                && p.TopicId == topic.Id 
+                                && p.IsCompleted
+                                && requiredActivities.Contains(p.ActivityId));
+                        
+                        topicProgressPercentage[topic.Id] = requiredActivities.Count > 0 
+                            ? Math.Round((double)completedActivities / requiredActivities.Count * 100, 1)
+                            : 0;
+                    }
+                    else
+                    {
+                        topicProgressPercentage[topic.Id] = 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Lỗi khi xử lý topic {topic.Id} ({topic.Title})");
+                    // Nếu có lỗi với một topic, set giá trị mặc định
+                    topicUnlockStatus[topic.Id] = topic.IsLocked;
+                    topicProgressPercentage[topic.Id] = 0;
+                }
+            }
+
+            var result = topics.Select(t => new LessonTopicListDto
+            {
+                Id = t.Id,
+                CourseId = t.CourseId,
+                HSKLevel = t.HSKLevel,
+                Title = t.Title,
+                Description = t.Description,
+                ImageUrl = t.ImageUrl,
+                TopicIndex = t.TopicIndex,
+                IsLocked = topicUnlockStatus.GetValueOrDefault(t.Id, t.IsLocked),
+                PrerequisiteTopicId = t.PrerequisiteTopicId,
+                TotalExercises = exerciseCounts.GetValueOrDefault(t.Id, 0),
+                TotalWords = wordCounts.GetValueOrDefault(t.Id, 0),
+                ProgressPercentage = topicProgressPercentage.GetValueOrDefault(t.Id, 0)
+            }).ToList();
+
+            _logger.LogInformation($"Đã tạo thành công {result.Count} DTO cho HSK level {hskLevel}");
+            return Ok(result);
         }
-
-        var result = topics.Select(t => new LessonTopicListDto
+        catch (Exception ex)
         {
-            Id = t.Id,
-            CourseId = t.CourseId,
-            HSKLevel = t.HSKLevel,
-            Title = t.Title,
-            Description = t.Description,
-            ImageUrl = t.ImageUrl,
-            TopicIndex = t.TopicIndex,
-            IsLocked = topicUnlockStatus.GetValueOrDefault(t.Id, t.IsLocked),
-            PrerequisiteTopicId = t.PrerequisiteTopicId,
-            TotalExercises = exerciseCounts.GetValueOrDefault(t.Id, 0),
-            TotalWords = wordCounts.GetValueOrDefault(t.Id, 0),
-            ProgressPercentage = topicProgressPercentage.GetValueOrDefault(t.Id, 0)
-        }).ToList();
-
-        return Ok(result);
+            _logger.LogError(ex, $"Lỗi khi lấy danh sách chủ đề cho HSK level {hskLevel}");
+            return StatusCode(500, new 
+            { 
+                message = "Lỗi khi lấy danh sách chủ đề",
+                error = ex.Message,
+                innerException = ex.InnerException?.Message,
+                stackTrace = ex.StackTrace,
+                hint = "Vui lòng kiểm tra xem bảng LessonTopics, LessonExercises, Words, và UserActivityProgresses đã được tạo trong database chưa. Chạy migration: dotnet ef database update --startup-project ../HiHSK.Api"
+            });
+        }
     }
 
     [HttpGet("{id}")]
@@ -136,8 +179,9 @@ public class LessonTopicsController : ControllerBase
 
             _logger.LogInformation($"Đã tìm thấy chủ đề: {topic.Title}");
 
-            var exerciseCount = await _context.LessonExercises
-                .CountAsync(e => e.TopicId == id && e.IsActive);
+            // Sử dụng số lượng required activities thay vì đếm từ bảng LessonExercises
+            var requiredActivities = _activityProgressRepository.GetRequiredActivityIds();
+            var exerciseCount = requiredActivities.Count;
 
             var wordCount = await _context.Words
                 .CountAsync(w => w.TopicId == id);

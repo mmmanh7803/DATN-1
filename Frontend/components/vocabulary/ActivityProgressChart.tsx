@@ -20,20 +20,46 @@ export default function ActivityProgressChart({
   progress,
   showDetails = true,
 }: ActivityProgressChartProps) {
+  // Validate và normalize progress data để tránh lỗi
+  const safeProgress = useMemo(() => {
+    if (!progress) {
+      return {
+        activityId: "",
+        activityName: "Từ vựng",
+        completed: 0,
+        inProgress: 0,
+        notStarted: 0,
+        total: 0,
+      };
+    }
+    
+    return {
+      activityId: progress.activityId || "",
+      activityName: progress.activityName || "Từ vựng",
+      completed: Number(progress.completed) || 0,
+      inProgress: Number(progress.inProgress) || 0,
+      notStarted: Number(progress.notStarted) || 0,
+      total: Number(progress.total) || 0,
+    };
+  }, [progress]);
+
   const completionPercentage = useMemo(() => {
-    if (progress.total === 0) return 0;
-    return Math.round((progress.completed / progress.total) * 100);
-  }, [progress.completed, progress.total]);
+    if (safeProgress.total === 0) return 0;
+    const percentage = (safeProgress.completed / safeProgress.total) * 100;
+    return Math.round(Math.max(0, Math.min(100, percentage)));
+  }, [safeProgress.completed, safeProgress.total]);
 
   const inProgressPercentage = useMemo(() => {
-    if (progress.total === 0) return 0;
-    return Math.round((progress.inProgress / progress.total) * 100);
-  }, [progress.inProgress, progress.total]);
+    if (safeProgress.total === 0) return 0;
+    const percentage = (safeProgress.inProgress / safeProgress.total) * 100;
+    return Math.round(Math.max(0, Math.min(100, percentage)));
+  }, [safeProgress.inProgress, safeProgress.total]);
 
   const notStartedPercentage = useMemo(() => {
-    if (progress.total === 0) return 0;
-    return Math.round((progress.notStarted / progress.total) * 100);
-  }, [progress.notStarted, progress.total]);
+    if (safeProgress.total === 0) return 0;
+    const percentage = (safeProgress.notStarted / safeProgress.total) * 100;
+    return Math.round(Math.max(0, Math.min(100, percentage)));
+  }, [safeProgress.notStarted, safeProgress.total]);
 
   // Calculate stroke dasharray for the circle
   const radius = 45;
@@ -44,7 +70,7 @@ export default function ActivityProgressChart({
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {progress.activityName}
+        {safeProgress.activityName}
       </h3>
       
       <div className="flex items-center gap-6">
@@ -125,7 +151,7 @@ export default function ActivityProgressChart({
                 <span className="text-sm text-gray-700">Đã làm</span>
               </div>
               <div className="text-sm font-semibold text-gray-900">
-                {progress.completed} ({completionPercentage}%)
+                {safeProgress.completed} ({completionPercentage}%)
               </div>
             </div>
             
@@ -135,7 +161,7 @@ export default function ActivityProgressChart({
                 <span className="text-sm text-gray-700">Đang làm</span>
               </div>
               <div className="text-sm font-semibold text-gray-900">
-                {progress.inProgress} ({inProgressPercentage}%)
+                {safeProgress.inProgress} ({inProgressPercentage}%)
               </div>
             </div>
             
@@ -145,7 +171,7 @@ export default function ActivityProgressChart({
                 <span className="text-sm text-gray-700">Chưa làm</span>
               </div>
               <div className="text-sm font-semibold text-gray-900">
-                {progress.notStarted} ({notStartedPercentage}%)
+                {safeProgress.notStarted} ({notStartedPercentage}%)
               </div>
             </div>
 
@@ -153,7 +179,7 @@ export default function ActivityProgressChart({
             <div className="mt-4 pt-4 border-t border-gray-200">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-gray-600">Tổng số</span>
-                <span className="text-xs font-semibold text-gray-900">{progress.total}</span>
+                <span className="text-xs font-semibold text-gray-900">{safeProgress.total}</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                 <div className="h-full flex">

@@ -194,7 +194,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// Chỉ enable HTTPS redirection khi có HTTPS được cấu hình
+// Tránh cảnh báo "Failed to determine the https port for redirect" khi chỉ chạy HTTP
+var applicationUrls = builder.Configuration["applicationUrl"] 
+    ?? Environment.GetEnvironmentVariable("ASPNETCORE_URLS")
+    ?? "";
+var hasHttpsPort = applicationUrls.Contains("https://", StringComparison.OrdinalIgnoreCase)
+    || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_HTTPS_PORT"));
+
+// Trong Production luôn enable HTTPS redirection, trong Development chỉ khi có HTTPS port
+if (!app.Environment.IsDevelopment() || hasHttpsPort)
+{
+    app.UseHttpsRedirection();
+}
 
 // CORS must be before Authentication & Authorization
 app.UseCors("AllowSpecificOrigins");
