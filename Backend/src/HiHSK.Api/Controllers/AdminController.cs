@@ -431,6 +431,521 @@ public class AdminController : ControllerBase
         }
     }
 
+    // ============ COURSES MANAGEMENT ============
+
+    /// <summary>
+    /// Lấy danh sách khóa học (Admin)
+    /// </summary>
+    [HttpGet("courses")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetCourses()
+    {
+        try
+        {
+            var courses = await _context.Courses
+                .OrderBy(c => c.SortOrder)
+                .ThenBy(c => c.HSKLevel)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.CategoryId,
+                    c.Title,
+                    c.Description,
+                    c.ImageUrl,
+                    c.Level,
+                    c.HSKLevel,
+                    c.SortOrder,
+                    c.IsActive,
+                    c.CreatedAt
+                })
+                .ToListAsync();
+
+            return Ok(courses);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi lấy danh sách khóa học");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Lấy chi tiết khóa học (Admin)
+    /// </summary>
+    [HttpGet("courses/{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetCourseById(int id)
+    {
+        try
+        {
+            var course = await _context.Courses
+                .Where(c => c.Id == id)
+                .Select(c => new
+                {
+                    c.Id,
+                    c.CategoryId,
+                    c.Title,
+                    c.Description,
+                    c.ImageUrl,
+                    c.Level,
+                    c.HSKLevel,
+                    c.SortOrder,
+                    c.IsActive,
+                    c.CreatedAt
+                })
+                .FirstOrDefaultAsync();
+
+            if (course == null)
+            {
+                return NotFound(new { message = "Không tìm thấy khóa học" });
+            }
+
+            return Ok(course);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi lấy chi tiết khóa học {CourseId}", id);
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Tạo khóa học mới
+    /// </summary>
+    [HttpPost("courses")]
+    [AllowAnonymous]
+    public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto dto)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(dto.Title))
+            {
+                return BadRequest(new { message = "Tên khóa học không được để trống" });
+            }
+
+            var course = new Course
+            {
+                CategoryId = dto.CategoryId ?? 0,
+                Title = dto.Title.Trim(),
+                Description = dto.Description,
+                ImageUrl = dto.ImageUrl,
+                Level = dto.Level,
+                HSKLevel = dto.HSKLevel,
+                SortOrder = dto.SortOrder ?? 0,
+                IsActive = dto.IsActive ?? true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Courses.Add(course);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                id = course.Id,
+                categoryId = course.CategoryId,
+                title = course.Title,
+                description = course.Description,
+                imageUrl = course.ImageUrl,
+                level = course.Level,
+                hskLevel = course.HSKLevel,
+                sortOrder = course.SortOrder,
+                isActive = course.IsActive,
+                createdAt = course.CreatedAt
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi tạo khóa học");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Cập nhật khóa học
+    /// </summary>
+    [HttpPut("courses/{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> UpdateCourse(int id, [FromBody] UpdateCourseDto dto)
+    {
+        try
+        {
+            var course = await _context.Courses.FindAsync(id);
+            if (course == null)
+            {
+                return NotFound(new { message = "Không tìm thấy khóa học" });
+            }
+
+            // Cập nhật các trường
+            if (dto.CategoryId.HasValue)
+                course.CategoryId = dto.CategoryId.Value;
+
+            if (!string.IsNullOrWhiteSpace(dto.Title))
+                course.Title = dto.Title.Trim();
+
+            if (dto.Description != null)
+                course.Description = dto.Description;
+
+            if (dto.ImageUrl != null)
+                course.ImageUrl = dto.ImageUrl;
+
+            if (dto.Level != null)
+                course.Level = dto.Level;
+
+            if (dto.HSKLevel.HasValue)
+                course.HSKLevel = dto.HSKLevel.Value;
+
+            if (dto.SortOrder.HasValue)
+                course.SortOrder = dto.SortOrder.Value;
+
+            if (dto.IsActive.HasValue)
+                course.IsActive = dto.IsActive.Value;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                id = course.Id,
+                categoryId = course.CategoryId,
+                title = course.Title,
+                description = course.Description,
+                imageUrl = course.ImageUrl,
+                level = course.Level,
+                hskLevel = course.HSKLevel,
+                sortOrder = course.SortOrder,
+                isActive = course.IsActive,
+                createdAt = course.CreatedAt
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi cập nhật khóa học {CourseId}", id);
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Xóa khóa học (Admin)
+    /// </summary>
+    [HttpDelete("courses/{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> DeleteCourse(int id)
+    {
+        try
+        {
+            var course = await _context.Courses
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course == null)
+            {
+                return NotFound(new { message = "Không tìm thấy khóa học" });
+            }
+
+            // Kiểm tra xem có lesson topics nào đang sử dụng course này không
+            var lessonTopicsCount = await _context.LessonTopics
+                .CountAsync(lt => lt.CourseId == id);
+
+            if (lessonTopicsCount > 0)
+            {
+                return BadRequest(new
+                {
+                    message = $"Không thể xóa. Khóa học đang có {lessonTopicsCount} chủ đề bài học"
+                });
+            }
+
+            _context.Courses.Remove(course);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Đã xóa khóa học thành công" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi xóa khóa học {CourseId}", id);
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    // ============ LESSONS MANAGEMENT (DEPRECATED - Use LessonTopics instead) ============
+
+    /// <summary>
+    /// Lấy danh sách bài học (DEPRECATED - Bảng Lessons đã bị xóa, trả về empty array)
+    /// </summary>
+    [HttpGet("lessons")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetLessons([FromQuery] int? courseId)
+    {
+        try
+        {
+            // Lưu ý: Bảng Lessons đã bị xóa, trả về empty array
+            return Ok(new List<object>());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi lấy danh sách bài học");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Lấy chi tiết bài học (DEPRECATED)
+    /// </summary>
+    [HttpGet("lessons/{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetLessonById(int id)
+    {
+        return NotFound(new { message = "Bảng Lessons đã bị xóa. Vui lòng sử dụng LessonTopics thay thế." });
+    }
+
+    // ============ LESSON TOPICS MANAGEMENT ============
+
+    /// <summary>
+    /// Lấy danh sách chủ đề bài học
+    /// </summary>
+    [HttpGet("lessontopics")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetLessonTopics([FromQuery] int? hskLevel, [FromQuery] int? courseId)
+    {
+        try
+        {
+            var query = _context.LessonTopics.AsQueryable();
+
+            if (hskLevel.HasValue)
+            {
+                query = query.Where(t => t.HSKLevel == hskLevel.Value);
+            }
+
+            if (courseId.HasValue)
+            {
+                query = query.Where(t => t.CourseId == courseId.Value);
+            }
+
+            var topics = await query
+                .OrderBy(t => t.HSKLevel)
+                .ThenBy(t => t.TopicIndex)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.CourseId,
+                    t.HSKLevel,
+                    t.Title,
+                    t.Description,
+                    t.ImageUrl,
+                    t.TopicIndex,
+                    t.IsLocked,
+                    t.PrerequisiteTopicId,
+                    t.IsActive,
+                    t.CreatedAt
+                })
+                .ToListAsync();
+
+            return Ok(topics);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi lấy danh sách chủ đề bài học");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Lấy chi tiết chủ đề bài học
+    /// </summary>
+    [HttpGet("lessontopics/{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetLessonTopicById(int id)
+    {
+        try
+        {
+            var topic = await _context.LessonTopics
+                .Where(t => t.Id == id)
+                .Select(t => new
+                {
+                    t.Id,
+                    t.CourseId,
+                    t.HSKLevel,
+                    t.Title,
+                    t.Description,
+                    t.ImageUrl,
+                    t.TopicIndex,
+                    t.IsLocked,
+                    t.PrerequisiteTopicId,
+                    t.IsActive,
+                    t.CreatedAt
+                })
+                .FirstOrDefaultAsync();
+
+            if (topic == null)
+            {
+                return NotFound(new { message = "Không tìm thấy chủ đề bài học" });
+            }
+
+            return Ok(topic);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi lấy chi tiết chủ đề bài học {TopicId}", id);
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Tạo chủ đề bài học mới
+    /// </summary>
+    [HttpPost("lessontopics")]
+    [AllowAnonymous]
+    public async Task<IActionResult> CreateLessonTopic([FromBody] CreateLessonTopicDto dto)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(dto.Title))
+            {
+                return BadRequest(new { message = "Tên chủ đề không được để trống" });
+            }
+
+            var topic = new LessonTopic
+            {
+                CourseId = dto.CourseId,
+                HSKLevel = dto.HSKLevel,
+                Title = dto.Title.Trim(),
+                Description = dto.Description,
+                ImageUrl = dto.ImageUrl,
+                TopicIndex = dto.TopicIndex,
+                IsLocked = dto.IsLocked ?? false,
+                PrerequisiteTopicId = dto.PrerequisiteTopicId,
+                IsActive = dto.IsActive ?? true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.LessonTopics.Add(topic);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                id = topic.Id,
+                courseId = topic.CourseId,
+                hskLevel = topic.HSKLevel,
+                title = topic.Title,
+                description = topic.Description,
+                imageUrl = topic.ImageUrl,
+                topicIndex = topic.TopicIndex,
+                isLocked = topic.IsLocked,
+                prerequisiteTopicId = topic.PrerequisiteTopicId,
+                isActive = topic.IsActive,
+                createdAt = topic.CreatedAt
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi tạo chủ đề bài học");
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Cập nhật chủ đề bài học
+    /// </summary>
+    [HttpPut("lessontopics/{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> UpdateLessonTopic(int id, [FromBody] UpdateLessonTopicDto dto)
+    {
+        try
+        {
+            var topic = await _context.LessonTopics.FindAsync(id);
+            if (topic == null)
+            {
+                return NotFound(new { message = "Không tìm thấy chủ đề bài học" });
+            }
+
+            // Cập nhật các trường
+            if (dto.CourseId.HasValue)
+                topic.CourseId = dto.CourseId.Value;
+
+            if (dto.HSKLevel.HasValue)
+                topic.HSKLevel = dto.HSKLevel.Value;
+
+            if (!string.IsNullOrWhiteSpace(dto.Title))
+                topic.Title = dto.Title.Trim();
+
+            if (dto.Description != null)
+                topic.Description = dto.Description;
+
+            if (dto.ImageUrl != null)
+                topic.ImageUrl = dto.ImageUrl;
+
+            if (dto.TopicIndex.HasValue)
+                topic.TopicIndex = dto.TopicIndex.Value;
+
+            if (dto.IsLocked.HasValue)
+                topic.IsLocked = dto.IsLocked.Value;
+
+            if (dto.PrerequisiteTopicId.HasValue)
+                topic.PrerequisiteTopicId = dto.PrerequisiteTopicId;
+
+            if (dto.IsActive.HasValue)
+                topic.IsActive = dto.IsActive.Value;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                id = topic.Id,
+                courseId = topic.CourseId,
+                hskLevel = topic.HSKLevel,
+                title = topic.Title,
+                description = topic.Description,
+                imageUrl = topic.ImageUrl,
+                topicIndex = topic.TopicIndex,
+                isLocked = topic.IsLocked,
+                prerequisiteTopicId = topic.PrerequisiteTopicId,
+                isActive = topic.IsActive,
+                createdAt = topic.CreatedAt
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi cập nhật chủ đề bài học {TopicId}", id);
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Xóa chủ đề bài học
+    /// </summary>
+    [HttpDelete("lessontopics/{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> DeleteLessonTopic(int id)
+    {
+        try
+        {
+            var topic = await _context.LessonTopics
+                .Include(t => t.Words)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (topic == null)
+            {
+                return NotFound(new { message = "Không tìm thấy chủ đề bài học" });
+            }
+
+            // Kiểm tra xem có từ vựng nào đang sử dụng topic này không
+            if (topic.Words.Any())
+            {
+                return BadRequest(new
+                {
+                    message = $"Không thể xóa. Chủ đề đang có {topic.Words.Count} từ vựng"
+                });
+            }
+
+            _context.LessonTopics.Remove(topic);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Đã xóa chủ đề bài học thành công" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Lỗi khi xóa chủ đề bài học {TopicId}", id);
+            return StatusCode(500, new { message = "Lỗi server", error = ex.Message });
+        }
+    }
+
     // ============ MEDIA MANAGEMENT ============
 
     /// <summary>
@@ -1245,7 +1760,6 @@ public class AdminController : ControllerBase
         {
             var query = _context.Questions
                 .Include(q => q.QuestionOptions)
-                .Include(q => q.Exercise)
                 .AsQueryable();
 
             // Filter: Câu hỏi đề thi (có SkillType, không có ExerciseId)
@@ -1253,7 +1767,7 @@ public class AdminController : ControllerBase
             {
                 query = query.Where(q => q.SkillType != null && q.ExerciseId == null);
             }
-            // Filter: Câu hỏi hoạt động (có ExerciseId)
+            // Filter: Câu hỏi hoạt động (có ExerciseId) - Lưu ý: Bảng LessonExercises đã bị xóa
             else if (forExam == false)
             {
                 query = query.Where(q => q.ExerciseId != null);
@@ -1278,9 +1792,10 @@ public class AdminController : ControllerBase
             }
 
             // Filter theo ExerciseType (cho câu hỏi hoạt động)
+            // Lưu ý: Bảng LessonExercises đã bị xóa, không thể filter theo ExerciseType
             if (!string.IsNullOrEmpty(exerciseType))
             {
-                query = query.Where(q => q.Exercise != null && q.Exercise.ExerciseType == exerciseType.ToUpper());
+                // Bỏ qua filter này vì không có bảng Exercise
             }
 
             // Filter theo ExerciseId cụ thể
@@ -1289,11 +1804,11 @@ public class AdminController : ControllerBase
                 query = query.Where(q => q.ExerciseId == exerciseId.Value);
             }
 
-            // Filter theo TopicId (thông qua Exercise)
-            if (topicId.HasValue)
-            {
-                query = query.Where(q => q.Exercise != null && q.Exercise.TopicId == topicId.Value);
-            }
+            // Filter theo TopicId - Bỏ qua vì không có bảng Exercise
+            // if (topicId.HasValue)
+            // {
+            //     query = query.Where(q => q.Exercise != null && q.Exercise.TopicId == topicId.Value);
+            // }
 
             var totalCount = await query.CountAsync();
 
@@ -1314,14 +1829,7 @@ public class AdminController : ControllerBase
                     q.AudioUrl,
                     q.ImageUrl,
                     q.CreatedAt,
-                    // Thông tin Exercise (cho câu hỏi hoạt động)
-                    Exercise = q.Exercise != null ? new
-                    {
-                        q.Exercise.Id,
-                        q.Exercise.ExerciseType,
-                        q.Exercise.Title,
-                        q.Exercise.TopicId
-                    } : null,
+                    // Thông tin Exercise đã bị bỏ vì bảng LessonExercises không tồn tại
                     Options = q.QuestionOptions.OrderBy(o => o.OptionLabel).Select(o => new
                     {
                         o.Id,
@@ -1528,5 +2036,55 @@ public class CreateQuestionOptionDto
     public string? OptionText { get; set; }
     public string? ImageUrl { get; set; }
     public bool IsCorrect { get; set; }
+}
+
+public class CreateCourseDto
+{
+    public int? CategoryId { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public string? Level { get; set; }
+    public int? HSKLevel { get; set; }
+    public int? SortOrder { get; set; }
+    public bool? IsActive { get; set; }
+}
+
+public class UpdateCourseDto
+{
+    public int? CategoryId { get; set; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public string? Level { get; set; }
+    public int? HSKLevel { get; set; }
+    public int? SortOrder { get; set; }
+    public bool? IsActive { get; set; }
+}
+
+public class CreateLessonTopicDto
+{
+    public int? CourseId { get; set; }
+    public int? HSKLevel { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public int TopicIndex { get; set; }
+    public bool? IsLocked { get; set; }
+    public int? PrerequisiteTopicId { get; set; }
+    public bool? IsActive { get; set; }
+}
+
+public class UpdateLessonTopicDto
+{
+    public int? CourseId { get; set; }
+    public int? HSKLevel { get; set; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public int? TopicIndex { get; set; }
+    public bool? IsLocked { get; set; }
+    public int? PrerequisiteTopicId { get; set; }
+    public bool? IsActive { get; set; }
 }
 

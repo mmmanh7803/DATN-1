@@ -207,65 +207,7 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Các chức năng quản lý */}
-          <div className="bg-white rounded-2xl shadow-md p-6 mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Quản lý dữ liệu</h2>
-            
-            <div className="space-y-4">
-              {/* Seed Data */}
-              <div className="border border-gray-200 rounded-xl p-4">
-                <h3 className="font-semibold text-gray-900 mb-2">Seed dữ liệu</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Import dữ liệu từ file JSON vào database
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => handleSeedData("seed-data-hsk1.json", false)}
-                    disabled={actionLoading !== null}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
-                  >
-                    {actionLoading === "seed" ? "Đang seed..." : "Seed HSK1"}
-                  </button>
-                  <button
-                    onClick={() => handleSeedData("seed-data-hsk1.json", true)}
-                    disabled={actionLoading !== null}
-                    className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
-                  >
-                    {actionLoading === "seed" ? "Đang seed..." : "Seed HSK1 (Xóa dữ liệu cũ)"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Seed Vocabulary Topic */}
-              <div className="border border-gray-200 rounded-xl p-4">
-                <h3 className="font-semibold text-gray-900 mb-2">Seed Vocabulary Topic HSK1</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Tạo chủ đề từ vựng HSK1 và gán tất cả từ vựng HSK1 vào topic
-                </p>
-                <button
-                  onClick={handleSeedVocabularyTopic}
-                  disabled={actionLoading !== null}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
-                >
-                  {actionLoading === "vocab-topic" ? "Đang seed..." : "Seed Vocabulary Topic"}
-                </button>
-              </div>
-
-              {/* Clear Data */}
-              <div className="border border-red-200 rounded-xl p-4 bg-red-50">
-                <h3 className="font-semibold text-red-900 mb-2">⚠️ Xóa dữ liệu</h3>
-                <p className="text-sm text-red-700 mb-4">
-                  Xóa tất cả dữ liệu seed. Hành động này không thể hoàn tác!
-                </p>
-                <button
-                  onClick={handleClearData}
-                  disabled={actionLoading !== null}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
-                >
-                  {actionLoading === "clear" ? "Đang xóa..." : "Xóa tất cả dữ liệu"}
-                </button>
-              </div>
-            </div>
-          </div>
+        
 
           {/* Nút làm mới */}
           <div className="flex justify-end">

@@ -76,9 +76,7 @@ public class AudioController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Endpoint tương thích với frontend hiện tại: /api/tts?text=...
-    /// </summary>
+
     [HttpGet("tts")]
     [AllowAnonymous]
     public async Task<IActionResult> GetTTS([FromQuery] string text, [FromQuery] string lang = "zh-CN")

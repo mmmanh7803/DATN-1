@@ -73,6 +73,8 @@ export default function AdminQuestionsPage() {
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
+  const [updating, setUpdating] = useState(false);
 
   // Filters - Đề thi
   const [filterSkillType, setFilterSkillType] = useState<string>('all');
@@ -125,11 +127,45 @@ export default function AdminQuestionsPage() {
       
       if (filterQuestionType !== 'all') params.append('questionType', filterQuestionType);
 
-      const response = await apiClient.get(`/api/admin/questions?${params.toString()}`);
-      setQuestions(response.data.data || response.data || []);
-    } catch (error) {
-      console.error('Lỗi khi tải câu hỏi:', error);
+      const url = `/api/admin/questions?${params.toString()}`;
+      console.log('[Admin Questions] Đang tải câu hỏi từ:', url);
+      
+      const response = await apiClient.get(url);
+      console.log('[Admin Questions] Response:', response);
+      console.log('[Admin Questions] Response.data:', response.data);
+      console.log('[Admin Questions] Response.data.data:', response.data?.data);
+      
+      // Backend trả về: { data: [...], pagination: {...} }
+      const questionsData = response.data?.data || response.data || [];
+      
+      if (!Array.isArray(questionsData)) {
+        console.error('[Admin Questions] Response không phải array:', questionsData);
+        setQuestions([]);
+        toast.error('Dữ liệu trả về không đúng định dạng');
+        return;
+      }
+      
+      console.log('[Admin Questions] Đã tải được', questionsData.length, 'câu hỏi');
+      setQuestions(questionsData);
+    } catch (error: any) {
+      console.error('[Admin Questions] Lỗi khi tải câu hỏi:', error);
+      console.error('[Admin Questions] Error response:', error.response);
+      console.error('[Admin Questions] Error message:', error.message);
+      
       setQuestions([]);
+      
+      // Hiển thị thông báo lỗi chi tiết hơn
+      const errorMessage = error.response?.data?.message || error.message || 'Không thể tải danh sách câu hỏi';
+      toast.error(`Lỗi: ${errorMessage}`);
+      
+      // Nếu là lỗi 401/403, không cần hiển thị thêm vì interceptor sẽ redirect
+      if (error.response?.status !== 401 && error.response?.status !== 403) {
+        console.error('[Admin Questions] Chi tiết lỗi:', {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -172,6 +208,96 @@ export default function AdminQuestionsPage() {
     }
   };
 
+  const handleEditQuestion = async (question: Question) => {
+    try {
+      // Load chi tiết câu hỏi từ API
+      const response = await apiClient.get(`/api/admin/questions/${question.id}`);
+      const questionDetail = response.data?.data || response.data;
+      
+      // Xác định category dựa trên question data
+      const isExamQuestion = questionDetail.skillType != null && questionDetail.exerciseId == null;
+      if (isExamQuestion) {
+        setCategory('exam');
+      } else {
+        setCategory('activity');
+      }
+      
+      // Set form data với dữ liệu từ API
+      setFormData({
+        questionText: questionDetail.questionText || '',
+        questionType: questionDetail.questionType || 'MULTIPLE_CHOICE',
+        skillType: questionDetail.skillType || 'LISTENING',
+        partNumber: questionDetail.partNumber || 1,
+        instruction: questionDetail.instruction || '',
+        audioUrl: questionDetail.audioUrl || '',
+        imageUrl: questionDetail.imageUrl || '',
+        blankSentence: questionDetail.blankSentence || '',
+        points: questionDetail.points || 1,
+        difficultyLevel: questionDetail.difficultyLevel || 1,
+        explanation: questionDetail.explanation || '',
+        options: questionDetail.options && questionDetail.options.length > 0
+          ? questionDetail.options.map((opt: any) => ({
+              optionLabel: opt.optionLabel,
+              optionText: opt.optionText || '',
+              imageUrl: opt.imageUrl || '',
+              isCorrect: opt.isCorrect,
+            }))
+          : [
+              { optionLabel: 'A', optionText: '', imageUrl: '', isCorrect: true },
+              { optionLabel: 'B', optionText: '', imageUrl: '', isCorrect: false },
+              { optionLabel: 'C', optionText: '', imageUrl: '', isCorrect: false },
+              { optionLabel: 'D', optionText: '', imageUrl: '', isCorrect: false },
+            ],
+      });
+      
+      setEditingQuestion(question);
+      setShowCreateModal(true);
+    } catch (error) {
+      console.error('Lỗi khi tải chi tiết câu hỏi:', error);
+      toast.error('Không thể tải chi tiết câu hỏi');
+    }
+  };
+
+  const handleUpdateQuestion = async () => {
+    if (!editingQuestion) return;
+
+    if (!formData.questionText && !formData.audioUrl && !formData.imageUrl) {
+      toast.warning('Vui lòng nhập nội dung câu hỏi hoặc thêm audio/hình ảnh');
+      return;
+    }
+
+    // Validate có đáp án đúng
+    const hasCorrectOption = formData.options.some(opt => opt.isCorrect);
+    if (!hasCorrectOption) {
+      toast.warning('Vui lòng chọn ít nhất một đáp án đúng');
+      return;
+    }
+
+    setUpdating(true);
+    try {
+      const payload = {
+        ...formData,
+        // Nếu là câu hỏi đề thi
+        skillType: category === 'exam' ? formData.skillType : null,
+        partNumber: category === 'exam' ? formData.partNumber : null,
+        // Filter options có nội dung
+        options: formData.options.filter(opt => opt.optionText || opt.imageUrl),
+      };
+
+      await apiClient.put(`/api/admin/questions/${editingQuestion.id}`, payload);
+      toast.success('Cập nhật câu hỏi thành công!');
+      setShowCreateModal(false);
+      setEditingQuestion(null);
+      resetForm();
+      loadQuestions();
+    } catch (error) {
+      console.error('Lỗi khi cập nhật câu hỏi:', error);
+      toast.error('Không thể cập nhật câu hỏi');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
   const handleDeleteQuestion = async (id: number) => {
     if (!confirm('Bạn có chắc muốn xóa câu hỏi này?')) return;
 
@@ -205,6 +331,7 @@ export default function AdminQuestionsPage() {
         { optionLabel: 'D', optionText: '', imageUrl: '', isCorrect: false },
       ],
     });
+    setEditingQuestion(null);
   };
 
   const updateOption = (index: number, field: string, value: string | boolean) => {
@@ -240,7 +367,10 @@ export default function AdminQuestionsPage() {
             <p className="text-gray-500 mt-1">Quản lý ngân hàng câu hỏi cho đề thi và hoạt động học tập</p>
           </div>
           <button
-            onClick={() => setShowCreateModal(true)}
+            onClick={() => {
+              resetForm();
+              setShowCreateModal(true);
+            }}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-2"
           >
             <span>+</span>
@@ -420,6 +550,13 @@ export default function AdminQuestionsPage() {
                     </div>
                     <div className="ml-4 flex gap-2">
                       <button
+                        onClick={() => handleEditQuestion(question)}
+                        className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition"
+                        title="Sửa"
+                      >
+                        ✏️
+                      </button>
+                      <button
                         onClick={() => handleDeleteQuestion(question.id)}
                         className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
                         title="Xóa"
@@ -440,10 +577,13 @@ export default function AdminQuestionsPage() {
             <div className="bg-white rounded-xl p-6 w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold">
-                  Tạo câu hỏi {category === 'exam' ? 'Đề thi' : 'Hoạt động'}
+                  {editingQuestion ? 'Sửa câu hỏi' : `Tạo câu hỏi ${category === 'exam' ? 'Đề thi' : 'Hoạt động'}`}
                 </h2>
                 <button
-                  onClick={() => setShowCreateModal(false)}
+                  onClick={() => {
+                    setShowCreateModal(false);
+                    resetForm();
+                  }}
                   className="text-gray-500 hover:text-gray-700"
                 >
                   ✕
@@ -655,13 +795,23 @@ export default function AdminQuestionsPage() {
                 >
                   Hủy
                 </button>
-                <button
-                  onClick={handleCreateQuestion}
-                  disabled={creating}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
-                >
-                  {creating ? 'Đang tạo...' : 'Tạo câu hỏi'}
-                </button>
+                {editingQuestion ? (
+                  <button
+                    onClick={handleUpdateQuestion}
+                    disabled={updating}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+                  >
+                    {updating ? 'Đang cập nhật...' : 'Cập nhật'}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleCreateQuestion}
+                    disabled={creating}
+                    className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+                  >
+                    {creating ? 'Đang tạo...' : 'Tạo câu hỏi'}
+                  </button>
+                )}
               </div>
             </div>
           </div>

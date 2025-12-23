@@ -124,6 +124,35 @@ export interface CreateLessonDto {
 
 export interface UpdateLessonDto extends Partial<CreateLessonDto> {}
 
+// Admin LessonTopic DTO
+export interface AdminLessonTopicDto {
+  id: number;
+  courseId?: number;
+  hskLevel?: number;
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  topicIndex: number;
+  isLocked: boolean;
+  prerequisiteTopicId?: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface CreateLessonTopicDto {
+  courseId?: number;
+  hskLevel?: number;
+  title: string;
+  description?: string;
+  imageUrl?: string;
+  topicIndex: number;
+  isLocked?: boolean;
+  prerequisiteTopicId?: number;
+  isActive?: boolean;
+}
+
+export interface UpdateLessonTopicDto extends Partial<CreateLessonTopicDto> {}
+
 export interface CreateQuestionDto {
   lessonId?: number;
   exerciseId?: number;
@@ -344,7 +373,14 @@ export const adminService = {
       const response = await apiClient.get<AdminLessonDto[]>(
         API_ENDPOINTS.ADMIN.LESSONS.LIST(courseId)
       );
-      return response.data;
+      // Đảm bảo response.data luôn là array
+      const data = response.data;
+      if (Array.isArray(data)) {
+        return data;
+      }
+      // Nếu data không phải array, trả về empty array
+      console.warn("getLessons: Response data is not an array, returning empty array", data);
+      return [];
     } catch (error: any) {
       // Fallback to regular lessons API
       if (error.response?.status === 404 || error.response?.status === 501) {
@@ -416,6 +452,73 @@ export const adminService = {
    */
   async deleteLesson(id: number): Promise<void> {
     await apiClient.delete(API_ENDPOINTS.ADMIN.LESSONS.DELETE(id));
+  },
+
+  // ============ LESSON TOPICS MANAGEMENT ============
+
+  /**
+   * Lấy danh sách chủ đề bài học (Admin)
+   */
+  async getLessonTopics(hskLevel?: number, courseId?: number): Promise<AdminLessonTopicDto[]> {
+    try {
+      const params = new URLSearchParams();
+      if (hskLevel) params.append("hskLevel", hskLevel.toString());
+      if (courseId) params.append("courseId", courseId.toString());
+      const url = `/api/admin/lessontopics${params.toString() ? `?${params.toString()}` : ""}`;
+      const response = await apiClient.get<AdminLessonTopicDto[]>(url);
+      const data = response.data;
+      // Đảm bảo response.data luôn là array
+      if (Array.isArray(data)) {
+        return data;
+      }
+      console.warn("getLessonTopics: Response data is not an array, returning empty array", data);
+      return [];
+    } catch (error: any) {
+      if (error.response?.status === 404 || error.response?.status === 501) {
+        console.warn("Admin lesson topics API chưa được implement, trả về empty array");
+        return [];
+      }
+      throw error;
+    }
+  },
+
+  /**
+   * Lấy chi tiết chủ đề bài học (Admin)
+   */
+  async getLessonTopicById(id: number): Promise<AdminLessonTopicDto> {
+    const response = await apiClient.get<AdminLessonTopicDto>(
+      API_ENDPOINTS.ADMIN.LESSON_TOPICS.BY_ID(id)
+    );
+    return response.data;
+  },
+
+  /**
+   * Tạo chủ đề bài học mới
+   */
+  async createLessonTopic(data: CreateLessonTopicDto): Promise<AdminLessonTopicDto> {
+    const response = await apiClient.post<AdminLessonTopicDto>(
+      API_ENDPOINTS.ADMIN.LESSON_TOPICS.CREATE,
+      data
+    );
+    return response.data;
+  },
+
+  /**
+   * Cập nhật chủ đề bài học
+   */
+  async updateLessonTopic(id: number, data: UpdateLessonTopicDto): Promise<AdminLessonTopicDto> {
+    const response = await apiClient.put<AdminLessonTopicDto>(
+      API_ENDPOINTS.ADMIN.LESSON_TOPICS.UPDATE(id),
+      data
+    );
+    return response.data;
+  },
+
+  /**
+   * Xóa chủ đề bài học
+   */
+  async deleteLessonTopic(id: number): Promise<void> {
+    await apiClient.delete(API_ENDPOINTS.ADMIN.LESSON_TOPICS.DELETE(id));
   },
 
   // ============ QUESTIONS MANAGEMENT ============
