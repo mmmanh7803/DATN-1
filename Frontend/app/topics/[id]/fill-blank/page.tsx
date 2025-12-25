@@ -50,7 +50,26 @@ export default function FillInBlankPage() {
   };
 
   const handleComplete = async (result: { correct: number; total: number; score: number }) => {
-    await markActivityCompleted("fill-blank", result.score);
+    console.log("[FillBlank] handleComplete called, score:", result.score);
+    try {
+      console.log("[FillBlank] Calling markActivityCompleted...");
+      const success = await markActivityCompleted("fill-blank", result.score);
+      console.log("[FillBlank] markActivityCompleted result:", success);
+      if (success) {
+        toast.success("Đã lưu tiến độ hoàn thành hoạt động!");
+      } else {
+        console.warn("[FillBlank] markActivityCompleted returned false");
+        toast.warning("Không thể lưu tiến độ. Vui lòng thử lại.");
+      }
+    } catch (error: any) {
+      console.error("[FillBlank] Error marking activity as completed:", error);
+      console.error("[FillBlank] Error details:", {
+        message: error.message,
+        stack: error.stack,
+        response: error.response?.data
+      });
+      toast.error("Lỗi khi lưu tiến độ: " + (error.message || "Vui lòng thử lại"));
+    }
   };
 
   // Load activities from database

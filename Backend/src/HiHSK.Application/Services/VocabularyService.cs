@@ -210,17 +210,13 @@ public class VocabularyService : IVocabularyService
             throw new ArgumentException("Part number must be between 1 and 10", nameof(partNumber));
         }
 
-        // Lấy 150 từ vựng theo HSK level, đã được sắp xếp theo ID (thứ tự)
-        // Không phụ thuộc vào LessonId, chỉ chia theo thứ tự ID
+        // Lấy tất cả từ vựng của HSK level
         var allWords = await _vocabularyRepository.GetWordsByHSKLevelAsync(hskLevel);
-        
-        // Tính toán phần cần lấy: mỗi phần 15 từ (chia đều 150 từ thành 10 phần)
-        // Part 1: từ 1-15, Part 2: từ 16-30, ..., Part 10: từ 136-150
+
         const int wordsPerPart = 15;
         int skip = (partNumber - 1) * wordsPerPart;
         
-        // Lấy phần từ vựng theo thứ tự ID (không phụ thuộc vào LessonId)
-        // allWords đã được sắp xếp theo ID trong repository
+
         var wordsInPart = allWords
             .Skip(skip)
             .Take(wordsPerPart)

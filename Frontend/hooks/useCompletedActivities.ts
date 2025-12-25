@@ -23,14 +23,22 @@ export function useCompletedActivities(options: UseCompletedActivitiesOptions = 
     try {
       setLoading(true);
       setError(null);
+      console.log("[useCompletedActivities] Loading completed activities:", { hskLevel, partNumber, topicId });
       const completedActivities = await getCompletedActivities(hskLevel, partNumber, topicId);
+      console.log("[useCompletedActivities] Received completed activities:", completedActivities);
       const completedIds = completedActivities.map(a => a.activityId);
+      console.log("[useCompletedActivities] Completed activity IDs:", completedIds);
       setCompletedActivityIds(completedIds);
       return completedIds;
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Failed to load completed activities");
       setError(error);
-      console.error("Error loading completed activities:", error);
+      console.error("[useCompletedActivities] Error loading completed activities:", error);
+      console.error("[useCompletedActivities] Error details:", {
+        message: error.message,
+        stack: error.stack,
+        response: (err as any)?.response?.data
+      });
       return [];
     } finally {
       setLoading(false);
@@ -42,8 +50,16 @@ export function useCompletedActivities(options: UseCompletedActivitiesOptions = 
     activityId: string,
     score?: number
   ) => {
+    console.log("[useCompletedActivities] Marking activity as completed:", {
+      activityId,
+      score,
+      topicId,
+      hskLevel,
+      partNumber
+    });
+    
     try {
-      await completeActivity({
+      const result = await completeActivity({
         hskLevel,
         partNumber,
         topicId,
@@ -51,9 +67,12 @@ export function useCompletedActivities(options: UseCompletedActivitiesOptions = 
         score,
       });
       
+      console.log("[useCompletedActivities] Activity marked successfully:", result);
+      
       // Cập nhật local state ngay lập tức
       setCompletedActivityIds(prev => {
         if (!prev.includes(activityId)) {
+          console.log("[useCompletedActivities] Adding activity to completed list:", activityId);
           return [...prev, activityId];
         }
         return prev;
@@ -64,10 +83,12 @@ export function useCompletedActivities(options: UseCompletedActivitiesOptions = 
         window.dispatchEvent(new CustomEvent("activity-completed", {
           detail: { activityId, topicId, hskLevel, partNumber }
         }));
+        console.log("[useCompletedActivities] Dispatched activity-completed event");
       }
 
       // Reload từ server để đảm bảo đồng bộ
       if (autoRefresh) {
+        console.log("[useCompletedActivities] Reloading completed activities from server");
         await loadCompletedActivities();
       }
 
@@ -75,7 +96,12 @@ export function useCompletedActivities(options: UseCompletedActivitiesOptions = 
     } catch (err) {
       const error = err instanceof Error ? err : new Error("Failed to mark activity as completed");
       setError(error);
-      console.error("Error marking activity as completed:", error);
+      console.error("[useCompletedActivities] Error marking activity as completed:", error);
+      console.error("[useCompletedActivities] Error details:", {
+        message: error.message,
+        stack: error.stack,
+        response: (err as any)?.response?.data
+      });
       return false;
     }
   }, [hskLevel, partNumber, topicId, autoRefresh, loadCompletedActivities]);
@@ -167,7 +193,12 @@ export function useCompletedActivities(options: UseCompletedActivitiesOptions = 
       const customEvent = event as CustomEvent;
       const eventDetail = customEvent.detail;
       
-      if (!eventDetail) return;
+      console.log("[useCompletedActivities] Received activity-completed event:", eventDetail);
+      
+      if (!eventDetail) {
+        console.log("[useCompletedActivities] Event detail is empty, skipping");
+        return;
+      }
       
       // Kiểm tra xem event có liên quan đến context hiện tại không
       let shouldReload = false;
@@ -175,29 +206,39 @@ export function useCompletedActivities(options: UseCompletedActivitiesOptions = 
       // Nếu hook này được dùng với topicId
       if (topicId) {
         shouldReload = eventDetail.topicId === topicId;
+        console.log("[useCompletedActivities] Checking topicId match:", eventDetail.topicId, "===", topicId, "->", shouldReload);
       }
       // Nếu hook này được dùng với hskLevel + partNumber
       else if (hskLevel && partNumber) {
         shouldReload = eventDetail.hskLevel === hskLevel && eventDetail.partNumber === partNumber;
+        console.log("[useCompletedActivities] Checking hskLevel/partNumber match:", shouldReload);
       }
       // Nếu không có filter nào, reload tất cả (trường hợp hiếm)
       else {
         shouldReload = true;
+        console.log("[useCompletedActivities] No filter, reloading all");
       }
       
       if (shouldReload) {
+        console.log("[useCompletedActivities] Reloading completed activities for activityId:", eventDetail.activityId);
+        
         // Cập nhật local state ngay lập tức nếu activityId chưa có
         if (eventDetail.activityId) {
           setCompletedActivityIds(prev => {
             if (!prev.includes(eventDetail.activityId)) {
+              console.log("[useCompletedActivities] Adding activity to completed list:", eventDetail.activityId);
               return [...prev, eventDetail.activityId];
             }
+            console.log("[useCompletedActivities] Activity already in completed list:", eventDetail.activityId);
             return prev;
           });
         }
         
         // Reload từ server để đảm bảo đồng bộ
+        console.log("[useCompletedActivities] Reloading completed activities from server");
         loadCompletedActivities();
+      } else {
+        console.log("[useCompletedActivities] Event not relevant to current context, skipping reload");
       }
     };
 

@@ -28,6 +28,11 @@ export function useActivities({
   // Sử dụng sort() trên một copy để tránh mutation
   const completedIdsKey = useMemo(() => [...completedIds].sort().join(','), [completedIds]);
 
+  // Tạo một key cho customLinks để tránh infinite loop
+  const customLinksKey = useMemo(() => {
+    return JSON.stringify(customLinks || {});
+  }, [customLinks]);
+
   // Helper function để map activities (tách ra để reuse)
   const mapActivities = useCallback(async (completedIdsToUse: string[]) => {
     // Fetch activities from database
@@ -104,7 +109,7 @@ export function useActivities({
       }));
 
     return mappedActivities;
-  }, [topicId, activeId, customLinks, activityProgressMap]);
+  }, [topicId, activeId, customLinksKey]);
 
   useEffect(() => {
     const loadActivities = async () => {
@@ -142,7 +147,8 @@ export function useActivities({
     };
 
     loadActivities();
-  }, [topicId, activeId, completedIdsKey, fallbackToDefault, customLinks, activityProgressMap, mapActivities]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topicId, activeId, completedIdsKey, fallbackToDefault, customLinksKey]);
 
   // Listen for activity-completed events để tự động refresh khi có activity hoàn thành (đồng bộ real-time)
   // Update activities ngay lập tức khi có activity hoàn thành

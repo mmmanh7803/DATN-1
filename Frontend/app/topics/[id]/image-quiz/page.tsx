@@ -68,8 +68,26 @@ export default function ImageQuizPage() {
     setQuizResult(result);
     setQuizCompleted(true);
     
-    // Đánh dấu hoạt động đã hoàn thành (hook sẽ tự động cập nhật và đồng bộ)
-    await markActivityCompleted("image-quiz", result.score);
+    console.log("[ImageQuiz] handleQuizComplete called, score:", result.score);
+    try {
+      console.log("[ImageQuiz] Calling markActivityCompleted...");
+      const success = await markActivityCompleted("image-quiz", result.score);
+      console.log("[ImageQuiz] markActivityCompleted result:", success);
+      if (success) {
+        toast.success("Đã lưu tiến độ hoàn thành hoạt động!");
+      } else {
+        console.warn("[ImageQuiz] markActivityCompleted returned false");
+        toast.warning("Không thể lưu tiến độ. Vui lòng thử lại.");
+      }
+    } catch (error: any) {
+      console.error("[ImageQuiz] Error marking activity as completed:", error);
+      console.error("[ImageQuiz] Error details:", {
+        message: error.message,
+        stack: error.stack,
+        response: error.response?.data
+      });
+      toast.error("Lỗi khi lưu tiến độ: " + (error.message || "Vui lòng thử lại"));
+    }
   };
 
   const handleRestart = () => {

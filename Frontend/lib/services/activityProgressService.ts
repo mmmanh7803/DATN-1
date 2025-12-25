@@ -1,5 +1,7 @@
 import { ActivityProgress } from "@/components/vocabulary/ActivityProgressChart";
 import { WordWithProgressDto } from "@/types";
+import { getCompletedActivities, getTopicProgress } from "./activityService";
+import { getActivities } from "./activityService";
 
 export interface ActivityProgressData {
   activityId: string;
@@ -224,5 +226,72 @@ export function getFlashcardReview(topicId: number): Set<number> {
   const stored = localStorage.getItem(key);
   const wordIds = stored ? JSON.parse(stored) : [];
   return new Set(wordIds);
+}
+
+/**
+ * Lấy progress của từng activity từ backend (không dựa trên vocabulary)
+ * Mỗi activity có progress riêng được lưu trong UserActivityProgress
+ */
+export async function getActivitiesProgressFromBackend(
+  topicId: number
+): Promise<ActivityProgress[]> {
+  try {
+    // Lấy danh sách tất cả activities
+    const allActivities = await getActivities(true);
+    
+    // Lấy danh sách activities đã hoàn thành từ backend cho topic này
+    const completedActivities = await getCompletedActivities(undefined, undefined, topicId);
+    const completedActivityIds = new Set(completedActivities.map(a => a.activityId));
+    
+    // Tạo progress cho từng activity
+    // Mỗi activity được coi là một task riêng, không phụ thuộc vào vocabulary
+    const activitiesProgress: ActivityProgress[] = [];
+    
+    for (const activity of allActivities) {
+      const isCompleted = completedActivityIds.has(activity.id);
+      
+      // Mỗi activity được coi là một task riêng
+      // completed = 1 nếu đã hoàn thành, 0 nếu chưa
+      // Không tính dựa trên số từ vựng, mà chỉ dựa trên trạng thái IsCompleted trong UserActivityProgress
+      activitiesProgress.push({
+        activityId: activity.id,
+        activityName: activity.displayName,
+        completed: isCompleted ? 1 : 0,
+        inProgress: 0, // Không có trạng thái "đang làm" cho activity, chỉ có completed hoặc not started
+        notStarted: isCompleted ? 0 : 1,
+        total: 1, // Mỗi activity là 1 task riêng biệt
+      });
+    }
+    
+    return activitiesProgress;
+  } catch (error) {
+    console.error("Error fetching activities progress from backend:", error);
+    return [];
+  }
+}
+
+/**
+ * Lấy progress tổng thể của topic dựa trên activities (không dựa trên vocabulary)
+ */
+export async function getTopicProgressFromBackend(topicId: number): Promise<{
+  totalActivities: number;
+  completedActivities: number;
+  progressPercentage: number;
+}> {
+  try {
+    const progress = await getTopicProgress(topicId);
+    return {
+      totalActivities: progress.totalActivities,
+      completedActivities: progress.completedActivities,
+      progressPercentage: progress.progressPercentage,
+    };
+  } catch (error) {
+    console.error("Error fetching topic progress from backend:", error);
+    return {
+      totalActivities: 0,
+      completedActivities: 0,
+      progressPercentage: 0,
+    };
+  }
 }
 

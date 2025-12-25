@@ -52,6 +52,7 @@ export const API_ENDPOINTS = {
     TOPIC_COMPLETED: (topicId: number) => `/api/activities/topic-completed?topicId=${topicId}`,
     CHECK_AND_UNLOCK_NEXT_TOPIC: "/api/activities/check-and-unlock-next-topic",
     REQUIRED_ACTIVITIES: "/api/activities/required-activities",
+    TOPIC_PROGRESS: (topicId: number) => `/api/activities/topic-progress?topicId=${topicId}`,
   },
   
   // Lesson Exercises

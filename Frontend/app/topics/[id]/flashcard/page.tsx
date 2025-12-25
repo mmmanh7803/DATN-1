@@ -128,7 +128,26 @@ export default function FlashcardPage() {
     setShowResult(true);
     // Đánh dấu hoạt động hoàn thành
     const score = Math.round((learnedCount / cards.length) * 100);
-    await markActivityCompleted("flashcard", score);
+    console.log("[Flashcard] handleComplete called, score:", score);
+    try {
+      console.log("[Flashcard] Calling markActivityCompleted...");
+      const success = await markActivityCompleted("flashcard", score);
+      console.log("[Flashcard] markActivityCompleted result:", success);
+      if (success) {
+        toast.success("Đã lưu tiến độ hoàn thành hoạt động!");
+      } else {
+        console.warn("[Flashcard] markActivityCompleted returned false");
+        toast.warning("Không thể lưu tiến độ. Vui lòng thử lại.");
+      }
+    } catch (error: any) {
+      console.error("[Flashcard] Error marking activity as completed:", error);
+      console.error("[Flashcard] Error details:", {
+        message: error.message,
+        stack: error.stack,
+        response: error.response?.data
+      });
+      toast.error("Lỗi khi lưu tiến độ: " + (error.message || "Vui lòng thử lại"));
+    }
   };
 
   const handleRestart = () => {

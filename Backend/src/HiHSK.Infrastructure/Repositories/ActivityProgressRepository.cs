@@ -13,9 +13,9 @@ public class ActivityProgressRepository : IActivityProgressRepository
     // User phải hoàn thành TẤT CẢ các activities này để mở khóa topic tiếp theo
     private static readonly List<string> RequiredActivityIds = new()
     {
-        "vocabulary",        // Học từ vựng
-        "quick-memorize",    // Nhớ nhanh từ
-        "pronunciation"      // Luyện phát âm
+        "vocabulary",        
+        "quick-memorize",    
+        "pronunciation"      
     };
 
     public ActivityProgressRepository(ApplicationDbContext context)

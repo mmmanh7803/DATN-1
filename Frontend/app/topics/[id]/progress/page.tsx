@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
@@ -9,11 +9,9 @@ import { useToast } from "@/contexts/ToastContext";
 import { AllActivitiesProgress } from "@/components/vocabulary/ActivityProgressChart";
 import { topicService } from "@/lib/services/topicService";
 import {
-  calculateAllActivitiesProgress,
+  getActivitiesProgressFromBackend,
+  getTopicProgressFromBackend,
   getProgressSummary,
-  getPronunciationScores,
-  getQuickMemorizeCompletion,
-  getFlashcardReview,
 } from "@/lib/services/activityProgressService";
 import { LessonTopicDto } from "@/types";
 import { useCompletedActivities } from "@/hooks/useCompletedActivities";
@@ -68,32 +66,20 @@ export default function TopicProgressPage() {
     });
   }, [topic, topicId, completedActivityIds]);
 
-  useEffect(() => {
-    if (topicId) {
-      loadProgressData();
-    }
-  }, [topicId]);
-
-  const loadProgressData = async () => {
+  const loadProgressData = useCallback(async () => {
+    if (!topicId) return;
+    
     try {
       setLoading(true);
       const topicData = await topicService.getTopicById(topicId);
       setTopic(topicData);
 
-      if (topicData.words && topicData.words.length > 0) {
-        // Get progress data from localStorage
-        const pronunciationScores = getPronunciationScores(topicId);
-        const completedQuickMemorize = getQuickMemorizeCompletion(topicId);
-        const reviewedFlashcards = getFlashcardReview(topicId);
-
-        // Calculate all activities progress
-        const activitiesProgress = calculateAllActivitiesProgress(topicData.words, {
-          pronunciationScores,
-          completedQuickMemorize,
-          reviewedFlashcards,
-        });
-
-        setActivities(activitiesProgress);
+      // Lấy progress của từng activity từ backend (không dựa trên vocabulary)
+      const activitiesProgress = await getActivitiesProgressFromBackend(topicId);
+      setActivities(activitiesProgress);
+      
+      // Tính summary từ activities progress
+      if (activitiesProgress.length > 0) {
         setSummary(getProgressSummary(activitiesProgress));
       }
     } catch (error: any) {
@@ -102,7 +88,42 @@ export default function TopicProgressPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [topicId]);
+
+  useEffect(() => {
+    loadProgressData();
+  }, [loadProgressData]);
+
+  // Lắng nghe sự kiện activity-completed để refresh progress
+  useEffect(() => {
+    const handleActivityCompleted = async (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const eventDetail = customEvent.detail;
+      
+      // Chỉ refresh nếu activity thuộc về topic này
+      if (eventDetail?.topicId === topicId) {
+        console.log("[Progress Page] Activity completed, refreshing progress:", eventDetail.activityId);
+        
+        // Refresh progress data
+        await loadProgressData();
+      }
+    };
+    
+    window.addEventListener("activity-completed", handleActivityCompleted);
+    return () => window.removeEventListener("activity-completed", handleActivityCompleted);
+  }, [topicId, loadProgressData]);
+
+  // Refresh progress khi completedActivityIds thay đổi (từ hook useCompletedActivities)
+  useEffect(() => {
+    if (!topicId) return;
+    
+    // Debounce để tránh refresh quá nhiều lần
+    const timeoutId = setTimeout(() => {
+      loadProgressData();
+    }, 500);
+    
+    return () => clearTimeout(timeoutId);
+  }, [topicId, completedActivityIds, loadProgressData]);
 
   if (loading) {
     return (
@@ -262,6 +283,50 @@ export default function TopicProgressPage() {
               {/* Activities Progress */}
               {activities.length > 0 && (
                 <AllActivitiesProgress activities={activities} />
+              )}
+
+              {/* Debug: Test button để kiểm tra API */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                  <h3 className="font-semibold text-yellow-800 mb-2">🔧 Debug Mode</h3>
+                  <button
+                    onClick={async () => {
+                      try {
+                        console.log("[Debug] Testing completeActivity API...");
+                        const { completeActivity } = await import("@/lib/services/activityService");
+                        const result = await completeActivity({
+                          topicId: topicId,
+                          activityId: "test-activity",
+                        });
+                        console.log("[Debug] API Result:", result);
+                        toast.success("Test API thành công! Xem console để xem kết quả.");
+                      } catch (error: any) {
+                        console.error("[Debug] API Error:", error);
+                        toast.error("Test API thất bại: " + (error.message || "Xem console"));
+                      }
+                    }}
+                    className="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 text-sm"
+                  >
+                    Test Complete Activity API
+                  </button>
+                  <button
+                    onClick={async () => {
+                      try {
+                        console.log("[Debug] Testing getCompletedActivities API...");
+                        const { getCompletedActivities } = await import("@/lib/services/activityService");
+                        const result = await getCompletedActivities(undefined, undefined, topicId);
+                        console.log("[Debug] Completed Activities:", result);
+                        toast.success(`Tìm thấy ${result.length} activities đã hoàn thành. Xem console.`);
+                      } catch (error: any) {
+                        console.error("[Debug] API Error:", error);
+                        toast.error("Test API thất bại: " + (error.message || "Xem console"));
+                      }
+                    }}
+                    className="ml-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
+                  >
+                    Test Get Completed Activities
+                  </button>
+                </div>
               )}
 
               {activities.length === 0 && (

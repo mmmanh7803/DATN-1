@@ -130,7 +130,26 @@ export default function VocabularyPracticePage() {
   const handleComplete = async () => {
     setShowResult(true);
     const score = Math.round((stats.correct / stats.total) * 100);
-    await markActivityCompleted("vocabulary-practice", score);
+    console.log("[VocabularyPractice] handleComplete called, score:", score);
+    try {
+      console.log("[VocabularyPractice] Calling markActivityCompleted...");
+      const success = await markActivityCompleted("vocabulary-practice", score);
+      console.log("[VocabularyPractice] markActivityCompleted result:", success);
+      if (success) {
+        toast.success("Đã lưu tiến độ hoàn thành hoạt động!");
+      } else {
+        console.warn("[VocabularyPractice] markActivityCompleted returned false");
+        toast.warning("Không thể lưu tiến độ. Vui lòng thử lại.");
+      }
+    } catch (error: any) {
+      console.error("[VocabularyPractice] Error marking activity as completed:", error);
+      console.error("[VocabularyPractice] Error details:", {
+        message: error.message,
+        stack: error.stack,
+        response: error.response?.data
+      });
+      toast.error("Lỗi khi lưu tiến độ: " + (error.message || "Vui lòng thử lại"));
+    }
   };
 
   const handleRestart = () => {

@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { topicService } from "@/lib/services/topicService";
-import { exerciseService } from "@/lib/services/exerciseService";
 import { useToast } from "@/contexts/ToastContext";
 import { useCompletedActivities } from "@/hooks/useCompletedActivities";
-import { LessonTopicDto, LessonExerciseListDto } from "@/types";
+import { LessonTopicDto } from "@/types";
 import VocabularyWordItem from "@/components/vocabulary/VocabularyWordItem";
 import LearningActivities from "@/components/vocabulary/LearningActivities";
 import { useActivities } from "@/hooks/useActivities";
 import ActivityProgressChart from "@/components/vocabulary/ActivityProgressChart";
-import { calculateVocabularyProgress } from "@/lib/services/activityProgressService";
+import { calculateVocabularyProgress, getTopicProgressFromBackend } from "@/lib/services/activityProgressService";
+import { checkAndMarkVocabulary } from "@/lib/services/activityService";
 
 export default function TopicDetailPage() {
   const params = useParams();
@@ -23,12 +23,16 @@ export default function TopicDetailPage() {
   const toast = useToast();
 
   const [topic, setTopic] = useState<LessonTopicDto | null>(null);
-  const [exercises, setExercises] = useState<LessonExerciseListDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [vocabularyProgress, setVocabularyProgress] = useState<any>(null);
   const [showUnlockNotification, setShowUnlockNotification] = useState(false);
   const [unlockMessage, setUnlockMessage] = useState("");
+  const [topicProgressFromBackend, setTopicProgressFromBackend] = useState<{
+    totalActivities: number;
+    completedActivities: number;
+    progressPercentage: number;
+  } | null>(null);
   
   // Sử dụng hook để quản lý completed activities (đồng bộ giữa các trang)
   const {
@@ -68,11 +72,52 @@ export default function TopicDetailPage() {
   const totalActivities = useMemo(() => activities.length, [activities]);
   const completedActivities = useMemo(() => activities.filter(a => a.isCompleted).length, [activities]);
 
-  useEffect(() => {
-    if (topicId) {
-      loadTopicData();
+  const loadTopicData = useCallback(async () => {
+    if (!topicId) return;
+    
+    try {
+      setLoading(true);
+      console.log("Loading topic data for ID:", topicId);
+      const topicData = await topicService.getTopicById(topicId);
+      console.log("Loaded topic data:", topicData);
+      setTopic(topicData);
+
+      // Calculate vocabulary progress
+      if (topicData.words && topicData.words.length > 0) {
+        const progress = calculateVocabularyProgress(topicData.words);
+        setVocabularyProgress(progress);
+      }
+
+      // Lấy progress của topic dựa trên activities từ backend
+      const topicProgress = await getTopicProgressFromBackend(topicId);
+      setTopicProgressFromBackend(topicProgress);
+
+      // Completed activities được load tự động bởi hook useCompletedActivities
+    } catch (error: any) {
+      console.error("Error loading topic:", error);
+      console.error("Error details:", {
+        message: error?.message,
+        response: error?.response?.data,
+        status: error?.response?.status,
+        url: error?.config?.url
+      });
+      if (error.response?.status === 403) {
+        toast.warning("Bạn chưa hoàn thành chủ đề trước đó. Vui lòng hoàn thành chủ đề trước để mở khóa chủ đề này.");
+        router.push("/courses");
+      } else if (error.response?.status === 404) {
+        toast.error("Chủ đề không tồn tại hoặc đã bị xóa.");
+        router.push("/courses");
+      } else {
+        toast.error(`Lỗi khi tải dữ liệu: ${error.response?.data?.message || error.message}`);
+      }
+    } finally {
+      setLoading(false);
     }
-  }, [topicId]);
+  }, [topicId, router, toast]);
+
+  useEffect(() => {
+    loadTopicData();
+  }, [loadTopicData]);
 
   // Hiển thị thông báo khi mở khóa topic tiếp theo
   useEffect(() => {
@@ -103,7 +148,114 @@ export default function TopicDetailPage() {
     return () => window.removeEventListener("topic-unlocked", handleTopicUnlocked);
   }, [topicId]);
 
+  // Lắng nghe sự kiện activity-completed để refresh progress bar
+  useEffect(() => {
+    const handleActivityCompleted = async (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const eventDetail = customEvent.detail;
+      
+      // Chỉ refresh nếu activity thuộc về topic này
+      if (eventDetail?.topicId === topicId) {
+        console.log("[Topics Page] Activity completed, refreshing topic progress:", eventDetail.activityId);
+        
+        // Refresh progress từ backend
+        try {
+          const topicProgress = await getTopicProgressFromBackend(topicId);
+          setTopicProgressFromBackend(topicProgress);
+          console.log("[Topics Page] Updated topic progress:", topicProgress);
+          
+          // Nếu là vocabulary activity, reload topic data để cập nhật vocabulary progress chart
+          if (eventDetail.activityId === "vocabulary") {
+            try {
+              const topicData = await topicService.getTopicById(topicId);
+              setTopic(topicData);
+              
+              if (topicData.words && topicData.words.length > 0) {
+                const progress = calculateVocabularyProgress(topicData.words);
+                setVocabularyProgress(progress);
+                console.log("[Topics Page] Updated vocabulary progress after activity completed:", progress);
+              }
+            } catch (error) {
+              console.error("[Topics Page] Error refreshing topic data after vocabulary completed:", error);
+            }
+          }
+        } catch (error) {
+          console.error("[Topics Page] Error refreshing topic progress:", error);
+        }
+      }
+    };
+    
+    window.addEventListener("activity-completed", handleActivityCompleted);
+    return () => window.removeEventListener("activity-completed", handleActivityCompleted);
+  }, [topicId]);
+
+  // Refresh progress khi completedActivityIds thay đổi (từ hook useCompletedActivities)
+  // Sử dụng string representation để tránh infinite loop (không mutate array gốc)
+  const completedActivityIdsString = useMemo(() => [...completedActivityIds].sort().join(','), [completedActivityIds]);
+  
+  useEffect(() => {
+    if (!topicId) return;
+    
+    const refreshProgress = async () => {
+      try {
+        const topicProgress = await getTopicProgressFromBackend(topicId);
+        setTopicProgressFromBackend(topicProgress);
+      } catch (error) {
+        console.error("[Topics Page] Error refreshing topic progress:", error);
+      }
+    };
+    
+    // Debounce để tránh refresh quá nhiều lần
+    const timeoutId = setTimeout(refreshProgress, 500);
+    return () => clearTimeout(timeoutId);
+  }, [topicId, completedActivityIdsString]);
+
   // Hook useCompletedActivities tự động load completed activities
+
+  // Tự động kiểm tra và đánh dấu vocabulary activity khi tất cả từ đã Mastered
+  useEffect(() => {
+    if (!topic || !topic.words || topic.words.length === 0) return;
+    if (completedActivityIds.includes("vocabulary")) {
+      console.log("[Topics Page] Vocabulary activity already completed, skipping check");
+      return;
+    }
+    
+    // Kiểm tra xem tất cả từ đã được đánh dấu là "Mastered" chưa
+    const allWordsMastered = topic.words.every((w: any) => w.progress?.status === "Mastered");
+    
+    if (allWordsMastered && topic.words.length > 0) {
+      console.log("[Topics Page] All words are Mastered, checking if vocabulary activity should be marked as completed");
+      
+      // Gọi API để kiểm tra và đánh dấu vocabulary activity
+      checkAndMarkVocabulary({ topicId })
+        .then((result: any) => {
+          console.log("[Topics Page] checkAndMarkVocabulary result:", result);
+          if (result.marked) {
+            console.log("✅ [Topics Page] Activity 'vocabulary' đã được đánh dấu hoàn thành!");
+            
+            // Reload completed activities để cập nhật state
+            loadCompletedActivities();
+            
+            // Dispatch event để đồng bộ với các component khác
+            if (typeof window !== "undefined") {
+              window.dispatchEvent(new CustomEvent("activity-completed", {
+                detail: { activityId: "vocabulary", topicId, hskLevel: undefined, partNumber: undefined }
+              }));
+            }
+            
+            // Reload topic progress
+            getTopicProgressFromBackend(topicId).then((progress) => {
+              setTopicProgressFromBackend(progress);
+            }).catch((err) => {
+              console.error("[Topics Page] Error reloading topic progress:", err);
+            });
+          }
+        })
+        .catch((error: any) => {
+          console.error("[Topics Page] Error checking vocabulary completion:", error);
+        });
+    }
+  }, [topic, topicId, completedActivityIds, loadCompletedActivities]);
 
   const handleVocabularyCompleted = async () => {
     console.log("[Topics Page] Vocabulary progress updated! Refreshing...");
@@ -122,6 +274,23 @@ export default function TopicDetailPage() {
         setVocabularyProgress(progress);
         console.log("[Topics Page] Updated vocabulary progress:", progress);
       }
+      
+      // Reload topic progress từ backend để cập nhật progress bar
+      try {
+        const topicProgress = await getTopicProgressFromBackend(topicId);
+        setTopicProgressFromBackend(topicProgress);
+        console.log("[Topics Page] Updated topic progress from backend:", topicProgress);
+      } catch (progressError) {
+        console.error("[Topics Page] Error refreshing topic progress:", progressError);
+      }
+      
+      // Reload completed activities để đảm bảo vocabulary activity được cập nhật
+      try {
+        await loadCompletedActivities();
+        console.log("[Topics Page] Reloaded completed activities");
+      } catch (activitiesError) {
+        console.error("[Topics Page] Error reloading completed activities:", activitiesError);
+      }
     } catch (error) {
       console.error("[Topics Page] Error refreshing vocabulary progress:", error);
       // Fallback: Tính từ state hiện tại nếu API fail
@@ -129,48 +298,6 @@ export default function TopicDetailPage() {
         const progress = calculateVocabularyProgress(topic.words);
         setVocabularyProgress(progress);
       }
-    }
-  };
-
-  const loadTopicData = async () => {
-    try {
-      setLoading(true);
-      console.log("Loading topic data for ID:", topicId);
-      const [topicData, exercisesData] = await Promise.all([
-        topicService.getTopicById(topicId),
-        exerciseService.getExercisesByTopic(topicId).catch(() => []),
-      ]);
-      console.log("Loaded topic data:", topicData);
-      console.log("Loaded exercises data:", exercisesData);
-      setTopic(topicData);
-      setExercises(exercisesData || []);
-
-      // Calculate vocabulary progress
-      if (topicData.words && topicData.words.length > 0) {
-        const progress = calculateVocabularyProgress(topicData.words);
-        setVocabularyProgress(progress);
-      }
-
-      // Completed activities được load tự động bởi hook useCompletedActivities
-    } catch (error: any) {
-      console.error("Error loading topic:", error);
-      console.error("Error details:", {
-        message: error?.message,
-        response: error?.response?.data,
-        status: error?.response?.status,
-        url: error?.config?.url
-      });
-      if (error.response?.status === 403) {
-        toast.warning("Bạn chưa hoàn thành chủ đề trước đó. Vui lòng hoàn thành chủ đề trước để mở khóa chủ đề này.");
-        router.push("/courses");
-      } else if (error.response?.status === 404) {
-        toast.error("Chủ đề không tồn tại hoặc đã bị xóa.");
-        router.push("/courses");
-      } else {
-        toast.error(`Lỗi khi tải dữ liệu: ${error.response?.data?.message || error.message}`);
-      }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -300,16 +427,19 @@ export default function TopicDetailPage() {
                 )}
               </div>
             )}
-            {topic.progressPercentage > 0 && !topicCompletedStatus && (
+            {/* Hiển thị progress bar dựa trên activities (không dựa trên vocabulary) */}
+            {topicProgressFromBackend && topicProgressFromBackend.totalActivities > 0 && !topicCompletedStatus && (
               <div className="mt-6">
                 <div className="flex justify-between text-white/90 mb-2">
-                  <span>Tiến độ học tập</span>
-                  <span className="font-semibold">{topic.progressPercentage}%</span>
+                  <span>Tiến độ hoàn thành các hoạt động</span>
+                  <span className="font-semibold">
+                    {topicProgressFromBackend.completedActivities}/{topicProgressFromBackend.totalActivities} hoạt động ({topicProgressFromBackend.progressPercentage}%)
+                  </span>
                 </div>
                 <div className="w-full bg-white/20 rounded-full h-3">
                   <div
                     className="bg-white h-3 rounded-full transition-all"
-                    style={{ width: `${topic.progressPercentage}%` }}
+                    style={{ width: `${topicProgressFromBackend.progressPercentage}%` }}
                   ></div>
                 </div>
               </div>
@@ -489,72 +619,6 @@ export default function TopicDetailPage() {
           </div>
         </div>
 
-        <section className="py-12 bg-gray-50">
-          <div className="container mx-auto px-4 lg:px-0">
-            {exercises.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-xl text-gray-600">
-                  Chưa có bài tập nào trong chủ đề này
-                </p>
-              </div>
-            ) : (
-              <div>
-                <h2 className="text-2xl font-bold text-dark mb-6">Danh sách bài tập</h2>
-                <div className="space-y-4">
-                  {exercises.map((exercise) => (
-                    <Link
-                      key={exercise.id}
-                      href={`/exercises/${exercise.id}`}
-                      className={`block bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 p-6 ${
-                        exercise.isLocked ? "opacity-60 cursor-not-allowed" : "hover:-translate-y-1"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
-                              exercise.isCompleted
-                                ? "bg-green-500 text-white"
-                                : exercise.isLocked
-                                ? "bg-gray-300 text-gray-600"
-                                : "bg-primary/20 text-primary"
-                            }`}>
-                              {exercise.isCompleted ? "✓" : exercise.isLocked ? "🔒" : exercise.exerciseIndex}
-                            </div>
-                            <div>
-                              <h3 className="text-xl font-bold text-dark">
-                                {exercise.title}
-                              </h3>
-                              <p className="text-sm text-gray-500 mt-1">
-                                {exercise.exerciseTypeName}
-                              </p>
-                            </div>
-                            {exercise.isCompleted && (
-                              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-                                ✓ Hoàn thành
-                              </span>
-                            )}
-                            {exercise.isLocked && (
-                              <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-semibold">
-                                🔒 Đã khóa
-                              </span>
-                            )}
-                          </div>
-                          {exercise.description && (
-                            <p className="text-gray-600 ml-14 mb-3">{exercise.description}</p>
-                          )}
-                        </div>
-                        <div className="text-primary font-semibold">
-                          {exercise.isLocked ? "🔒" : "Bắt đầu →"}
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
       </main>
 
       <Footer />

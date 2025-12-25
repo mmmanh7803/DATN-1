@@ -36,7 +36,6 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        // Log để debug
         Console.WriteLine($"Register request received: Email={request?.Email}, Password length={request?.Password?.Length}");
         
         if (request == null)

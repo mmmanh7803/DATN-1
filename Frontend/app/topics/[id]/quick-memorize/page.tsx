@@ -82,13 +82,30 @@ export default function QuickMemorizePage() {
 
   // Tự động đánh dấu hoàn thành ngay khi user vào trang (chỉ cần lướt qua 1 lần)
   useEffect(() => {
+    console.log("[QuickMemorize] useEffect check:", {
+      hasTopic: !!topic,
+      wordsCount: topic?.words?.length || 0,
+      hasMarkedAsCompleted,
+      isAlreadyCompleted: completedActivityIds.includes("quick-memorize"),
+      completedActivityIds
+    });
+    
     // Chỉ đánh dấu nếu:
     // 1. Đã load xong topic data
     // 2. Chưa đánh dấu trước đó
     // 3. Activity chưa được đánh dấu completed
-    if (!topic || !topic.words || topic.words.length === 0 || 
-        hasMarkedAsCompleted || 
-        completedActivityIds.includes("quick-memorize")) {
+    if (!topic || !topic.words || topic.words.length === 0) {
+      console.log("[QuickMemorize] Skipping: No topic or words");
+      return;
+    }
+    
+    if (hasMarkedAsCompleted) {
+      console.log("[QuickMemorize] Skipping: Already marked as completed");
+      return;
+    }
+    
+    if (completedActivityIds.includes("quick-memorize")) {
+      console.log("[QuickMemorize] Skipping: Activity already completed in database");
       return;
     }
 
@@ -126,16 +143,25 @@ export default function QuickMemorizePage() {
         setActivityProgress(progress);
         
         // Đánh dấu activity là completed (hook sẽ tự động cập nhật và đồng bộ)
-        await markActivityCompleted("quick-memorize");
-        setHasMarkedAsCompleted(true);
-      } catch (error) {
-        // Silent error handling
+        console.log("[QuickMemorize] Calling markActivityCompleted for quick-memorize");
+        const success = await markActivityCompleted("quick-memorize");
+        console.log("[QuickMemorize] markActivityCompleted result:", success);
+        if (success) {
+          console.log("[QuickMemorize] Activity marked as completed successfully");
+          setHasMarkedAsCompleted(true);
+        } else {
+          console.warn("[QuickMemorize] Failed to mark activity as completed - returned false");
+        }
+      } catch (error: any) {
+        console.error("[QuickMemorize] Error marking activity as completed:", error);
+        // Không hiển thị toast vì đây là auto-mark, không phải user action
       }
     };
 
     // Đánh dấu ngay khi component mount và data đã sẵn sàng
     markAsCompleted();
-  }, [topic, topicId, hasMarkedAsCompleted, completedActivityIds]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topic, topicId, hasMarkedAsCompleted, completedActivityIds, markActivityCompleted]);
 
   const loadData = async () => {
     try {

@@ -8,7 +8,6 @@ import Footer from "@/components/layout/Footer";
 import LearningActivities from "@/components/vocabulary/LearningActivities";
 import { useActivities } from "@/hooks/useActivities";
 import { useCompletedActivities } from "@/hooks/useCompletedActivities";
-import { exerciseService } from "@/lib/services/exerciseService";
 import { topicService } from "@/lib/services/topicService";
 import {
   LessonTopicDto,
@@ -165,11 +164,41 @@ export default function GrammarActivityPage() {
   }, [topicId, loadGrammarData]);
 
   useEffect(() => {
-    if (hasMarkedCompletion) return;
+    if (hasMarkedCompletion) {
+      console.log("[Grammar] Already marked as completed, skipping");
+      return;
+    }
+    
     const studiedAll = wordsWithGrammar.length > 0 && studiedWordIds.size === wordsWithGrammar.length;
+    console.log("[Grammar] useEffect check:", {
+      wordsWithGrammarLength: wordsWithGrammar.length,
+      studiedWordIdsSize: studiedWordIds.size,
+      studiedAll,
+      hasMarkedCompletion
+    });
+    
     if (studiedAll) {
-      markActivityCompleted("grammar");
-      setHasMarkedCompletion(true);
+      const markAsCompleted = async () => {
+        try {
+          console.log("[Grammar] Calling markActivityCompleted for grammar");
+          const success = await markActivityCompleted("grammar");
+          console.log("[Grammar] markActivityCompleted result:", success);
+          if (success) {
+            console.log("[Grammar] Activity marked as completed successfully");
+            setHasMarkedCompletion(true);
+          } else {
+            console.warn("[Grammar] Failed to mark activity as completed - returned false");
+          }
+        } catch (error: any) {
+          console.error("[Grammar] Error marking activity as completed:", error);
+          console.error("[Grammar] Error details:", {
+            message: error.message,
+            stack: error.stack,
+            response: error.response?.data
+          });
+        }
+      };
+      markAsCompleted();
     }
   }, [wordsWithGrammar.length, studiedWordIds, hasMarkedCompletion, markActivityCompleted]);
 

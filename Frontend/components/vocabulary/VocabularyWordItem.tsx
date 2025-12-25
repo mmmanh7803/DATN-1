@@ -179,11 +179,13 @@ export default function VocabularyWordItem({ word, onDetailClick, viewMode = "li
       // Kiểm tra và tự động đánh dấu activity "vocabulary" nếu tất cả từ đã học
       // CHỈ cho Topics (topicId), KHÔNG cho Courses (hskLevel + partNumber)
       if (topicId) {
-        // Chạy async trong background, không block UI, silent fail nếu 404
+        console.log("[VocabularyWordItem] Checking if vocabulary activity should be marked as completed for topicId:", topicId);
+        // Chạy async trong background, không block UI
         checkAndMarkVocabulary({ topicId })
           .then((result) => {
+            console.log("[VocabularyWordItem] checkAndMarkVocabulary result:", result);
             if (result.marked) {
-              console.log("✅ Activity 'vocabulary' đã được đánh dấu hoàn thành!");
+              console.log("✅ [VocabularyWordItem] Activity 'vocabulary' đã được đánh dấu hoàn thành!");
               
               // Hiển thị toast notification
               toast.success("🎉 Chúc mừng! Bạn đã học xong tất cả từ vựng trong chủ đề này!", 5000);
@@ -193,21 +195,32 @@ export default function VocabularyWordItem({ word, onDetailClick, viewMode = "li
                 window.dispatchEvent(new CustomEvent("activity-completed", {
                   detail: { activityId: "vocabulary", topicId, hskLevel: undefined, partNumber: undefined }
                 }));
+                console.log("[VocabularyWordItem] Dispatched activity-completed event for vocabulary");
               }
               
               // Gọi callback lại để refresh sau khi mark activity
               if (onVocabularyCompleted) {
                 onVocabularyCompleted();
               }
+            } else {
+              console.log("[VocabularyWordItem] Vocabulary activity not marked yet:", result.message);
             }
           })
           .catch((error: any) => {
+            console.error("[VocabularyWordItem] Error checking vocabulary completion:", error);
+            console.error("[VocabularyWordItem] Error details:", {
+              message: error.message,
+              status: error.response?.status,
+              data: error.response?.data
+            });
+            
             // Silent fail cho 404 - endpoint có thể chưa được deploy hoặc backend chưa restart
             if (error?.response?.status === 404) {
+              console.warn("[VocabularyWordItem] checkAndMarkVocabulary endpoint not found (404)");
               return;
             }
             if (error?.response?.status) {
-              console.warn("Lỗi khi kiểm tra vocabulary completion:", error.response.status);
+              console.warn("[VocabularyWordItem] Lỗi khi kiểm tra vocabulary completion:", error.response.status);
             }
           });
       }
